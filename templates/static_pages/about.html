@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} – {{ site.site_name|default:'Urock' }}{% endblock %}
+{% block content %}
+<h1>{{ page.title }}</h1>
+{% if page.hero %}
+  <img src="{{ page.hero.url }}" alt="{{ page.title }}" style="max-width:100%;height:auto;margin:12px 0">
+{% endif %}
+<div>{{ page.body|linebreaks }}</div>
+{% endblock %}

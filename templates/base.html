@@ -1,0 +1,103 @@
+{% load static %}
+<!doctype html>
+<html lang="lt">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="{% firstof meta_robots 'index,follow' %}">
+    <meta name="verify-paysera" content="16afce7474e450a6515c53d90d004fef">
+
+    <title>{% firstof meta_title site.site_name SITE.title "Urock Shop" %}</title>
+
+    {# ─── SEO basics ─── #}
+    <meta name="description"
+          content="{% firstof meta_description site.meta_description SITE.meta_description '' %}">
+
+    {# canonical: nebandyk kviesti build_absolute_uri šablone; rely on context #}
+    {% if canonical_url %}
+      <link rel="canonical" href="{{ canonical_url }}">
+    {% endif %}
+
+    {# ─── Open Graph ─── #}
+    <meta property="og:title"
+          content="{% firstof og_title meta_title site.site_name SITE.title 'Urock' %}">
+    <meta property="og:description"
+          content="{% firstof og_description meta_description site.meta_description SITE.meta_description '' %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+
+    {# og:url – naudok canonical, jis turi būti absoliutus ir ateina iš view #}
+    {% if canonical_url %}
+      <meta property="og:url" content="{{ canonical_url }}">
+    {% endif %}
+
+    {# og:image – saugūs patikrinimai, kad nejudintume neegzistuojančių kintamųjų #}
+    {% if og_image %}
+      <meta property="og:image" content="{{ og_image }}">
+    {% elif site and site.og_image_url %}
+      <meta property="og:image" content="{{ site.og_image_url }}">
+    {% elif SITE and SITE.og_image_url %}
+      <meta property="og:image" content="{{ SITE.og_image_url }}">
+    {% endif %}
+
+    {# ─── Twitter Cards ─── #}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title"
+          content="{% firstof og_title meta_title site.site_name SITE.title 'Urock' %}">
+    <meta name="twitter:description"
+          content="{% firstof og_description meta_description site.meta_description SITE.meta_description '' %}">
+    {% if og_image %}
+      <meta name="twitter:image" content="{{ og_image }}">
+    {% elif site and site.og_image_url %}
+      <meta name="twitter:image" content="{{ site.og_image_url }}">
+    {% elif SITE and SITE.og_image_url %}
+      <meta name="twitter:image" content="{{ SITE.og_image_url }}">
+    {% endif %}
+
+    {# Puslapių specifiniai <head> įdėklai (pvz. noindex krepšeliui) #}
+    {% block extra_head %}{% endblock %}
+
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+
+    {% block head_extra %}{% endblock %}
+  </head>
+  <body>
+
+<header style="padding:8px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+  <div>
+    {% if site and site.logo %}
+      <a href="{% url 'home' %}">
+        <img src="{{ site.logo.url }}" alt="{% firstof site.site_name 'Urock' %}" style="height:28px;vertical-align:middle">
+      </a>
+    {% else %}
+      <a href="{% url 'home' %}">{% firstof site.site_name 'Urock' %}</a>
+    {% endif %}
+    | <a href="{% url 'product_list' %}">Shop</a>
+    | <a href="{% url 'cart_view' %}">Cart</a>
+    | <a href="{% url 'about' %}">About</a>
+    | <a href="{% url 'blog_list' %}">Blog</a>
+  </div>
+  <div>
+    <span>Cart: {{ cart_count }} vnt — {{ cart_total|floatformat:2 }} €</span>
+  </div>
+</header>
+
+{% if messages %}
+  <ul>
+    {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+  </ul>
+{% endif %}
+
+<main style="padding:16px">
+  {% block content %}{% endblock %}
+</main>
+
+<footer style="margin-top:32px;padding:16px;border-top:1px solid #eee;text-align:center">
+  {% if site and site.footer_html %}
+    {{ site.footer_html|safe }}
+  {% else %}
+    <small>© {% firstof site.site_name 'Urock' %}</small>
+  {% endif %}
+</footer>
+
+  </body>
+</html>

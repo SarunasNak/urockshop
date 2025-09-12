@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{# <head>: prev/next nuorodos #}
+{% block extra_head %}
+  {% if page_obj %}
+    {% if page_obj.has_previous %}
+      <link rel="prev" href="?page={{ page_obj.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if q %}&q={{ q|urlencode }}{% endif %}">
+    {% endif %}
+    {% if page_obj.has_next %}
+      <link rel="next" href="?page={{ page_obj.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if q %}&q={{ q|urlencode }}{% endif %}">
+    {% endif %}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<h1>Parduotuvė</h1>
+
+<form method="get" style="margin-bottom:12px; display:flex; gap:8px; flex-wrap:wrap;">
+  <select name="category" onchange="this.form.submit()">
+    <option value="">Visos kategorijos</option>
+    {% for c in categories %}
+      <option value="{{ c.slug }}" {% if c.slug == current_category %}selected{% endif %}>{{ c.name }}</option>
+    {% endfor %}
+  </select>
+  <input type="text" name="q" value="{{ q }}" placeholder="Paieška…">
+  <button type="submit">Filtruoti</button>
+  {% if q or current_category %}
+    <a href="{% url 'product_list' %}">Išvalyti</a>
+  {% endif %}
+</form>
+
+{% if page_obj and page_obj.object_list %}
+  <p style="opacity:.8; margin:8px 0;">
+    Rasta: {{ page_obj.paginator.count }} prekių
+    {% if q %} pagal „{{ q }}“{% endif %}
+    {% if current_category %} pasirinktoje kategorijoje{% endif %}.
+  </p>
+
+  <div>
+    {% for p in page_obj.object_list %}
+      <article style="display:flex;gap:12px;align-items:center;border:1px solid #eee;padding:8px;margin:8px 0;">
+        {% with img=p.images.all|first %}
+          {% if img %}
+            <img src="{{ img.image.url }}"
+                 alt="{{ img.alt|default:p.name }}"
+                 style="height:80px"
+                 loading="lazy">
+          {% endif %}
+        {% endwith %}
+        <div>
+          <h3 style="margin:0;">
+            <a href="{% url 'product_detail' slug=p.slug %}">{{ p.name }}</a>
+          </h3>
+          {% with v=p.variants.all|first %}
+            {% if v %}
+              <div>
+                {% if v.compare_at_price and v.compare_at_price > v.price %}
+                  <span style="text-decoration:line-through;">{{ v.compare_at_price|floatformat:2 }} €</span>
+                {% endif %}
+                <strong>{{ v.price|floatformat:2 }} €</strong>
+                {% if not v.stock %}<em>(nėra sandėlyje)</em>{% endif %}
+              </div>
+            {% endif %}
+          {% endwith %}
+        </div>
+      </article>
+    {% empty %}
+      <p>Prekių nėra.</p>
+    {% endfor %}
+  </div>
+
+  <div style="margin-top:12px;">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if q %}&q={{ q|urlencode }}{% endif %}">← Atgal</a>
+    {% endif %}
+    <span> {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} </span>
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if q %}&q={{ q|urlencode }}{% endif %}">Pirmyn →</a>
+    {% endif %}
+  </div>
+{% else %}
+  <p>Prekių nėra.</p>
+{% endif %}
+{% endblock %}

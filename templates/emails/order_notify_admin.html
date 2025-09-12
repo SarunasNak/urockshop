@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <body style="font-family:Arial,Helvetica,sans-serif;line-height:1.45">
+    <h3 style="margin:0 0 12px">Naujas užsakymas #{{ order.id }}{% if SITE and SITE.title %} – {{ SITE.title }}{% endif %}</h3>
+    <p style="margin:0 0 8px">Klientas: <strong>{{ order.email }}</strong></p>
+    <p style="margin:0 0 8px">Statusas: {{ order.status }} • Suma: <strong>{{ order.total }}</strong></p>
+    <p style="margin:0 0 16px">Sukurta: {{ order.created_at|date:"Y-m-d H:i" }}</p>
+
+    <h4 style="margin:12px 0 8px">Prekės</h4>
+    <table width="100%" cellpadding="6" cellspacing="0" style="border-collapse:collapse;border:1px solid #eee">
+      <thead>
+        <tr>
+          <th align="left" style="border-bottom:1px solid #eee">Prekė</th>
+          <th align="right" style="border-bottom:1px solid #eee">Kiekis</th>
+          <th align="right" style="border-bottom:1px solid #eee">Suma</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if order.items.all %}
+          {% for it in order.items.all %}
+          <tr>
+            <td style="border-bottom:1px solid #f5f5f5">
+              {{ it.product_name }} <small style="color:#666">[{{ it.variant_sku }}]</small>
+            </td>
+            <td align="right" style="border-bottom:1px solid #f5f5f5">{{ it.qty }}</td>
+            <td align="right" style="border-bottom:1px solid #f5f5f5">{{ it.line_total }}</td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="3" align="center" style="color:#888">Eilučių nėra</td></tr>
+        {% endif %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2" align="right" style="padding-top:8px"><strong>Iš viso:</strong></td>
+          <td align="right" style="padding-top:8px"><strong>{{ order.total }}</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <p style="margin-top:16px">
+      Admin: <a href="/admin/">atverti</a> • Kliento peržiūra: <a href="https://{{ SITE_HOST }}/checkout/success/{{ order.id }}/">peržiūrėti</a>
+    </p>
+  </body>
+</html>

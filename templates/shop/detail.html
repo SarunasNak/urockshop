@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} – Urock{% endblock %}
+{% block og_type %}product{% endblock %}
+{% block content %}
+<h1>{{ product.name }}</h1>
+
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+  {% for img in product.images.all %}
+    <img src="{{ img.image.url }}" alt="{{ img.alt }}" style="height:140px">
+  {% empty %}
+    <p>Nėra nuotraukų.</p>
+  {% endfor %}
+</div>
+
+<article style="margin-top:12px;">
+  <p>{{ product.description|linebreaks }}</p>
+</article>
+
+<form action="{% url 'cart_add' %}" method="post" style="margin-top:12px;">
+  {% csrf_token %}
+  <label>Variantas:</label>
+  <select name="variant_id">
+    {% for v in product.variants.all %}
+      <option value="{{ v.id }}" {% if not v.stock %}disabled{% endif %}>
+        {{ v.color }} {{ v.size }} — {{ v.price }} € {% if not v.stock %}(nėra sandėlyje){% endif %}
+      </option>
+    {% endfor %}
+  </select>
+  <label>Kiekis:</label>
+  <input type="number" name="qty" value="1" min="1">
+  <button type="submit">Į krepšelį</button>
+</form>
+{% endblock %}

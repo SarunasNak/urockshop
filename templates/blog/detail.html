@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} – Urock{% endblock %}
+{% block content %}
+<article>
+  <h1>{{ post.title }}</h1>
+  {% if post.cover %}<img src="{{ post.cover.url }}" alt="{{ post.title }}" style="max-width:100%;height:auto;margin:12px 0">{% endif %}
+  {% if post.excerpt %}<p><em>{{ post.excerpt }}</em></p>{% endif %}
+  <div>{{ post.body|linebreaks }}</div>
+</article>
+<p style="margin-top:16px;"><a href="{% url 'blog_list' %}">← Atgal į blogą</a></p>
+{% endblock %}

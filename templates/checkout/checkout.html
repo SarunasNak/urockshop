@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Apmokėjimas – Urock{% endblock %}
+
+{% block content %}
+<h1>Checkout</h1>
+
+{% if items %}
+  <h3>Krepšelio santrauka</h3>
+  <table>
+    <tr><th>Prekė</th><th>Kiekis</th><th>Kaina</th><th>Suma</th></tr>
+    {% for it in items %}
+      <tr>
+        <td>{{ it.variant.product.name }} ({{ it.variant.color }} {{ it.variant.size }})</td>
+        <td>{{ it.qty }}</td>
+        <td>{{ it.variant.price|floatformat:2 }} €</td>
+        <td>{{ it.line_total|floatformat:2 }} €</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">Krepšelis tuščias.</td></tr>
+    {% endfor %}
+  </table>
+  <p>Subtotal: {{ subtotal|floatformat:2 }} €</p>
+  <p>Pristatymas: {{ shipping|floatformat:2 }} €</p>
+  <p><strong>Iš viso: {{ total|floatformat:2 }} €</strong></p>
+{% endif %}
+
+<hr style="margin:16px 0;">
+
+<form method="post" novalidate>
+  {% csrf_token %}
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:720px;">
+    <label>Vardas {{ form.first_name }}</label>
+    <label>Pavardė {{ form.last_name }}</label>
+    <label style="grid-column:1/3;">El. paštas {{ form.email }}</label>
+    <label style="grid-column:1/3;">Adresas {{ form.address }}</label>
+    <label>Miestas {{ form.city }}</label>
+    <label>Pašto kodas {{ form.postal_code }}</label>
+  </div>
+
+  <fieldset style="margin:16px 0">
+    <legend>Apmokėjimas</legend>
+    <label>
+      <input type="radio" name="payment_method" value="cod"
+             {% if request.POST.payment_method %}{% if request.POST.payment_method == "cod" %}checked{% endif %}
+             {% else %}checked{% endif %}>
+      Apmokėsiu kurjeriui
+    </label><br>
+    <label>
+      <input type="radio" name="payment_method" value="paysera"
+             {% if request.POST.payment_method == "paysera" %}checked{% endif %}>
+      Paysera
+    </label>
+  </fieldset>
+
+  <div style="margin-top:12px;">
+    <button type="submit">Patvirtinti užsakymą</button>
+  </div>
+</form>
+{% endblock %}

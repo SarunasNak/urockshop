@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+
+# Virtualenv
+env/
+venv/
+ENV/
+.venv/
+
+# Django / DB
+*.sqlite3
+shop/db.sqlite3
+
+# Statiniai / Media
+staticfiles/
+media/
+
+# Node / FE
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Konfigai / slaptumai
+.env
+*.env
+.env.*
+*.log
+
+# IDE / Editor
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Testavimas / Coverage
+.pytest_cache/
+.coverage
+htmlcov/

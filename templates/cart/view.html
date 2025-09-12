@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Krepšelis – Urock{% endblock %}
+{% block content %}
+<h1>Krepšelis</h1>
+
+<table>
+  <thead>
+    <tr><th>Prekė</th><th>Kiekis</th><th>Kaina</th><th>Suma</th><th></th></tr>
+  </thead>
+  <tbody>
+  {% for it in items %}
+    <tr>
+      <td>
+        {{ it.variant.product.name }}
+        ({{ it.variant.color|default_if_none:"" }} {{ it.variant.size|default_if_none:"" }})
+      </td>
+      <td>
+        <form action="{% url 'cart_update' %}" method="post" style="display:inline">
+          {% csrf_token %}
+          <input type="hidden" name="variant_id" value="{{ it.variant.id }}">
+          <label class="sr-only" for="qty-{{ it.variant.id }}">Kiekis</label>
+          <input id="qty-{{ it.variant.id }}" type="number" name="qty"
+                 min="0" max="{{ it.variant.stock }}" step="1" value="{{ it.qty }}"
+                 inputmode="numeric" aria-label="Kiekis">
+          <button type="submit">Atnaujinti</button>
+        </form>
+      </td>
+      <td>{{ it.variant.price|floatformat:2 }} €</td>
+      <td>{{ it.line_total|floatformat:2 }} €</td>
+      <td>
+        <form action="{% url 'cart_remove' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="variant_id" value="{{ it.variant.id }}">
+          <button type="submit">Šalinti</button>
+        </form>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="5">Krepšelis tuščias</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<p><strong>Iš viso:</strong> {{ total|floatformat:2 }} €</p>
+
+{% if items %}
+  <a href="{% url 'checkout' %}">Tęsti apmokėjimą</a>
+{% else %}
+  <a href="{% url 'product_list' %}">Grįžti į parduotuvę</a>
+{% endif %}
+{% endblock %}

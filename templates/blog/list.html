@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Blogas – Urock{% endblock %}
+{% block content %}
+<h1>Blogas</h1>
+
+<form method="get" style="margin-bottom:12px">
+  <input type="text" name="q" value="{{ q }}" placeholder="Paieška įrašuose…">
+  <button>Ieškoti</button>
+</form>
+
+{% for p in page_obj %}
+  <article style="border:1px solid #eee;padding:12px;margin:12px 0;">
+    <h3 style="margin:0;">
+      <a href="{% url 'blog_detail' slug=p.slug %}">{{ p.title }}</a>
+    </h3>
+    {% if p.cover %}<img src="{{ p.cover.url }}" alt="{{ p.title }}" style="height:120px;margin:8px 0">{% endif %}
+    {% if p.excerpt %}<p>{{ p.excerpt }}</p>{% endif %}
+    <a href="{% url 'blog_detail' slug=p.slug %}">Skaityti →</a>
+  </article>
+{% empty %}
+  <p>Įrašų nėra.</p>
+{% endfor %}
+
+<div style="margin-top:12px;">
+  {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}">← Atgal</a>{% endif %}
+  <span> {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} </span>
+  {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}">Pirmyn →</a>{% endif %}
+</div>
+{% endblock %}

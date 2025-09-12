@@ -1,0 +1,28 @@
+Ačiū už užsakymą #{{ order.id }}{% if SITE and SITE.title %} – {{ SITE.title }}{% endif %}!
+
+Užsakymo santrauka
+-------------------
+Data: {{ order.created_at|date:"Y-m-d H:i" }}
+Būsena: {{ order.status }}
+Suma: {{ order.total }} {{ order.currency }}
+
+Prekės:
+{% if order.items.all %}
+{% for item in order.items.all %}
+- {{ item.product_name }} [{{ item.variant_sku }}] × {{ item.qty }} – {{ item.line_total }}
+{% endfor %}
+{% else %}
+(nėra prekių eilutėse)
+{% endif %}
+
+Pristatymas:
+{{ order.shipping_name|default:"" }}
+{{ order.shipping_address|default:"" }}
+
+Pastabos:
+{{ order.note|default:"-" }}
+
+Savo užsakymo patvirtinimo puslapis:
+{{ request.scheme|default:"https" }}://{{ request.get_host|default:"" }}/checkout/success/{{ order.id }}/
+
+Jei turite klausimų, rašykite: {{ ORDER_ADMIN_EMAIL|default:"info@urock.lt" }}

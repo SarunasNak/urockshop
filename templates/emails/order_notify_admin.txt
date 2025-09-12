@@ -1,0 +1,24 @@
+Naujas užsakymas #{{ order.id }}{% if SITE.title %} – {{ SITE.title }}{% endif %}
+
+Klientas: {{ order.email }}
+Suma: {{ order.total }} {{ order.currency }}
+Statusas: {{ order.status }}
+Sukurta: {{ order.created_at|date:"Y-m-d H:i" }}
+
+Prekės:
+{% if order.items.all %}
+{% for item in order.items.all %}
+- {{ item.product_name }} [{{ item.variant_sku }}] × {{ item.qty }} – {{ item.line_total }}
+{% endfor %}
+{% else %}
+(nėra prekių eilutėse)
+{% endif %}
+
+Pristatymas:
+{{ order.shipping_name|default:"" }}
+{{ order.shipping_address|default:"" }}
+
+Pastabos:
+{{ order.note|default:"-" }}
+
+Admin: /admin/  •  Kliento peržiūra: /checkout/success/{{ order.id }}/
