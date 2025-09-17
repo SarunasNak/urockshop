@@ -18,3 +18,7 @@ SECURE_HSTS_PRELOAD = False
 
 # Paprastai DEBUG=false ir staging'e, bet jei nori trumpam – per .env
 # DEBUG = os.getenv("DEBUG", "false").lower() == "true"
+
+# Staging: nesiunčiam tikrų laiškų
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "Urock Staging <no-reply@staging.urock.lt>"

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "checkout.apps.CheckoutConfig",
     "blog",
     "paysera",
+    "stripe_payments",
 ]
 INSTALLED_APPS += ["django.contrib.sitemaps"]
 
@@ -69,6 +70,7 @@ TEMPLATES = [{
             "django.contrib.messages.context_processors.messages",
             "cart.context_processors.cart_info",
             "pages.context_processors.site_settings",
+            "stripe_payments.context_processors.stripe_public_key",
         ],
     },
 }]
@@ -116,3 +118,11 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+#Stripe
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
+STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
+STRIPE_CURRENCY = os.getenv("STRIPE_CURRENCY", "eur")
+
+

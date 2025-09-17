@@ -4,6 +4,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from pages.views import HomeView, about_view
+from stripe_payments import views as stripe_views
 
 # SEO
 from pages.views_seo import robots_txt
@@ -35,7 +36,8 @@ urlpatterns = [
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
     path("paysera/", include("paysera.urls")),
 
-    path("fe/", TemplateView.as_view(template_name="fe/index.html"), name="fe-home"),
+    #Sripe
+    path("stripe/webhook/", stripe_views.stripe_webhook, name="stripe_webhook"),
 
 ]
 

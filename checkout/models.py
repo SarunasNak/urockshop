@@ -30,7 +30,9 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
-    payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES, default="cod")  # ← nauja
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES, default="cod")
+
+    stripe_pi_id = models.CharField(max_length=64, blank=True, null=True)
 
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
     total = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
