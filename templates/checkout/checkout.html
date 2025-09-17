@@ -27,7 +27,7 @@
 
 <hr style="margin:16px 0;">
 
-<form method="post" novalidate>
+<form id="checkout-form" method="post" novalidate>
   {% csrf_token %}
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:720px;">
     <label>Vardas {{ form.first_name }}</label>
@@ -40,21 +40,141 @@
 
   <fieldset style="margin:16px 0">
     <legend>Apmokėjimas</legend>
-    <label>
-      <input type="radio" name="payment_method" value="cod"
-             {% if request.POST.payment_method %}{% if request.POST.payment_method == "cod" %}checked{% endif %}
-             {% else %}checked{% endif %}>
-      Apmokėsiu kurjeriui
-    </label><br>
-    <label>
-      <input type="radio" name="payment_method" value="paysera"
-             {% if request.POST.payment_method == "paysera" %}checked{% endif %}>
-      Paysera
-    </label>
+
+    <div class="pay-grid">
+      <label class="pay-option">
+        <input type="radio" name="payment_method" value="cod"
+               {% if request.POST.payment_method %}{% if request.POST.payment_method == "cod" %}checked{% endif %}
+               {% else %}checked{% endif %}>
+        <span>🧾 Apmokėsiu kurjeriui</span>
+      </label>
+
+      <label class="pay-option">
+        <input type="radio" name="payment_method" value="paysera"
+               {% if request.POST.payment_method == "paysera" %}checked{% endif %}>
+        <span>🏦 Paysera</span>
+      </label>
+
+      <label class="pay-option">
+        <input type="radio" name="payment_method" value="stripe"
+               {% if request.POST.payment_method == "stripe" %}checked{% endif %}>
+        <span>💳 Mokėti kortele (Stripe)</span>
+      </label>
+    </div>
+
+    <!-- Stripe kortelės formos vieta (rodoma tik kai pasirinkta „stripe“) -->
+    <div id="stripe-card-box" style="display:none;margin-top:12px;">
+      <div id="card-element" style="padding:10px;border:1px solid #ddd;border-radius:8px;"></div>
+      <div id="card-errors" style="color:#b42318;margin-top:8px;"></div>
+    </div>
   </fieldset>
 
-  <div style="margin-top:12px;">
-    <button type="submit">Patvirtinti užsakymą</button>
+  <style>
+    .pay-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+      gap:12px;
+    }
+    .pay-option{
+      display:flex; align-items:center; gap:10px;
+      padding:12px; border:1px solid #ddd; border-radius:10px; cursor:pointer;
+      user-select:none; background:#fff;
+    }
+    .pay-option:hover{ border-color:#bbb; }
+    .pay-option input{ margin:0; }
+  </style>
+
+  <div style="margin-top:16px;">
+    <button id="checkout-submit"
+            type="submit"
+            style="padding:10px 16px;border:1px solid #222;border-radius:8px;background:#111;color:#fff;cursor:pointer;">
+      Patvirtinti užsakymą
+    </button>
   </div>
 </form>
+
+{# Jei šiame puslapyje turi 'order' – gali generuoti success URL, bet čia jo nenaudojam #}
+{% if order %}
+  {% url 'checkout_success' order_id=order.id as checkout_success_url %}
+{% endif %}
+
+<!-- Stripe JS -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  const stripe = Stripe("{{ STRIPE_PUBLISHABLE_KEY }}");
+  const elements = stripe.elements();
+  const card = elements.create('card', { hidePostalCode: true });
+  card.mount('#card-element');
+
+  const form = document.getElementById('checkout-form');
+  const btn = document.getElementById('checkout-submit');
+  const errorBox = document.getElementById('card-errors');
+
+  function getCookie(name){
+    const m = document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)');
+    return m ? m.pop() : '';
+  }
+  function selectedPaymentMethod(){
+    const r = document.querySelector('input[name="payment_method"]:checked');
+    return r ? r.value : "cod";
+  }
+  function toggleStripeBox(){
+    const box = document.getElementById('stripe-card-box');
+    if (box) box.style.display = (selectedPaymentMethod() === 'stripe') ? 'block' : 'none';
+  }
+  document.querySelectorAll('input[name="payment_method"]').forEach(r => r.addEventListener('change', toggleStripeBox));
+  toggleStripeBox();
+
+  form.addEventListener('submit', async (e) => {
+    if (selectedPaymentMethod() !== 'stripe') return; // COD/Paysera – paliekam serveriui
+    e.preventDefault();
+
+    errorBox.textContent = "";
+    const originalText = btn.textContent;
+    btn.disabled = true; btn.textContent = "Apdorojama…";
+
+    try {
+      // 1) Sukuriam Order serverio pusėje IR gaunam clientSecret (vienas kvietimas)
+      const formData = new FormData(form);
+      formData.set('payment_method', 'stripe');
+
+      const resp = await fetch("{% url 'checkout_create_order_api' %}", {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        body: formData
+      });
+
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok || !data.order_id){
+        throw new Error(data.error || `Nepavyko sukurti užsakymo (HTTP ${resp.status}).`);
+      }
+      const { order_id, clientSecret } = data;
+      if (!clientSecret){
+        throw new Error("Negautas clientSecret iš serverio.");
+      }
+
+      // 2) Patvirtinam kortelės mokėjimą
+      const result = await stripe.confirmCardPayment(clientSecret, { payment_method: { card } });
+
+      if (result.error){
+        errorBox.textContent = result.error.message || "Mokėjimas nepavyko. Patikrinkite kortelės duomenis.";
+        return;
+      }
+      if (!result.paymentIntent || result.paymentIntent.status !== "succeeded"){
+        errorBox.textContent = "Mokėjimas nepatvirtintas. Bandykite dar kartą.";
+        return;
+      }
+
+      // 3) Į sėkmės puslapį
+      window.location.href = "{% url 'checkout_success' order_id=0 %}".replace('/0/', '/' + order_id + '/');
+    } catch (err) {
+      console.error(err);
+      errorBox.textContent = err.message || "Netikėta klaida. Bandykite dar kartą.";
+    } finally {
+      btn.disabled = false; btn.textContent = originalText;
+    }
+  });
+</script>
+
 {% endblock %}

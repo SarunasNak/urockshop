@@ -3,8 +3,11 @@
 {% block title %}Užsakymas priimtas – Urock{% endblock %}
 
 {% block head_extra %}
+  {# Auto-refresh tik kai laukiama patvirtinimo #}
   {% if order.payment_method == "paysera" and order.status == "paysera_pending" %}
-    <meta http-equiv="refresh" content="4">
+    <meta http-equiv="refresh" content="6">
+  {% elif order.payment_method == "stripe" and order.status == "pending" %}
+    <meta http-equiv="refresh" content="6">
   {% endif %}
 {% endblock %}
 
@@ -17,7 +20,10 @@
 <h3>Užsakymo prekės</h3>
 <ul>
   {% for it in order.items.all %}
-    <li>{{ it.product_name }} ({{ it.variant_sku }}) — {{ it.qty }} vnt × {{ it.price|floatformat:2 }} € = {{ it.line_total|floatformat:2 }} €</li>
+    <li>
+      {{ it.product_name }} ({{ it.variant_sku }}) — {{ it.qty }} vnt ×
+      {{ it.price|floatformat:2 }} € = {{ it.line_total|floatformat:2 }} €
+    </li>
   {% empty %}
     <li>Prekių nėra.</li>
   {% endfor %}
@@ -25,19 +31,40 @@
 
 <h3>Apmokėjimo statusas</h3>
 
-{% if order.payment_method == "paysera" %}
+{# STRIPE #}
+{% if order.payment_method == "stripe" %}
   {% if order.status == "paid" %}
-    <p style="color: #1a7f37;">Apmokėjimas gautas ✅</p>
+    <p style="color:#1a7f37;">Mokėjimas gautas per Stripe ✅</p>
+  {% elif order.status == "pending" %}
+    <p>Laukiame Stripe mokėjimo patvirtinimo… Šis puslapis atsinaujins automatiškai.</p>
+    <p>Jei apmokėjimas nepavyko —
+      <a href="/checkout/">bandykite apmokėti dar kartą</a>.
+    </p>
+  {% elif order.status == "failed" %}
+    <p style="color:#b42318;">Stripe apmokėjimas nepavyko.</p>
+    <p><a href="/checkout/">Bandykite apmokėti dar kartą</a></p>
+  {% else %}
+    <p>Stripe būklė: {{ order.status }}</p>
+  {% endif %}
+
+{# PAYSERA #}
+{% elif order.payment_method == "paysera" %}
+  {% if order.status == "paid" %}
+    <p style="color:#1a7f37;">Apmokėjimas gautas per Paysera ✅</p>
   {% elif order.status == "paysera_pending" %}
-    <p>Laukiame apmokėjimo patvirtinimo…</p>
+    <p>Laukiame Paysera apmokėjimo patvirtinimo… Šis puslapis atsinaujins automatiškai.</p>
     <p><a href="{% url 'paysera_redirect' order_id=order.id %}">Bandykite apmokėti dar kartą per Paysera</a></p>
   {% elif order.status == "failed" %}
-    <p style="color:#b42318;">Apmokėjimas nepavyko.</p>
+    <p style="color:#b42318;">Paysera apmokėjimas nepavyko.</p>
     <p><a href="{% url 'paysera_redirect' order_id=order.id %}">Bandykite apmokėti dar kartą per Paysera</a></p>
+  {% else %}
+    <p>Paysera būklė: {{ order.status }}</p>
   {% endif %}
+
+{# COD #}
 {% else %}
   <p>Apmokėsite kurjeriui pristatymo metu (COD).</p>
 {% endif %}
 
-<p><a href="{% url 'product_list' %}">Grįžti į parduotuvę</a></p>
+<p style="margin-top:16px;"><a href="{% url 'product_list' %}">Grįžti į parduotuvę</a></p>
 {% endblock %}
