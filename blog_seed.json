@@ -1,0 +1,15 @@
+[
+{
+  "model": "blog.post",
+  "pk": 1,
+  "fields": {
+    "title": "Pirmas įrašas",
+    "slug": "pirmas-irasas",
+    "excerpt": "Trumpai apie mus",
+    "body": "Sveiki atvykę į blogą!",
+    "cover": "",
+    "is_published": true,
+    "published_at": "2025-08-30T17:02:36.284Z"
+  }
+}
+]

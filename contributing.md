@@ -1,7 +1,5 @@
 # Contributing gairės
 
----
-
 ## Kur ką keisti
 
 ### Frontend (FE)

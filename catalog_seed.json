@@ -1,0 +1,155 @@
+[
+{
+  "model": "catalog.category",
+  "pk": 1,
+  "fields": {
+    "name": "Hoodies",
+    "slug": "hoodies",
+    "parent": null
+  }
+},
+{
+  "model": "catalog.category",
+  "pk": 2,
+  "fields": {
+    "name": "T-Shirts",
+    "slug": "t-shirts",
+    "parent": null
+  }
+},
+{
+  "model": "catalog.category",
+  "pk": 3,
+  "fields": {
+    "name": "Test kategorija",
+    "slug": "test-kategorija",
+    "parent": null
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 1,
+  "fields": {
+    "name": "Unisex Hoodie",
+    "slug": "unisex-hoodie",
+    "category": 1,
+    "description": "Minkštas, šiltas, 80% medvilnės.",
+    "is_active": true,
+    "created_at": "2025-08-30T13:24:57.211Z"
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 2,
+  "fields": {
+    "name": "Classic T-Shirt",
+    "slug": "classic-t-shirt",
+    "category": 2,
+    "description": "100% medvilnė.",
+    "is_active": true,
+    "created_at": "2025-08-30T13:24:57.290Z"
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 3,
+  "fields": {
+    "name": "Test produktas",
+    "slug": "test-produktas",
+    "category": 3,
+    "description": "",
+    "is_active": true,
+    "created_at": "2025-09-05T13:46:33.512Z"
+  }
+},
+{
+  "model": "catalog.productimage",
+  "pk": 1,
+  "fields": {
+    "product": 2,
+    "image": "products/s-l1600_aZrAow8.webp",
+    "alt": "",
+    "sort": 0
+  }
+},
+{
+  "model": "catalog.productimage",
+  "pk": 2,
+  "fields": {
+    "product": 1,
+    "image": "products/s-l1600_4.webp",
+    "alt": "",
+    "sort": 0
+  }
+},
+{
+  "model": "catalog.variant",
+  "pk": 1,
+  "fields": {
+    "product": 1,
+    "sku": "HOOD-BLK-M",
+    "color": "black",
+    "size": "M",
+    "price": "39.99",
+    "compare_at_price": null,
+    "stock": 81,
+    "is_active": true
+  }
+},
+{
+  "model": "catalog.variant",
+  "pk": 2,
+  "fields": {
+    "product": 1,
+    "sku": "HOOD-GRY-L",
+    "color": "gray",
+    "size": "L",
+    "price": "44.99",
+    "compare_at_price": null,
+    "stock": 2,
+    "is_active": true
+  }
+},
+{
+  "model": "catalog.variant",
+  "pk": 3,
+  "fields": {
+    "product": 2,
+    "sku": "TEE-WHT-M",
+    "color": "white",
+    "size": "M",
+    "price": "9.99",
+    "compare_at_price": null,
+    "stock": 29,
+    "is_active": true
+  }
+},
+{
+  "model": "catalog.variant",
+  "pk": 4,
+  "fields": {
+    "product": 2,
+    "sku": "TEE-NVY-L",
+    "color": "navy",
+    "size": "L",
+    "price": "17.99",
+    "compare_at_price": "19.99",
+    "stock": 10,
+    "is_active": true
+  }
+},
+{
+  "model": "catalog.variant",
+  "pk": 5,
+  "fields": {
+    "product": 3,
+    "sku": "TEST-001",
+    "color": "Black",
+    "size": "M",
+    "price": "19.99",
+    "compare_at_price": null,
+    "stock": 10,
+    "is_active": true
+  }
+}
+]

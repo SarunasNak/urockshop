@@ -1,0 +1,28 @@
+[
+{
+  "model": "pages.sitesettings",
+  "pk": 1,
+  "fields": {
+    "site_name": "Urockas",
+    "logo": "",
+    "email": "",
+    "phone": "060067973",
+    "address": "",
+    "facebook": "",
+    "instagram": "",
+    "tiktok": "",
+    "footer_html": ""
+  }
+},
+{
+  "model": "pages.staticpage",
+  "pk": 1,
+  "fields": {
+    "slug": "about",
+    "title": "Apie mus",
+    "body": "Mūsų įmonei 15 metų.",
+    "hero": "",
+    "is_published": true
+  }
+}
+]
