@@ -26,24 +26,30 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 INSTALLED_APPS = [
+    # Django core
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",   # ↰ prie kitų contrib
+     "adminsortable2",
+
     # 3rd party
     "rest_framework",
     "django_filters",
-    # tavo app’ai
+
+    # Jūsų app'ai
     "catalog",
     "pages",
     "cart",
-    "checkout.apps.CheckoutConfig",
+    "checkout.apps.CheckoutConfig",  # jei turite AppConfig – puiku
     "blog",
     "paysera",
     "stripe_payments",
 ]
+
 INSTALLED_APPS += ["django.contrib.sitemaps"]
 
 MIDDLEWARE = [
@@ -124,5 +130,16 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 STRIPE_CURRENCY = os.getenv("STRIPE_CURRENCY", "eur")
+
+INSTALLED_APPS += ["django_ckeditor_5"]
+CKEDITOR_5_CONFIGS = {
+    "default": {
+        "toolbar": [
+            "heading", "|", "bold", "italic", "link", "blockQuote",
+            "bulletedList", "numberedList", "insertTable", "mediaEmbed",
+            "imageUpload", "undo", "redo",
+        ],
+    }
+}
 
 

@@ -91,6 +91,8 @@
   {% block content %}{% endblock %}
 </main>
 
+{# ⬇︎ ČIA – vieta footeriui. Kol kas paliekam minimalų fallback'ą. #}
+{% block footer %}
 <footer style="margin-top:32px;padding:16px;border-top:1px solid #eee;text-align:center">
   {% if site and site.footer_html %}
     {{ site.footer_html|safe }}
@@ -98,6 +100,7 @@
     <small>© {% firstof site.site_name 'Urock' %}</small>
   {% endif %}
 </footer>
+{% endblock %}
 
   </body>
 </html>

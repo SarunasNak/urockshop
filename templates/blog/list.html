@@ -1,29 +1,58 @@
 {% extends "base.html" %}
-{% block title %}Blogas – Urock{% endblock %}
 {% block content %}
-<h1>Blogas</h1>
 
-<form method="get" style="margin-bottom:12px">
-  <input type="text" name="q" value="{{ q }}" placeholder="Paieška įrašuose…">
-  <button>Ieškoti</button>
-</form>
+  {# Hero #}
+  {% if settings and settings.hero_title %}
+  <section class="mx-auto max-w-5xl px-4 py-8 text-center">
+    <h1 class="text-3xl font-serif">{{ settings.hero_title }}</h1>
+    {% if settings.hero_subtitle %}
+      <p class="mt-2 text-gray-600">{{ settings.hero_subtitle }}</p>
+    {% endif %}
+  </section>
+  {% endif %}
 
-{% for p in page_obj %}
-  <article style="border:1px solid #eee;padding:12px;margin:12px 0;">
-    <h3 style="margin:0;">
-      <a href="{% url 'blog_detail' slug=p.slug %}">{{ p.title }}</a>
-    </h3>
-    {% if p.cover %}<img src="{{ p.cover.url }}" alt="{{ p.title }}" style="height:120px;margin:8px 0">{% endif %}
-    {% if p.excerpt %}<p>{{ p.excerpt }}</p>{% endif %}
-    <a href="{% url 'blog_detail' slug=p.slug %}">Skaityti →</a>
-  </article>
-{% empty %}
-  <p>Įrašų nėra.</p>
-{% endfor %}
+  {# Bėganti prekių ženklų juosta #}
+  {% if brands %}
+  <section class="overflow-x-auto whitespace-nowrap py-3 opacity-80 text-sm">
+    {% for b in brands %} {{ b.name }} ·{% endfor %}
+  </section>
+  {% endif %}
 
-<div style="margin-top:12px;">
-  {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}">← Atgal</a>{% endif %}
-  <span> {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} </span>
-  {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}">Pirmyn →</a>{% endif %}
-</div>
+  {# Kortelių tinklelis (3 per eilę, vidurinė didesnė) #}
+  <section class="mx-auto max-w-6xl px-4 py-10">
+    <h2 class="text-2xl font-serif mb-6">MUST READ</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {% for post, variant in grid|slice:":6" %}
+        <article class="{% if variant == 'large' %}md:col-span-2 md:row-span-2{% endif %}">
+          <a href="#post-{{ post.slug }}">
+            {% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}" class="w-full h-auto">{% endif %}
+          </a>
+          <h3 class="mt-3">{{ post.title }}</h3>
+          <a class="underline text-sm" href="#post-{{ post.slug }}">Skaityti daugiau</a>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  {# Pilni straipsniai apačioje #}
+  <section class="mx-auto max-w-3xl px-4 pb-16">
+    {% for post in posts %}
+      <article id="post-{{ post.slug }}" class="mb-16">
+        {% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}" class="w-full h-auto mb-4">{% endif %}
+        <h2 class="text-2xl font-semibold mb-3">{{ post.title }}</h2>
+        <div class="prose">
+          {{ post.body|safe }}
+        </div>
+      </article>
+    {% endfor %}
+  </section>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (location.hash) {
+      const el = document.querySelector(location.hash);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  </script>
 {% endblock %}

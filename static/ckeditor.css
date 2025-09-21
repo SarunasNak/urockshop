@@ -1,0 +1,5 @@
+/* CKEditor turinio sritis admin'e */
+.ck.ck-editor__main .ck-content {
+  color: #000 !important;       /* juodas tekstas */
+  background: #fff !important;  /* baltas fonas (jei reikia) */
+}

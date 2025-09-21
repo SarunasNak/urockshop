@@ -3,11 +3,10 @@ from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator
-from django.db.models import Q, Prefetch
+from django.db.models import Q, Prefetch, Count
 from django.utils.html import strip_tags
 from django.utils.text import Truncator
-
-from .models import Product, Category, Variant, ProductImage
+from .models import Product, Category, Variant, ProductImage, Size
 
 
 # ----- Helperiai -------------------------------------------------------------
@@ -163,4 +162,45 @@ class ProductDetailView(View):
             "og_image": _abs_url(request, main_img) if main_img else None,
         }
         return render(request, self.template_name, ctx)
+
+
+#Dydziai
+def product_list(request):
+    qs = Product.objects.filter(is_published=True).select_related("size")
+
+    # visų dydžių sąrašas (filtrui ir tvarkai)
+    all_sizes = list(
+        Size.objects.filter(is_active=True).order_by("order", "label")
+    )
+    slug_chain = [s.slug for s in all_sizes]  # pvz.: ["s","m","l","xl","xxl","xxxl"]
+
+    # vartotojo pasirinktas dydis (?size=s)
+    selected = (request.GET.get("size") or "").strip().lower()
+
+    expanded = []
+    if selected and selected in slug_chain:
+        expanded.append(selected)
+        idx = slug_chain.index(selected)
+        # pridėk sekantį dydį, jei yra (pvz., S -> +M; L -> +XL; XXL -> +XXXL)
+        if idx + 1 < len(slug_chain):
+            expanded.append(slug_chain[idx + 1])
+
+        qs = qs.filter(size__slug__in=expanded)
+
+    # rikiavimas: pagal dydžio tvarką (kad pirmiau matytų pasirinktą, tada - sekantį)
+    qs = qs.order_by("size__order", "-published_at")
+
+    # dydžiai filtrui (su kiekiu)
+    sizes_for_filter = (
+        Size.objects.filter(is_active=True)
+        .annotate(num=Count("products", filter=Q(products__is_published=True)))
+        .order_by("order", "label")
+    )
+
+    return render(request, "catalog/product_list.html", {
+        "products": qs,
+        "sizes": sizes_for_filter,
+        "selected_size": selected,      # FE žinos kas pasirinkta
+        "expanded_sizes": expanded,     # pvz. ["l","xl"]
+    })
 
