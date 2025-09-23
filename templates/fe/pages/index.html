@@ -1,97 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Frontend Starter</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frontend Starter</title>
 
-  <!-- Tailwind CSS (CDN) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    /* Extend Tailwind with your custom config */
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: "#10241E",
-            secondary: "#151515",
-            error: "#FF2B2B",
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      /* Extend Tailwind with your custom config */
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#10241E",
+              secondary: "#151515",
+              error: "#FF2B2B",
+            },
           },
         },
-      },
+      };
+    </script>
 
-    }
-  </script>
-
-  <!-- Swiper CSS -->
-  <link
+    <!-- Swiper CSS -->
+    <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.css"
     />
-</head>
-<body class="font-sans bg-gray-50 text-gray-900">
-
-  <!-- Example Header -->
-  <header class="bg-primary text-white p-4">
-    <div class="container mx-auto flex justify-between items-center">
-      <h1 class="text-xl font-bold">My Starter</h1>
-      <button
-        x-data
-        @click="alert('Alpine.js is working!')"
-        class="bg-secondary text-white px-3 py-1 rounded">
-        Test Alpine
-      </button>
-    </div>
-  </header>
-
-  <!-- Swiper Example -->
-  <section class="container mx-auto my-8">
-    <div class="swiper">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide bg-red-300 p-10 text-center">Slide 1</div>
-        <div class="swiper-slide bg-green-300 p-10 text-center">Slide 2</div>
-        <div class="swiper-slide bg-blue-300 p-10 text-center">Slide 3</div>
+  </head>
+  <body class="font-sans bg-gray-50 text-gray-900">
+    <!-- Example Header -->
+    <header class="bg-primary text-white p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-xl font-bold">My Starter</h1>
+        <button
+          x-data
+          @click="alert('Alpine.js is working!')"
+          class="bg-secondary text-white px-3 py-1 rounded"
+        >
+          Test Alpine
+        </button>
       </div>
-      <!-- Add navigation -->
-      <div class="swiper-button-prev"></div>
-      <div class="swiper-button-next"></div>
-      <div class="swiper-pagination"></div>
-    </div>
-  </section>
+    </header>
 
-  <!-- Typography Example -->
-  <section class="container mx-auto my-8">
-    <article>
+    <!-- Swiper Example -->
+    <section class="container mx-auto my-8">
+      <div class="swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide bg-red-300 p-10 text-center">Slide 1</div>
+          <div class="swiper-slide bg-green-300 p-10 text-center">Slide 2</div>
+          <div class="swiper-slide bg-blue-300 p-10 text-center">Slide 3</div>
+        </div>
+        <!-- Add navigation -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </section>
+
+    <!-- Typography Example -->
+    <section class="container mx-auto my-8">
+      <article>
         <h2 class="text-2xl lg:text-3xl font-bold">Typography</h2>
         <p class="mt-2">This paragraph is styled with Tailwind.</p>
         <ul class="list-disc ml-5 mt-2">
-            <li>Bullet one</li>
-            <li>Bullet two</li>
+          <li>Bullet one</li>
+          <li>Bullet two</li>
         </ul>
-    </article>
-  </section>
+      </article>
+    </section>
 
-  <!-- Your custom JS -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      console.log("Vanilla JS is working!");
-    });
-  </script>
+    <!-- Your custom JS -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("Vanilla JS is working!");
+      });
+    </script>
 
-  <!-- Alpine.js -->
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <!-- Alpine.js -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
 
-  <!-- Swiper.js -->
-    
+    <!-- Swiper.js -->
+
     <script src="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.js"></script>
-  <script>
-    const swiper = new Swiper(".swiper", {
-      loop: true,
-      pagination: { el: ".swiper-pagination", clickable: true },
-      navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
-    });
-  </script>
-
-</body>
+    <script>
+      const swiper = new Swiper(".swiper", {
+        loop: true,
+        pagination: { el: ".swiper-pagination", clickable: true },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      });
+    </script>
+  </body>
 </html>
 <!-- trigger checks -->
