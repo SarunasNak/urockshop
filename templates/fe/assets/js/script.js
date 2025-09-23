@@ -15,9 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const swiper = new Swiper(".swiper", {
     loop: true,
     pagination: { el: ".swiper-pagination" },
-    navigation: { 
-      nextEl: ".swiper-button-next", 
-      prevEl: ".swiper-button-prev" 
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
     },
   });
 
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", function (e) {
       const href = this.getAttribute("href");
 
@@ -56,7 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (target) {
         e.preventDefault();
         const yOffset = 0; // adjust for header height if needed
-        const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        const y =
+          target.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({ top: y, behavior: "smooth" });
       }
     });

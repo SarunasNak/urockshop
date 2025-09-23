@@ -1,27 +1,70 @@
-/* style.css */
 @font-face {
-  font-family: 'Montserrat';
-  src: url('../fonts/monserrat/Montserrat-Regular.ttf') format('truetype');
+  font-family: "Montserrat";
+  src: url("../../../fe/assets/fonts/monserrat/montserrat-latin-400-normal.woff2")
+      format("woff2"),
+    url("../../../fe/assets/fonts/monserrat/Montserrat-Regular.ttf")
+      format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Montserrat';
-  src: url('../fonts/monserrat/Montserrat-Bold.ttf') format('truetype');
+  font-family: "Montserrat";
+  src: url("../../../fe/assets/fonts/monserrat/montserrat-latin-700-normal.woff2")
+      format("woff2"),
+    url("../../../fe/assets/fonts/monserrat/Montserrat-Bold.ttf")
+      format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
-/* Tailwind utilities will come from the CDN */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* inter-regular - latin */
+@font-face {
+  font-display: swap;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../../../fe/assets/fonts/inter/inter-v20-latin-regular.woff2")
+      format("woff2"),
+    url(../../../fe/assets/fonts/); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* inter-700 - latin */
+@font-face {
+  font-display: swap;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  src: url("../../../fe/assets/fonts/inter/inter-v20-latin-700.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
 
-/* Custom overrides */
-body {
-  
+/* playfair-display-regular - latin */
+@font-face {
+  font-display: swap;
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../../../fe/assets/fonts/playfair-display/playfair-display-v40-latin-regular.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* playfair-display-600 - latin */
+@font-face {
+  font-display: swap;
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 600;
+  src: url("../../../fe/assets/fonts/playfair-display/playfair-display-v40-latin-600.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* playfair-display-700 - latin */
+@font-face {
+  font-display: swap;
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 700;
+  src: url("../../../fe/assets/fonts/playfair-display/playfair-display-v40-latin-700.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 a {
   transition: all;
@@ -62,14 +105,14 @@ a {
 }
 
 .tw-button-bg-mrm {
-  background: url(../img/5e5f217e-b330-48a6-b404-876cd2993b82.png);
+  background: url(../../../fe/assets/img/marmuras_sviesiai_pilkas_minimal.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
 }
 
 .tw-button-bg-mrm:hover {
-  background: url(../img/marmuras_tamsiai_pilkas_minimal.png);
+  background: url(../../../fe/assets/img/marmuras_tamsiai_pilkas_minimal.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
