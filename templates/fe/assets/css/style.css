@@ -2,8 +2,7 @@
   font-family: "Montserrat";
   src: url("../fonts/monserrat/montserrat-latin-400-normal.woff2")
       format("woff2"),
-    url("../fonts/monserrat/Montserrat-Regular.ttf")
-      format("truetype");
+    url("../fonts/monserrat/Montserrat-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -13,8 +12,7 @@
   font-family: "Montserrat";
   src: url("../fonts/monserrat/montserrat-latin-700-normal.woff2")
       format("woff2"),
-    url("../fonts/monserrat/Montserrat-Bold.ttf")
-      format("truetype");
+    url("../fonts/monserrat/Montserrat-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -25,8 +23,7 @@
   font-family: "Inter";
   font-style: normal;
   font-weight: 400;
-  src: url("../fonts/inter/inter-v20-latin-regular.woff2")
-      format("woff2"),
+  src: url("../fonts/inter/inter-v20-latin-regular.woff2") format("woff2"),
     url(../fonts/); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 /* inter-700 - latin */
@@ -35,8 +32,7 @@
   font-family: "Inter";
   font-style: normal;
   font-weight: 700;
-  src: url("../fonts/inter/inter-v20-latin-700.woff2")
-    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url("../fonts/inter/inter-v20-latin-700.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
 /* playfair-display-regular - latin */
@@ -105,14 +101,14 @@ a {
 }
 
 .tw-button-bg-mrm {
-  background: url(../img/marmuras_sviesiai_pilkas_minimal.png);
+  background: url(../img/marmuras_sviesiai_pilkas_minimal.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
 }
 
 .tw-button-bg-mrm:hover {
-  background: url(../img/marmuras_tamsiai_pilkas_minimal.png);
+  background: url(../img/marmuras_tamsiai_pilkas_minimal.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" x-data>
+<html lang="lt" x-data>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Urockshop Frontend</title>
+    <title>Titulinis</title>
 
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -90,7 +90,9 @@
         </div>
       </div>
       <div class="container">
-        <div class="flex items-center justify-between py-3 md:pt-3 md:pb-2">
+        <div
+          class="flex items-center justify-between py-[6px] md:pt-3 md:pb-2 relative"
+        >
           <!-- Left Nav -->
           <nav class="hidden md:flex space-x-2 lg:space-x-5 text-[13px]">
             <a
@@ -111,8 +113,13 @@
           </nav>
 
           <!-- Logo -->
-          <div class="absolute left-1/2 transform -translate-x-1/2">
-            <a class="h-[50px] md:h-[70px] inline-block" href="#">
+          <div
+            class="absolute left-1/2 -translate-x-1/2 top-[-17%] md:top-[-7%]"
+          >
+            <a
+              class="h-[52px] max-w-[125px] md:h-[70px] md:max-w-[180px] inline-block"
+              href="#"
+            >
               <img
                 class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full"
                 src="/fe/assets/img/logo-urock.svg"
@@ -200,7 +207,7 @@
     <main>
       <!-- Intro Section -->
       <section
-        class="flex items-center justify-center min-h-screen py-12 px-5 text-center"
+        class="flex items-center justify-center md:min-h-[562px] py-12 px-5 text-center"
       >
         <div class="max-w-3xl">
           <!-- Paragraph -->
@@ -212,7 +219,7 @@
 
           <!-- Title -->
           <h1
-            class="text-[24px] text-brand-maroon md:text-[40px] font-serif font-normal md:font-bold mb-8"
+            class="text-[24px] max-w-[251px] md:max-w-full text-brand-maroon md:text-[40px] font-serif font-normal md:font-bold mb-8"
           >
             VYRIŠKŲ DRABUŽIŲ IR ĮVAIZDŽIO PARTNERIS
           </h1>
@@ -283,13 +290,16 @@
         />
       </section>
     </main>
-    <footer class="pb-4 pt-12 md:py-10 bg-brand-beige relative">
+    <footer class="pb-4 pt-8 md:py-10 bg-brand-beige relative">
       <div class="container">
-        <div class="relative h-[54px] md:h-[90px] pt-6 pb-2">
+        <div class="relative h-[80px] md:h-[90px] pt-6 pb-2">
           <div
             class="absolute left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2"
           >
-            <a class="h-[100px] md:h-[120px] inline-block" href="#top">
+            <a
+              class="h-[80px] w-[180px] md:h-[120px] md:w-[300px] inline-block"
+              href="#top"
+            >
               <img
                 class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full invert brightness-0"
                 src="/fe/assets/img/logo-urock.svg"
@@ -301,7 +311,9 @@
         <div
           class="flex flex-col md:flex-row justify-center md:justify-between text-center text-white text-[15px] min-h-[319px] md:pt-8 lg:px-12"
         >
-          <div class="md:max-w-[249px] order-2 md:order-1 mb-4 md:mb-0">
+          <div
+            class="md:max-w-[249px] order-2 md:order-1 mb-4 md:mb-0 leading-[1.7]"
+          >
             <p>ĮMONĖS KONTAKTAI</p>
             <p>UAB UROCK</p>
             <p>Įmonės kodas 302923012</p>
@@ -333,7 +345,7 @@
               <span> 2025 </span>
             </div>
           </div>
-          <div class="md:max-w-[249px] order-1 lg:order-2">
+          <div class="md:max-w-[249px] order-1 lg:order-2 leading-[1.7]">
             <p>SAVININKO KONTAKTAI</p>
             <p>Šarūnas Nakvosas</p>
             <a class="block hover:text-[#757171]" href="mailto:info@urock.lt"
@@ -404,7 +416,7 @@
             </div>
             <div class="mt-8 block md:hidden">
               <svg
-                class="inline-block"
+                class="inline-block relative top-[-1px]"
                 xmlns="http://www.w3.org/2000/svg"
                 width="14"
                 height="14"
