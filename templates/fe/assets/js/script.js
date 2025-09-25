@@ -12,14 +12,7 @@ document.addEventListener("alpine:init", () => {
 
 // Example: Initialize Swiper
 document.addEventListener("DOMContentLoaded", () => {
-  const swiper = new Swiper(".swiper", {
-    loop: true,
-    pagination: { el: ".swiper-pagination" },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-  });
+  const productSliderElement = document.querySelectorAll(".product-slider");
 
   // Example: Headroom
   const header = document.querySelector(".header");
@@ -35,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
         pinned: "header--pinned",
         unpinned: "header--unpinned",
         top: "header--top",
-        notTop: "header--scrolled border-brand-gray-medium",
+        notTop: "header--scrolled",
         bottom: "header--bottom",
         notBottom: "header--not-bottom",
       },
@@ -62,4 +55,34 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+  // Product slider
+  if (productSliderElement.length) {
+    const productSlider = new Swiper(".product-slider", {
+      slidesPerView: 1,
+      spaceBetween: 0,
+      loop: false,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {
+        // md and below (768px and smaller)
+        0: {
+          slidesPerView: 1.5,
+          spaceBetween: 10,
+          navigation: false, // disables navigation on small screens
+        },
+        // md and above (>= 768px)
+        768: {
+          slidesPerView: 1,
+          spaceBetween: 0,
+          navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          },
+        },
+      },
+    });
+  }
 });

@@ -113,7 +113,7 @@ a {
   background-repeat: no-repeat;
   background-position: center;
 }
-
+ß
 /* Preloader container */
 #preloader {
   position: fixed;
@@ -126,4 +126,43 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+/* swiper controls */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  display: none;
+}
+.swiper-controls .swiper-button-prev,
+.swiper-controls .swiper-button-next {
+  margin: 0;
+  left: auto;
+}
+.swiper {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.swiper.swiper-initialized {
+  visibility: visible;
+  opacity: 1;
+}
+.our-services-swiper .swiper-slide,
+.news-slider .swiper-slide {
+  transition: border 0.3s;
+}
+
+/* Prevent text selection */
+.swiper-controls .swiper-slide {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+.swiper-controls .swiper-button-prev.swiper-button-disabled,
+.swiper-controls .swiper-button-next.swiper-button-disabled {
+  opacity: 0.5;
+}
+.ck-content p {
+  margin-bottom: 20px;
 }
