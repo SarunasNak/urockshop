@@ -1,0 +1,168 @@
+@font-face {
+  font-family: "Montserrat";
+  src: url("../fonts/monserrat/montserrat-latin-400-normal.woff2")
+      format("woff2"),
+    url("../fonts/monserrat/Montserrat-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("../fonts/monserrat/montserrat-latin-700-normal.woff2")
+      format("woff2"),
+    url("../fonts/monserrat/Montserrat-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+/* inter-regular - latin */
+@font-face {
+  font-display: swap;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/inter/inter-v20-latin-regular.woff2") format("woff2"),
+    url(../fonts/); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* inter-700 - latin */
+@font-face {
+  font-display: swap;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  src: url("../fonts/inter/inter-v20-latin-700.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* playfair-display-regular - latin */
+@font-face {
+  font-display: swap;
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/playfair-display/playfair-display-v40-latin-regular.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* playfair-display-600 - latin */
+@font-face {
+  font-display: swap;
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 600;
+  src: url("../fonts/playfair-display/playfair-display-v40-latin-600.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* playfair-display-700 - latin */
+@font-face {
+  font-display: swap;
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 700;
+  src: url("../fonts/playfair-display/playfair-display-v40-latin-700.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+a {
+  transition: all;
+  transition-duration: 0.3s;
+}
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition: 0.3s;
+}
+.header--unpinned {
+  transform: translateY(-100%);
+}
+.header--pinned {
+  transform: translateY(0);
+}
+
+/* Infinite marquee */
+.marquee {
+  display: flex;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.marquee span {
+  display: inline-block;
+  padding-left: 100%;
+  animation: marquee 15s linear infinite;
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.tw-button-bg-mrm {
+  background: url(../img/marmuras_sviesiai_pilkas_minimal.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.tw-button-bg-mrm:hover {
+  background: url(../img/marmuras_tamsiai_pilkas_minimal.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+ß
+/* Preloader container */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* swiper controls */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  display: none;
+}
+.swiper-controls .swiper-button-prev,
+.swiper-controls .swiper-button-next {
+  margin: 0;
+  left: auto;
+}
+.swiper {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.swiper.swiper-initialized {
+  visibility: visible;
+  opacity: 1;
+}
+.our-services-swiper .swiper-slide,
+.news-slider .swiper-slide {
+  transition: border 0.3s;
+}
+
+/* Prevent text selection */
+.swiper-controls .swiper-slide {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+.swiper-controls .swiper-button-prev.swiper-button-disabled,
+.swiper-controls .swiper-button-next.swiper-button-disabled {
+  opacity: 0.5;
+}
+.ck-content p {
+  margin-bottom: 20px;
+}

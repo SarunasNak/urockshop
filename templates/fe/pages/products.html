@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="lt" x-data>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Produktai</title>
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind config -->
+    <script>
+      tailwind.config = {
+        theme: {
+          container: {
+            center: true,
+            padding: "5px",
+            screens: {
+              sm: "600px",
+              md: "728px",
+              lg: "984px",
+              xl: "1200px",
+              "2xl": "1440px",
+            },
+          },
+          extend: {
+            colors: {
+              "brand-beige": "#9E9288",
+              "brand-maroon": "#6D1F36",
+              "brand-gray-light": "#D9D9D9",
+              "brand-gray-medium": "#B7B1B1",
+            },
+            fontFamily: {
+              sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+              serif: ["Playfair Display", "ui-serif", "Georgia", "serif"],
+              mont: ["Montserrat", "ui-sans-serif", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Alpine.js -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.0/dist/cdn.min.js"
+    ></script>
+
+    <!-- Swiper.js -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.js"></script>
+
+    <!-- Headroom.js -->
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/headroom.min.js"
+    ></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="/fe/assets/css/style.css" />
+  </head>
+  <body id="top" class="mt-[68px] md:mt-[92.5px] font-mont">
+    <div id="preloader"></div>
+    <!-- Navbar -->
+    <header
+      class="header bg-white z-20 transition-all duration-300"
+      x-data="{ open: false }"
+    >
+      <!-- Running text -->
+      <div
+        class="bg-brand-beige text-white text-[10px] md:text-xs py-2 font-serif"
+      >
+        <div class="marquee">
+          <span>Konfidencialus drabužių pristatymas</span>
+        </div>
+      </div>
+      <div class="container">
+        <div
+          class="flex items-center justify-between py-[6px] md:pt-3 md:pb-2 relative"
+        >
+          <!-- Left Nav -->
+          <nav class="hidden md:flex space-x-2 lg:space-x-5 text-[13px]">
+            <a
+              href="#"
+              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              >APIE MUS</a
+            >
+            <a
+              href="#"
+              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              >BLOGAS</a
+            >
+            <a
+              href="#"
+              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              >KATALOGAS</a
+            >
+          </nav>
+
+          <!-- Logo -->
+          <div
+            class="absolute left-1/2 -translate-x-1/2 top-[-17%] md:top-[-7%]"
+          >
+            <a
+              class="h-[52px] max-w-[125px] md:h-[70px] md:max-w-[180px] inline-block"
+              href="#"
+            >
+              <img
+                class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full"
+                src="/fe/assets/img/logo-urock.svg"
+                alt=""
+              />
+            </a>
+          </div>
+
+          <!-- Cart + Burger -->
+          <div
+            class="flex items-center justify-between w-full md:w-auto space-x-4"
+          >
+            <!-- Burger (mobile only) -->
+            <button @click="open = !open" class="md:hidden focus:outline-none">
+              <svg
+                x-show="!open"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+              <svg
+                x-show="open"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            <!-- Cart -->
+            <a href="#" class="relative flex items-center justify-center">
+              <img
+                class="max-w-[18px] md:max-w-[25px]"
+                src="/fe/assets/img/krepselis-ikona.png"
+                alt=""
+              />
+              <span class="text-[15px] rounded-full px-1 inline-block"
+                >(0)</span
+              >
+            </a>
+          </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div
+          x-show="open"
+          x-transition
+          class="md:hidden flex flex-col items-center space-y-1 py-12 text-sm"
+        >
+          <a
+            href="#"
+            class="transition-all duration-300 hover:text-brand-beige p-5"
+            >APIE MUS</a
+          >
+          <a
+            href="#"
+            class="transition-all duration-300 hover:text-brand-beige p-5"
+            >BLOGAS</a
+          >
+          <a
+            href="#"
+            class="transition-all duration-300 hover:text-brand-beige p-5"
+            >KATALOGAS</a
+          >
+        </div>
+      </div>
+    </header>
+    <main>
+      <section class="py-[50px]">
+        <div class="container">
+          <!-- Left Nav -->
+          <ul
+            class="flex md:hidden space-x-2 lg:space-x-5 text-[10px] justify-center mb-[50px]"
+          >
+            <li>
+              <a
+                href="#"
+                class="transition-all duration-300 text-brand-beige hover:text-black p-[10px]"
+                >APIE MUS</a
+              >
+              /
+            </li>
+            <li>
+              <a
+                href="#"
+                class="transition-all duration-300 text-brand-beige hover:text-black p-[10px]"
+                >BLOGAS</a
+              >
+            </li>
+          </ul>
+          <div class="container mb-[50px] relative">
+            <div class="absolute right-0 hidden lg:block font-serif">
+              <p class="mb-2 text-brand-beige text-[10px]">
+                *Čia rasite tik dalį mūsų siūlomų drabužių.
+              </p>
+              <a
+                href="#"
+                class="text-[10px] font-bold hover:text-brand-beige hover:underline"
+              >
+                Noriu daugiau.
+              </a>
+            </div>
+            <div
+              class="flex justify-center items-center px-4 text-[14px] md:text-[20px] space-x-4"
+            >
+              <div
+                x-data="{ open: false, selected: 'Dydis', active: false }"
+                class="relative w-[120px] md:w-[180px]"
+              >
+                <!-- Dropdown button -->
+                <button
+                  @click="open = !open; active = true"
+                  @mouseenter="active = true"
+                  @mouseleave="if (!open && selected === 'Dydis') active = false"
+                  class="w-full flex items-center justify-center border-b border-brand-beige px-3 py-2 bg-white pb-2 md:pb-6 transition-all duration-300"
+                  :class="{ 'text-black border-black': active, 'text-brand-beige': !active }"
+                >
+                  <div class="flex items-center space-x-2">
+                    <!-- Search Icon -->
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="30"
+                      height="30"
+                      viewBox="0 0 30 30"
+                      fill="none"
+                    >
+                      <path
+                        class="transition-all duration-300"
+                        d="M24.356 25.1927L16.5285 17.3652C15.9035 17.8977 15.1848 18.3098 14.3723 18.6014C13.5598 18.8931 12.7431 19.0389 11.9223 19.0389C9.9206 19.0389 8.22643 18.346 6.83977 16.9602C5.4531 15.5743 4.75977 13.8806 4.75977 11.8789C4.75977 9.87726 5.45227 8.18268 6.83727 6.79518C8.22227 5.40768 9.9156 4.7131 11.9173 4.71143C13.9189 4.70976 15.6139 5.4031 17.0023 6.79143C18.3906 8.17976 19.0848 9.87435 19.0848 11.8752C19.0848 12.7435 18.931 13.5839 18.6235 14.3964C18.316 15.2089 17.9118 15.9039 17.411 16.4814L25.2385 24.3077L24.356 25.1927ZM11.9235 17.7877C13.5818 17.7877 14.9818 17.2168 16.1235 16.0752C17.2652 14.9335 17.836 13.5331 17.836 11.8739C17.836 10.2148 17.2652 8.81476 16.1235 7.67393C14.9818 6.5331 13.5818 5.96226 11.9235 5.96143C10.2652 5.9606 8.86477 6.53143 7.72227 7.67393C6.57977 8.81643 6.00893 10.2164 6.00977 11.8739C6.0106 13.5314 6.58143 14.9314 7.72227 16.0739C8.8631 17.2164 10.2631 17.7873 11.9223 17.7864"
+                        :class="{ 'fill-black': active, 'fill-[#9E9288]': !active }"
+                      />
+                    </svg>
+                    <span x-text="selected"></span>
+                  </div>
+                </button>
+                <!-- Dropdown list -->
+                <div
+                  x-show="open"
+                  @click.away="open = false"
+                  class="absolute w-full bg-white shadow-lg z-10"
+                >
+                  <ul class="max-h-[400px] overflow-y-auto mt-4">
+                    <template
+                      x-for="option in ['S', 'M', 'L', 'XL', 'XXL', 'XXXL']"
+                      :key="option"
+                    >
+                      <li>
+                        <button
+                          @click="selected = option; open = false; active = true"
+                          class="block w-full text-center px-2 py-2 hover:text-brand-beige uppercase mb-2 md:mb-[17px] transition-all duration-300"
+                          x-text="option"
+                        ></button>
+                      </li>
+                    </template>
+                  </ul>
+                </div>
+              </div>
+
+              <div
+                x-data="{ open: false, selected: 'Visi', active: false }"
+                class="relative w-[120px] md:w-[180px]"
+              >
+                <!-- Dropdown button -->
+                <button
+                  @click="open = !open; active = true"
+                  @mouseenter="active = true"
+                  @mouseleave="if (!open && selected === 'Visi') active = false"
+                  class="w-full flex items-center justify-center border-b border-brand-beige px-3 py-2 bg-white pb-2 md:pb-6 transition-all duration-300"
+                  :class="{ 'text-black border-black': active, 'text-brand-beige': !active }"
+                >
+                  <div class="flex items-center space-x-2">
+                    <!-- Search Icon -->
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="30"
+                      height="30"
+                      viewBox="0 0 30 30"
+                      fill="none"
+                    >
+                      <path
+                        class="transition-all duration-300"
+                        d="M24.356 25.1927L16.5285 17.3652C15.9035 17.8977 15.1848 18.3098 14.3723 18.6014C13.5598 18.8931 12.7431 19.0389 11.9223 19.0389C9.9206 19.0389 8.22643 18.346 6.83977 16.9602C5.4531 15.5743 4.75977 13.8806 4.75977 11.8789C4.75977 9.87726 5.45227 8.18268 6.83727 6.79518C8.22227 5.40768 9.9156 4.7131 11.9173 4.71143C13.9189 4.70976 15.6139 5.4031 17.0023 6.79143C18.3906 8.17976 19.0848 9.87435 19.0848 11.8752C19.0848 12.7435 18.931 13.5839 18.6235 14.3964C18.316 15.2089 17.9118 15.9039 17.411 16.4814L25.2385 24.3077L24.356 25.1927ZM11.9235 17.7877C13.5818 17.7877 14.9818 17.2168 16.1235 16.0752C17.2652 14.9335 17.836 13.5331 17.836 11.8739C17.836 10.2148 17.2652 8.81476 16.1235 7.67393C14.9818 6.5331 13.5818 5.96226 11.9235 5.96143C10.2652 5.9606 8.86477 6.53143 7.72227 7.67393C6.57977 8.81643 6.00893 10.2164 6.00977 11.8739C6.0106 13.5314 6.58143 14.9314 7.72227 16.0739C8.8631 17.2164 10.2631 17.7873 11.9223 17.7864"
+                        :class="{ 'fill-black': active, 'fill-[#9E9288]': !active }"
+                      />
+                    </svg>
+                    <span x-text="selected"></span>
+                  </div>
+                </button>
+
+                <!-- Dropdown list -->
+                <div
+                  x-show="open"
+                  @click.away="open = false"
+                  class="absolute w-full bg-white shadow-lg z-10"
+                >
+                  <ul class="max-h-[400px] overflow-y-auto mt-4">
+                    <template
+                      x-for="option in ['Marškiniai', 'Švarkai', 'Paltai', 'Striukės', 'Megztiniai', 'Kelnės']"
+                      :key="option"
+                    >
+                      <li>
+                        <button
+                          @click="selected = option; open = false; active = true"
+                          class="block w-full text-center px-2 py-2 hover:text-brand-beige uppercase mb-2 md:mb-[17px] transition-all duration-300"
+                          x-text="option"
+                        ></button>
+                      </li>
+                    </template>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="mx-auto lg:max-w-[1080px] 2xl:max-w-[1440px] grid grid-cols-2 md:grid-cols-3 gap-x-[5px] md:gap-x-20 gap-y-5 md:gap-y-[50px]"
+          >
+            <div>
+              <a href="#" class="relative block w-full group">
+                <!-- First image (default) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  src="/fe/assets/img/dzinsai-melyni-aa.jpg"
+                  alt=""
+                />
+
+                <!-- Second image (shown on hover) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  src="/fe/assets/img/dzinsai-melyni-a.jpg"
+                  alt=""
+                />
+              </a>
+              <div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1"
+                  >
+                    Off-White
+                  </div>
+                  <div
+                    class="text-[12px] md:text-[13px] flex items-center line-through"
+                  >
+                    425
+                    <svg
+                      class="ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="12"
+                      viewBox="0 0 13 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-white bg-brand-maroon flex">
+                    <span
+                      class="text-[12px] md:text-[13px] flex items-center mr-2"
+                    >
+                      -50%
+                    </span>
+                    <span class="text-[12px] md:text-[13px] flex items-center">
+                      212.5
+                      <svg
+                        class="ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="12"
+                        viewBox="0 0 13 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <a href="#" class="relative block w-full group">
+                <!-- First image (default) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  src="/fe/assets/img/etro-svarkas-aa.jpg"
+                  alt=""
+                />
+
+                <!-- Second image (shown on hover) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  src="/fe/assets/img/etro-svarkas-a.jpg"
+                  alt=""
+                />
+              </a>
+              <div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1"
+                  >
+                    Off-White
+                  </div>
+                  <div
+                    class="text-[12px] md:text-[13px] flex items-center line-through"
+                  >
+                    600
+                    <svg
+                      class="ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="12"
+                      viewBox="0 0 13 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-white bg-brand-maroon flex">
+                    <span
+                      class="text-[12px] md:text-[13px] flex items-center mr-2"
+                    >
+                      -39%
+                    </span>
+                    <span class="text-[12px] md:text-[13px] flex items-center">
+                      366
+                      <svg
+                        class="ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="12"
+                        viewBox="0 0 13 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <a href="#" class="relative block w-full group">
+                <!-- First image (default) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  src="/fe/assets/img/etro-svarkas-aa.jpg"
+                  alt=""
+                />
+
+                <!-- Second image (shown on hover) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  src="/fe/assets/img/etro-svarkas-a.jpg"
+                  alt=""
+                />
+              </a>
+              <div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1"
+                  >
+                    Off-White
+                  </div>
+                  <!-- class line-trought needs to be added if has discount -->
+                  <div class="text-[12px] md:text-[13px] flex items-center">
+                    600
+                    <svg
+                      class="ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="12"
+                      viewBox="0 0 13 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <!-- best way I think just not to render this part if there is no discont -->
+                  <!-- <div class="text-white bg-brand-maroon flex">
+                    <span class="text-[12px] md:text-[13px] flex items-center mr-2">
+                      -39%
+                    </span>
+                    <span class="text-[12px] md:text-[13px] flex items-center">
+                      366
+                      <svg
+                        class="ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="12"
+                        viewBox="0 0 13 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+            <div>
+              <a href="#" class="relative block w-full group">
+                <!-- First image (default) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  src="/fe/assets/img/dzinsai-melyni-aa.jpg"
+                  alt=""
+                />
+
+                <!-- Second image (shown on hover) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  src="/fe/assets/img/dzinsai-melyni-a.jpg"
+                  alt=""
+                />
+              </a>
+              <div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1"
+                  >
+                    Off-White
+                  </div>
+                  <div
+                    class="text-[12px] md:text-[13px] flex items-center line-through"
+                  >
+                    425
+                    <svg
+                      class="ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="12"
+                      viewBox="0 0 13 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-white bg-brand-maroon flex">
+                    <span
+                      class="text-[12px] md:text-[13px] flex items-center mr-2"
+                    >
+                      -50%
+                    </span>
+                    <span class="text-[12px] md:text-[13px] flex items-center">
+                      212.5
+                      <svg
+                        class="ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="12"
+                        viewBox="0 0 13 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <a href="#" class="relative block w-full group">
+                <!-- First image (default) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  src="/fe/assets/img/etro-svarkas-aa.jpg"
+                  alt=""
+                />
+
+                <!-- Second image (shown on hover) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  src="/fe/assets/img/etro-svarkas-a.jpg"
+                  alt=""
+                />
+              </a>
+              <div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1"
+                  >
+                    Off-White
+                  </div>
+                  <div
+                    class="text-[12px] md:text-[13px] flex items-center line-through"
+                  >
+                    600
+                    <svg
+                      class="ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="12"
+                      viewBox="0 0 13 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-white bg-brand-maroon flex">
+                    <span
+                      class="text-[12px] md:text-[13px] flex items-center mr-2"
+                    >
+                      -39%
+                    </span>
+                    <span class="text-[12px] md:text-[13px] flex items-center">
+                      366
+                      <svg
+                        class="ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="12"
+                        viewBox="0 0 13 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <a href="#" class="relative block w-full group">
+                <!-- First image (default) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  src="/fe/assets/img/etro-svarkas-aa.jpg"
+                  alt=""
+                />
+
+                <!-- Second image (shown on hover) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  src="/fe/assets/img/etro-svarkas-a.jpg"
+                  alt=""
+                />
+              </a>
+              <div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1"
+                  >
+                    Off-White
+                  </div>
+                  <!-- class line-trought needs to be added if has discount -->
+                  <div class="text-[12px] md:text-[13px] flex items-center">
+                    600
+                    <svg
+                      class="ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="12"
+                      viewBox="0 0 13 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <!-- best way I think just not to render this part if there is no discont -->
+                  <!-- <div class="text-white bg-brand-maroon flex">
+                    <span class="text-[12px] md:text-[13px] flex items-center mr-2">
+                      -39%
+                    </span>
+                    <span class="text-[12px] md:text-[13px] flex items-center">
+                      366
+                      <svg
+                        class="ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="12"
+                        viewBox="0 0 13 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+            <div>
+              <a href="#" class="relative block w-full group">
+                <!-- First image (default) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  src="/fe/assets/img/dzinsai-melyni-aa.jpg"
+                  alt=""
+                />
+
+                <!-- Second image (shown on hover) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  src="/fe/assets/img/dzinsai-melyni-a.jpg"
+                  alt=""
+                />
+              </a>
+              <div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1"
+                  >
+                    Off-White
+                  </div>
+                  <div
+                    class="text-[12px] md:text-[13px] flex items-center line-through"
+                  >
+                    425
+                    <svg
+                      class="ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="12"
+                      viewBox="0 0 13 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-white bg-brand-maroon flex">
+                    <span
+                      class="text-[12px] md:text-[13px] flex items-center mr-2"
+                    >
+                      -50%
+                    </span>
+                    <span class="text-[12px] md:text-[13px] flex items-center">
+                      212.5
+                      <svg
+                        class="ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="12"
+                        viewBox="0 0 13 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <a href="#" class="relative block w-full group">
+                <!-- First image (default) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  src="/fe/assets/img/etro-svarkas-aa.jpg"
+                  alt=""
+                />
+
+                <!-- Second image (shown on hover) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  src="/fe/assets/img/etro-svarkas-a.jpg"
+                  alt=""
+                />
+              </a>
+              <div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1"
+                  >
+                    Off-White
+                  </div>
+                  <!-- Jei parduota rodom sita-->
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1 uppercase"
+                  >
+                    Parduota
+                  </div>
+                  <!-- Jei parduota nerodom sito-->
+                  <!-- <div
+                    class="text-[12px] md:text-[13px] flex items-center line-through"
+                  >
+                    600
+                    <svg
+                      class="ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="12"
+                      viewBox="0 0 13 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div> -->
+                </div>
+                <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-white bg-brand-maroon flex">
+                    <!-- Jei parduota nerodom sito-->
+                    <!-- <span
+                      class="text-[12px] md:text-[13px] flex items-center mr-2"
+                    >
+                      -39%
+                    </span>
+                    <span class="text-[12px] md:text-[13px] flex items-center">
+                      366
+                      <svg
+                        class="ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="12"
+                        viewBox="0 0 13 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <a href="#" class="relative block w-full group">
+                <!-- First image (default) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  src="/fe/assets/img/etro-svarkas-aa.jpg"
+                  alt=""
+                />
+
+                <!-- Second image (shown on hover) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  src="/fe/assets/img/etro-svarkas-a.jpg"
+                  alt=""
+                />
+              </a>
+              <div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1"
+                  >
+                    Off-White
+                  </div>
+                  <!-- class line-trought needs to be added if has discount -->
+                  <div class="text-[12px] md:text-[13px] flex items-center">
+                    600
+                    <svg
+                      class="ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="12"
+                      viewBox="0 0 13 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <!-- best way I think just not to render this part if there is no discont -->
+                  <!-- <div class="text-white bg-brand-maroon flex">
+                    <span class="text-[12px] md:text-[13px] flex items-center mr-2">
+                      -39%
+                    </span>
+                    <span class="text-[12px] md:text-[13px] flex items-center">
+                      366
+                      <svg
+                        class="ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="12"
+                        viewBox="0 0 13 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Pagination -->
+        <div
+          class="flex items-center justify-center space-x-2 md:space-x-4 mt-2 md:mt-[50px] py-4"
+        >
+          <!-- Previous -->
+          <button class="group text-black transition-all duration-300 px-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="6"
+              height="12"
+              viewBox="0 0 6 12"
+              fill="none"
+            >
+              <path
+                d="M5.5 11L0.5 6L5.5 1"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="transition-all duration-300 group-hover:stroke-brand-beige"
+              />
+            </svg>
+          </button>
+
+          <!-- Page numbers -->
+          <div class="flex space-x-2 md:space-x-4 text-xs font-sans">
+            <button class="text-black px-2">1</button>
+            <button
+              class="text-brand-beige hover:text-black transition-all duration-300 px-2"
+            >
+              2
+            </button>
+            <button
+              class="text-brand-beige hover:text-black transition-all duration-300 px-2"
+            >
+              3
+            </button>
+            <span class="text-brand-beige">…</span>
+            <button
+              class="text-brand-beige hover:text-black transition-all duration-300 px-2"
+            >
+              18
+            </button>
+            <button
+              class="text-brand-beige hover:text-black transition-all duration-300 px-2"
+            >
+              19
+            </button>
+            <button
+              class="text-brand-beige hover:text-black transition-all duration-300 px-2"
+            >
+              20
+            </button>
+          </div>
+
+          <!-- Next -->
+          <button class="group text-black transition-all duration-300 px-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="6"
+              height="12"
+              viewBox="0 0 6 12"
+              fill="none"
+            >
+              <path
+                d="M0.5 11L5.5 6L0.5 1"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="transition-all duration-300 group-hover:stroke-brand-beige"
+              />
+            </svg>
+          </button>
+        </div>
+      </section>
+    </main>
+    <footer id="footer" class="pb-4 pt-8 md:py-10 bg-brand-beige relative">
+      <div class="container">
+        <div class="relative h-[80px] md:h-[90px] pt-6 pb-2">
+          <div
+            class="absolute left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2"
+          >
+            <a
+              class="h-[80px] w-[180px] md:h-[120px] md:w-[300px] inline-block"
+              href="#top"
+            >
+              <img
+                class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full invert brightness-0"
+                src="/fe/assets/img/logo-urock.svg"
+                alt=""
+              />
+            </a>
+          </div>
+        </div>
+        <div
+          class="flex flex-col md:flex-row justify-center md:justify-between text-center text-white text-[15px] min-h-[319px] md:pt-8 lg:px-12"
+        >
+          <div
+            class="md:max-w-[249px] order-2 md:order-1 mb-4 md:mb-0 leading-[1.7]"
+          >
+            <p>ĮMONĖS KONTAKTAI</p>
+            <p>UAB UROCK</p>
+            <p>Įmonės kodas 302923012</p>
+            <p>PVM kodas: LT 100009010615</p>
+            <p>Adresas: Krėvės pr. 104A-13,50380</p>
+            <p>Kaunas, Lietuva</p>
+            <div class="mt-8 hidden md:block">
+              <svg
+                class="inline-block"
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M0.729492 6.99984C0.729492 3.53659 3.53708 0.729004 7.00033 0.729004C10.4636 0.729004 13.2712 3.53659 13.2712 6.99984C13.2712 10.4631 10.4636 13.2707 7.00033 13.2707C3.53708 13.2707 0.729492 10.4631 0.729492 6.99984ZM7.00033 1.604C5.56926 1.604 4.19681 2.17249 3.1849 3.18441C2.17298 4.19632 1.60449 5.56877 1.60449 6.99984C1.60449 8.4309 2.17298 9.80335 3.1849 10.8153C4.19681 11.8272 5.56926 12.3957 7.00033 12.3957C8.43139 12.3957 9.80384 11.8272 10.8158 10.8153C11.8277 9.80335 12.3962 8.4309 12.3962 6.99984C12.3962 5.56877 11.8277 4.19632 10.8158 3.18441C9.80384 2.17249 8.43139 1.604 7.00033 1.604Z"
+                  fill="white"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M7.16716 5.10401C5.99874 5.10401 5.10449 5.98076 5.10449 6.99984C5.10449 8.01892 5.99874 8.89567 7.16716 8.89567C7.46524 8.89567 7.74758 8.83734 8.00133 8.73409C8.05453 8.71237 8.11149 8.70135 8.16895 8.70164C8.22641 8.70194 8.28325 8.71355 8.33623 8.73581C8.3892 8.75807 8.43728 8.79055 8.4777 8.83139C8.51812 8.87223 8.55011 8.92064 8.57183 8.97384C8.59354 9.02704 8.60457 9.084 8.60427 9.14146C8.60398 9.19893 8.59237 9.25577 8.57011 9.30874C8.54784 9.36172 8.51536 9.40979 8.47452 9.45021C8.43368 9.49064 8.38528 9.52262 8.33208 9.54434C7.96203 9.6943 7.56644 9.77116 7.16716 9.77067C5.57349 9.77067 4.22949 8.55792 4.22949 6.99984C4.22949 5.44176 5.57349 4.22901 7.16716 4.22901C7.56644 4.22852 7.96203 4.30538 8.33208 4.45534C8.4396 4.49912 8.52533 4.58383 8.5704 4.69081C8.61547 4.7978 8.61619 4.91832 8.57241 5.02584C8.52863 5.13336 8.44392 5.21909 8.33693 5.26416C8.22994 5.30923 8.10943 5.30996 8.00191 5.26617C7.73673 5.15875 7.45327 5.10368 7.16716 5.10401Z"
+                  fill="white"
+                />
+              </svg>
+              <span> 2025 </span>
+            </div>
+          </div>
+          <div class="md:max-w-[249px] order-1 lg:order-2 leading-[1.7]">
+            <p>SAVININKO KONTAKTAI</p>
+            <p>Šarūnas Nakvosas</p>
+            <a class="block hover:text-[#757171]" href="mailto:info@urock.lt"
+              >info@urock.lt</a
+            >
+            <a class="block hover:text-[#757171]" href="tel:+37066519850"
+              >+37066519850</a
+            >
+            <div class="flex justify-center gap-x-2 mt-5 md:mt-8 mb-5 md:mb-0">
+              <a class="hover:opacity-70" href="#">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="24"
+                  viewBox="0 0 25 24"
+                  fill="none"
+                >
+                  <path
+                    d="M13.5 9H18L17.5 11H13.5V20H11.5V11H7.5V9H11.5V7.128C11.5 5.345 11.686 4.698 12.034 4.046C12.3753 3.40199 12.902 2.87526 13.546 2.534C14.198 2.186 14.845 2 16.628 2C17.1507 2 17.608 2.05 18 2.15V4H16.628C15.304 4 14.901 4.078 14.489 4.298C14.1933 4.45251 13.9521 4.69405 13.798 4.99C13.578 5.401 13.5 5.804 13.5 7.128V9Z"
+                    fill="white"
+                  />
+                </svg>
+              </a>
+              <a class="hover:opacity-70" href="#">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="24"
+                  viewBox="0 0 25 24"
+                  fill="none"
+                >
+                  <path
+                    d="M18.5 6.5C18.3674 6.5 18.2402 6.44732 18.1464 6.35355C18.0527 6.25979 18 6.13261 18 6C18 5.86739 18.0527 5.74021 18.1464 5.64645C18.2402 5.55268 18.3674 5.5 18.5 5.5M18.5 6.5C18.6326 6.5 18.7598 6.44732 18.8536 6.35355C18.9473 6.25979 19 6.13261 19 6C19 5.86739 18.9473 5.74021 18.8536 5.64645C18.7598 5.55268 18.6326 5.5 18.5 5.5M7.5 12C7.5 13.3261 8.02678 14.5979 8.96447 15.5355C9.90215 16.4732 11.1739 17 12.5 17C13.8261 17 15.0979 16.4732 16.0355 15.5355C16.9732 14.5979 17.5 13.3261 17.5 12C17.5 10.6739 16.9732 9.40215 16.0355 8.46447C15.0979 7.52678 13.8261 7 12.5 7C11.1739 7 9.90215 7.52678 8.96447 8.46447C8.02678 9.40215 7.5 10.6739 7.5 12Z"
+                    stroke="white"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M17 1.5H8C6.4087 1.5 4.88258 2.13214 3.75736 3.25736C2.63214 4.38258 2 5.9087 2 7.5V16.5C2 18.0913 2.63214 19.6174 3.75736 20.7426C4.88258 21.8679 6.4087 22.5 8 22.5H17C18.5913 22.5 20.1174 21.8679 21.2426 20.7426C22.3679 19.6174 23 18.0913 23 16.5V7.5C23 5.9087 22.3679 4.38258 21.2426 3.25736C20.1174 2.13214 18.5913 1.5 17 1.5Z"
+                    stroke="white"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="md:max-w-[249px] order-3">
+            <div>
+              <p class="font-bold">Mūsų drabužių naujienos</p>
+              <div class="form-element w-full mb-6">
+                <input
+                  class="w-[230px] text-[12px] text-center placeholder:text-white h-[40px] border border-brand-gray-light bg-transparent mb-1 block mx-auto"
+                  type="email"
+                  placeholder="El. paštas"
+                />
+                <input
+                  class="w-[230px] text-[12px] tw-button-bg-mrm inline-block bg-black text-black p-[8.5px] text-sm hover:bg-gray-800 transition-all duration-300 opacity-70 cursor-pointer block mx-auto"
+                  type="submit"
+                  value="PRENUMERUOTI"
+                />
+              </div>
+            </div>
+            <div class="flex flex-col gap-y-2 text-[11px]">
+              <a class="hover:text-[#757171]" href="#">PIRKIMO SĄLYGOS</a>
+              <a class="hover:text-[#757171]" href="#">PREKIŲ PRISTATYMAS</a>
+              <a class="hover:text-[#757171]" href="#"
+                >PREKIŲ GRĄŽINIMO SĄLYGOS</a
+              >
+              <a class="hover:text-[#757171]" href="#">PRIVATUMO POLITIKA</a>
+            </div>
+            <div class="mt-8 block md:hidden">
+              <svg
+                class="inline-block relative top-[-1px]"
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M0.729492 6.99984C0.729492 3.53659 3.53708 0.729004 7.00033 0.729004C10.4636 0.729004 13.2712 3.53659 13.2712 6.99984C13.2712 10.4631 10.4636 13.2707 7.00033 13.2707C3.53708 13.2707 0.729492 10.4631 0.729492 6.99984ZM7.00033 1.604C5.56926 1.604 4.19681 2.17249 3.1849 3.18441C2.17298 4.19632 1.60449 5.56877 1.60449 6.99984C1.60449 8.4309 2.17298 9.80335 3.1849 10.8153C4.19681 11.8272 5.56926 12.3957 7.00033 12.3957C8.43139 12.3957 9.80384 11.8272 10.8158 10.8153C11.8277 9.80335 12.3962 8.4309 12.3962 6.99984C12.3962 5.56877 11.8277 4.19632 10.8158 3.18441C9.80384 2.17249 8.43139 1.604 7.00033 1.604Z"
+                  fill="white"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M7.16716 5.10401C5.99874 5.10401 5.10449 5.98076 5.10449 6.99984C5.10449 8.01892 5.99874 8.89567 7.16716 8.89567C7.46524 8.89567 7.74758 8.83734 8.00133 8.73409C8.05453 8.71237 8.11149 8.70135 8.16895 8.70164C8.22641 8.70194 8.28325 8.71355 8.33623 8.73581C8.3892 8.75807 8.43728 8.79055 8.4777 8.83139C8.51812 8.87223 8.55011 8.92064 8.57183 8.97384C8.59354 9.02704 8.60457 9.084 8.60427 9.14146C8.60398 9.19893 8.59237 9.25577 8.57011 9.30874C8.54784 9.36172 8.51536 9.40979 8.47452 9.45021C8.43368 9.49064 8.38528 9.52262 8.33208 9.54434C7.96203 9.6943 7.56644 9.77116 7.16716 9.77067C5.57349 9.77067 4.22949 8.55792 4.22949 6.99984C4.22949 5.44176 5.57349 4.22901 7.16716 4.22901C7.56644 4.22852 7.96203 4.30538 8.33208 4.45534C8.4396 4.49912 8.52533 4.58383 8.5704 4.69081C8.61547 4.7978 8.61619 4.91832 8.57241 5.02584C8.52863 5.13336 8.44392 5.21909 8.33693 5.26416C8.22994 5.30923 8.10943 5.30996 8.00191 5.26617C7.73673 5.15875 7.45327 5.10368 7.16716 5.10401Z"
+                  fill="white"
+                />
+              </svg>
+              <span> 2025 </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- Custom script -->
+    <script src="/fe/assets/js/script.js"></script>
+    <script>
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.transition = "opacity 0.5s ease";
+          preloader.style.opacity = "0";
+          setTimeout(() => preloader.remove(), 500);
+        }
+      });
+    </script>
+  </body>
+</html>

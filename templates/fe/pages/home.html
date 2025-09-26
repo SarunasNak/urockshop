@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="lt" x-data>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Titulinis</title>
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind config -->
+    <script>
+      tailwind.config = {
+        theme: {
+          container: {
+            center: true,
+            padding: "5px",
+            screens: {
+              sm: "600px",
+              md: "728px",
+              lg: "984px",
+              xl: "1200px",
+              "2xl": "1440px",
+            },
+          },
+          extend: {
+            colors: {
+              "brand-beige": "#9E9288",
+              "brand-maroon": "#6D1F36",
+              "brand-gray-light": "#D9D9D9",
+              "brand-gray-medium": "#B7B1B1",
+            },
+            fontFamily: {
+              sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+              serif: ["Playfair Display", "ui-serif", "Georgia", "serif"],
+              mont: ["Montserrat", "ui-sans-serif", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Alpine.js -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.0/dist/cdn.min.js"
+    ></script>
+
+    <!-- Swiper.js -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.js"></script>
+
+    <!-- Headroom.js -->
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/headroom.min.js"
+    ></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="/fe/assets/css/style.css" />
+  </head>
+  <body id="top" class="mt-[68px] md:mt-[92.5px] font-mont">
+    <div id="preloader"></div>
+    <!-- Navbar -->
+    <header
+      class="header bg-white z-20 transition-all duration-300"
+      x-data="{ open: false }"
+    >
+      <!-- Running text -->
+      <div
+        class="bg-brand-beige text-white text-[10px] md:text-xs py-2 font-serif"
+      >
+        <div class="marquee">
+          <span>Konfidencialus drabužių pristatymas</span>
+        </div>
+      </div>
+      <div class="container">
+        <div
+          class="flex items-center justify-between py-[6px] md:pt-3 md:pb-2 relative"
+        >
+          <!-- Left Nav -->
+          <nav class="hidden md:flex space-x-2 lg:space-x-5 text-[13px]">
+            <a
+              href="#"
+              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              >APIE MUS</a
+            >
+            <a
+              href="#"
+              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              >BLOGAS</a
+            >
+            <a
+              href="#"
+              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              >KATALOGAS</a
+            >
+          </nav>
+
+          <!-- Logo -->
+          <div
+            class="absolute left-1/2 -translate-x-1/2 top-[-17%] md:top-[-7%]"
+          >
+            <a
+              class="h-[52px] max-w-[125px] md:h-[70px] md:max-w-[180px] inline-block"
+              href="#"
+            >
+              <img
+                class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full"
+                src="/fe/assets/img/logo-urock.svg"
+                alt=""
+              />
+            </a>
+          </div>
+
+          <!-- Cart + Burger -->
+          <div
+            class="flex items-center justify-between w-full md:w-auto space-x-4"
+          >
+            <!-- Burger (mobile only) -->
+            <button @click="open = !open" class="md:hidden focus:outline-none">
+              <svg
+                x-show="!open"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+              <svg
+                x-show="open"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            <!-- Cart -->
+            <a href="#" class="relative flex items-center justify-center">
+              <img
+                class="max-w-[18px] md:max-w-[25px]"
+                src="/fe/assets/img/krepselis-ikona.png"
+                alt=""
+              />
+              <span class="text-[15px] rounded-full px-1 inline-block"
+                >(0)</span
+              >
+            </a>
+          </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div
+          x-show="open"
+          x-transition
+          class="md:hidden flex flex-col items-center space-y-1 py-12 text-sm"
+        >
+          <a
+            href="#"
+            class="transition-all duration-300 hover:text-brand-beige p-5"
+            >APIE MUS</a
+          >
+          <a
+            href="#"
+            class="transition-all duration-300 hover:text-brand-beige p-5"
+            >BLOGAS</a
+          >
+          <a
+            href="#"
+            class="transition-all duration-300 hover:text-brand-beige p-5"
+            >KATALOGAS</a
+          >
+        </div>
+      </div>
+    </header>
+    <main>
+      <!-- Intro Section 562-->
+      <section
+        class="flex items-center justify-center md:min-h-[52vh] py-12 px-5 text-center"
+      >
+        <div class="max-w-3xl">
+          <!-- Paragraph -->
+          <p
+            class="mx-auto max-w-[150px] md:max-w-auto text-[12px] md:text-[13px] mb-8 md:mb-4 text-brand-maroon block md:hidden"
+          >
+            Garsiausių mados namų dizainerių drabužiai
+          </p>
+
+          <!-- Title -->
+          <h1
+            class="text-[24px] max-w-[251px] md:max-w-full text-brand-maroon md:text-[40px] font-serif font-normal md:font-bold mb-8"
+          >
+            VYRIŠKŲ DRABUŽIŲ IR ĮVAIZDŽIO PARTNERIS
+          </h1>
+
+          <!-- Paragraph -->
+          <p
+            class="text-[12px] md:text-[13px] mb-8 md:mb-4 text-brand-maroon hidden md:block"
+          >
+            Garsiausių mados namų dizainerių drabužiai
+          </p>
+          <p class="text-[13px] text-[#C7C9C7] mb-12 hidden md:block">
+            PRISTATYSIME.
+            <span class="text-brand-beige">SUPAŽINDINSIME.</span> IŠBANDYSITE.
+          </p>
+
+          <!-- Button -->
+          <a
+            href="#catalog"
+            class="tw-button-bg-mrm inline-block bg-black text-white p-[8.5px] text-sm transition-all duration-300 opacity-70"
+          >
+            Rinktis
+          </a>
+        </div>
+      </section>
+
+      <section class="hidden md:grid grid-cols-2">
+        <img
+          src="/fe/assets/img/du-modeliai-su-svarku.jpg"
+          alt="Image 1"
+          class="w-full h-auto object-cover"
+        />
+        <img
+          src="/fe/assets/img/modelis-su-svarku-4.jpg"
+          alt="Image 2"
+          class="w-full h-auto object-cover"
+        />
+        <img
+          src="/fe/assets/img/du-modeliai-su-marskineliais.jpg"
+          alt="Image 3"
+          class="w-full h-auto object-cover"
+        />
+        <img
+          src="/fe/assets/img/du-modeliai-su-svarku-2.jpg"
+          alt="Image 4"
+          class="w-full h-auto object-cover"
+        />
+      </section>
+      <section class="block md:hidden mb-12">
+        <img
+          src="/fe/assets/img/modelis-su-svarku-1.jpg"
+          alt="Image 1"
+          class="w-full h-auto object-cover"
+        />
+        <img
+          src="/fe/assets/img/modelis-su-svarku-2.jpg"
+          alt="Image 2"
+          class="w-full h-auto object-cover"
+        />
+        <img
+          src="/fe/assets/img/modelis-su-svarku-3.jpg"
+          alt="Image 3"
+          class="w-full h-auto object-cover"
+        />
+        <img
+          src="/fe/assets/img/modelis-su-svarku-5.jpg"
+          alt="Image 4"
+          class="w-full h-auto object-cover"
+        />
+      </section>
+    </main>
+    <footer id="footer" class="pb-4 pt-8 md:py-10 bg-brand-beige relative">
+      <div class="container">
+        <div class="relative h-[80px] md:h-[90px] pt-6 pb-2">
+          <div
+            class="absolute left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2"
+          >
+            <a
+              class="h-[80px] w-[180px] md:h-[120px] md:w-[300px] inline-block"
+              href="#top"
+            >
+              <img
+                class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full invert brightness-0"
+                src="/fe/assets/img/logo-urock.svg"
+                alt=""
+              />
+            </a>
+          </div>
+        </div>
+        <div
+          class="flex flex-col md:flex-row justify-center md:justify-between text-center text-white text-[15px] min-h-[319px] md:pt-8 lg:px-12"
+        >
+          <div
+            class="md:max-w-[249px] order-2 md:order-1 mb-4 md:mb-0 leading-[1.7]"
+          >
+            <p>ĮMONĖS KONTAKTAI</p>
+            <p>UAB UROCK</p>
+            <p>Įmonės kodas 302923012</p>
+            <p>PVM kodas: LT 100009010615</p>
+            <p>Adresas: Krėvės pr. 104A-13,50380</p>
+            <p>Kaunas, Lietuva</p>
+            <div class="mt-8 hidden md:block">
+              <svg
+                class="inline-block"
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M0.729492 6.99984C0.729492 3.53659 3.53708 0.729004 7.00033 0.729004C10.4636 0.729004 13.2712 3.53659 13.2712 6.99984C13.2712 10.4631 10.4636 13.2707 7.00033 13.2707C3.53708 13.2707 0.729492 10.4631 0.729492 6.99984ZM7.00033 1.604C5.56926 1.604 4.19681 2.17249 3.1849 3.18441C2.17298 4.19632 1.60449 5.56877 1.60449 6.99984C1.60449 8.4309 2.17298 9.80335 3.1849 10.8153C4.19681 11.8272 5.56926 12.3957 7.00033 12.3957C8.43139 12.3957 9.80384 11.8272 10.8158 10.8153C11.8277 9.80335 12.3962 8.4309 12.3962 6.99984C12.3962 5.56877 11.8277 4.19632 10.8158 3.18441C9.80384 2.17249 8.43139 1.604 7.00033 1.604Z"
+                  fill="white"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M7.16716 5.10401C5.99874 5.10401 5.10449 5.98076 5.10449 6.99984C5.10449 8.01892 5.99874 8.89567 7.16716 8.89567C7.46524 8.89567 7.74758 8.83734 8.00133 8.73409C8.05453 8.71237 8.11149 8.70135 8.16895 8.70164C8.22641 8.70194 8.28325 8.71355 8.33623 8.73581C8.3892 8.75807 8.43728 8.79055 8.4777 8.83139C8.51812 8.87223 8.55011 8.92064 8.57183 8.97384C8.59354 9.02704 8.60457 9.084 8.60427 9.14146C8.60398 9.19893 8.59237 9.25577 8.57011 9.30874C8.54784 9.36172 8.51536 9.40979 8.47452 9.45021C8.43368 9.49064 8.38528 9.52262 8.33208 9.54434C7.96203 9.6943 7.56644 9.77116 7.16716 9.77067C5.57349 9.77067 4.22949 8.55792 4.22949 6.99984C4.22949 5.44176 5.57349 4.22901 7.16716 4.22901C7.56644 4.22852 7.96203 4.30538 8.33208 4.45534C8.4396 4.49912 8.52533 4.58383 8.5704 4.69081C8.61547 4.7978 8.61619 4.91832 8.57241 5.02584C8.52863 5.13336 8.44392 5.21909 8.33693 5.26416C8.22994 5.30923 8.10943 5.30996 8.00191 5.26617C7.73673 5.15875 7.45327 5.10368 7.16716 5.10401Z"
+                  fill="white"
+                />
+              </svg>
+              <span> 2025 </span>
+            </div>
+          </div>
+          <div class="md:max-w-[249px] order-1 lg:order-2 leading-[1.7]">
+            <p>SAVININKO KONTAKTAI</p>
+            <p>Šarūnas Nakvosas</p>
+            <a class="block hover:text-[#757171]" href="mailto:info@urock.lt"
+              >info@urock.lt</a
+            >
+            <a class="block hover:text-[#757171]" href="tel:+37066519850"
+              >+37066519850</a
+            >
+            <div class="flex justify-center gap-x-2 mt-5 md:mt-8 mb-5 md:mb-0">
+              <a class="hover:opacity-70" href="#">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="24"
+                  viewBox="0 0 25 24"
+                  fill="none"
+                >
+                  <path
+                    d="M13.5 9H18L17.5 11H13.5V20H11.5V11H7.5V9H11.5V7.128C11.5 5.345 11.686 4.698 12.034 4.046C12.3753 3.40199 12.902 2.87526 13.546 2.534C14.198 2.186 14.845 2 16.628 2C17.1507 2 17.608 2.05 18 2.15V4H16.628C15.304 4 14.901 4.078 14.489 4.298C14.1933 4.45251 13.9521 4.69405 13.798 4.99C13.578 5.401 13.5 5.804 13.5 7.128V9Z"
+                    fill="white"
+                  />
+                </svg>
+              </a>
+              <a class="hover:opacity-70" href="#">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="24"
+                  viewBox="0 0 25 24"
+                  fill="none"
+                >
+                  <path
+                    d="M18.5 6.5C18.3674 6.5 18.2402 6.44732 18.1464 6.35355C18.0527 6.25979 18 6.13261 18 6C18 5.86739 18.0527 5.74021 18.1464 5.64645C18.2402 5.55268 18.3674 5.5 18.5 5.5M18.5 6.5C18.6326 6.5 18.7598 6.44732 18.8536 6.35355C18.9473 6.25979 19 6.13261 19 6C19 5.86739 18.9473 5.74021 18.8536 5.64645C18.7598 5.55268 18.6326 5.5 18.5 5.5M7.5 12C7.5 13.3261 8.02678 14.5979 8.96447 15.5355C9.90215 16.4732 11.1739 17 12.5 17C13.8261 17 15.0979 16.4732 16.0355 15.5355C16.9732 14.5979 17.5 13.3261 17.5 12C17.5 10.6739 16.9732 9.40215 16.0355 8.46447C15.0979 7.52678 13.8261 7 12.5 7C11.1739 7 9.90215 7.52678 8.96447 8.46447C8.02678 9.40215 7.5 10.6739 7.5 12Z"
+                    stroke="white"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M17 1.5H8C6.4087 1.5 4.88258 2.13214 3.75736 3.25736C2.63214 4.38258 2 5.9087 2 7.5V16.5C2 18.0913 2.63214 19.6174 3.75736 20.7426C4.88258 21.8679 6.4087 22.5 8 22.5H17C18.5913 22.5 20.1174 21.8679 21.2426 20.7426C22.3679 19.6174 23 18.0913 23 16.5V7.5C23 5.9087 22.3679 4.38258 21.2426 3.25736C20.1174 2.13214 18.5913 1.5 17 1.5Z"
+                    stroke="white"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="md:max-w-[249px] order-3">
+            <div>
+              <p class="font-bold">Mūsų drabužių naujienos</p>
+              <div class="form-element w-full mb-6">
+                <input
+                  class="w-[230px] text-[12px] text-center placeholder:text-white h-[40px] border border-brand-gray-light bg-transparent mb-1 block mx-auto"
+                  type="email"
+                  placeholder="El. paštas"
+                />
+                <input
+                  class="w-[230px] text-[12px] tw-button-bg-mrm inline-block bg-black text-black p-[8.5px] text-sm hover:bg-gray-800 transition-all duration-300 opacity-70 cursor-pointer block mx-auto"
+                  type="submit"
+                  value="PRENUMERUOTI"
+                />
+              </div>
+            </div>
+            <div class="flex flex-col gap-y-2 text-[11px]">
+              <a class="hover:text-[#757171]" href="#">PIRKIMO SĄLYGOS</a>
+              <a class="hover:text-[#757171]" href="#">PREKIŲ PRISTATYMAS</a>
+              <a class="hover:text-[#757171]" href="#"
+                >PREKIŲ GRĄŽINIMO SĄLYGOS</a
+              >
+              <a class="hover:text-[#757171]" href="#">PRIVATUMO POLITIKA</a>
+            </div>
+            <div class="mt-8 block md:hidden">
+              <svg
+                class="inline-block relative top-[-1px]"
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M0.729492 6.99984C0.729492 3.53659 3.53708 0.729004 7.00033 0.729004C10.4636 0.729004 13.2712 3.53659 13.2712 6.99984C13.2712 10.4631 10.4636 13.2707 7.00033 13.2707C3.53708 13.2707 0.729492 10.4631 0.729492 6.99984ZM7.00033 1.604C5.56926 1.604 4.19681 2.17249 3.1849 3.18441C2.17298 4.19632 1.60449 5.56877 1.60449 6.99984C1.60449 8.4309 2.17298 9.80335 3.1849 10.8153C4.19681 11.8272 5.56926 12.3957 7.00033 12.3957C8.43139 12.3957 9.80384 11.8272 10.8158 10.8153C11.8277 9.80335 12.3962 8.4309 12.3962 6.99984C12.3962 5.56877 11.8277 4.19632 10.8158 3.18441C9.80384 2.17249 8.43139 1.604 7.00033 1.604Z"
+                  fill="white"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M7.16716 5.10401C5.99874 5.10401 5.10449 5.98076 5.10449 6.99984C5.10449 8.01892 5.99874 8.89567 7.16716 8.89567C7.46524 8.89567 7.74758 8.83734 8.00133 8.73409C8.05453 8.71237 8.11149 8.70135 8.16895 8.70164C8.22641 8.70194 8.28325 8.71355 8.33623 8.73581C8.3892 8.75807 8.43728 8.79055 8.4777 8.83139C8.51812 8.87223 8.55011 8.92064 8.57183 8.97384C8.59354 9.02704 8.60457 9.084 8.60427 9.14146C8.60398 9.19893 8.59237 9.25577 8.57011 9.30874C8.54784 9.36172 8.51536 9.40979 8.47452 9.45021C8.43368 9.49064 8.38528 9.52262 8.33208 9.54434C7.96203 9.6943 7.56644 9.77116 7.16716 9.77067C5.57349 9.77067 4.22949 8.55792 4.22949 6.99984C4.22949 5.44176 5.57349 4.22901 7.16716 4.22901C7.56644 4.22852 7.96203 4.30538 8.33208 4.45534C8.4396 4.49912 8.52533 4.58383 8.5704 4.69081C8.61547 4.7978 8.61619 4.91832 8.57241 5.02584C8.52863 5.13336 8.44392 5.21909 8.33693 5.26416C8.22994 5.30923 8.10943 5.30996 8.00191 5.26617C7.73673 5.15875 7.45327 5.10368 7.16716 5.10401Z"
+                  fill="white"
+                />
+              </svg>
+              <span> 2025 </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- Custom script -->
+    <script src="/fe/assets/js/script.js"></script>
+    <script>
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.transition = "opacity 0.5s ease";
+          preloader.style.opacity = "0";
+          setTimeout(() => preloader.remove(), 500);
+        }
+      });
+    </script>
+  </body>
+</html>
