@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Titulinis</title>
+    <title>Krepšelis</title>
 
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -122,7 +122,10 @@
             class="flex items-center justify-between w-full md:w-auto space-x-4"
           >
             <!-- Burger (mobile only) -->
-            <button @click="open = !open" class="md:hidden focus:outline-none">
+            <button
+              @click="open = !open"
+              class="md:hidden focus:outline-brand-maroon"
+            >
               <svg
                 x-show="!open"
                 xmlns="http://www.w3.org/2000/svg"
@@ -194,89 +197,45 @@
       </div>
     </header>
     <main>
-      <!-- Intro Section 562-->
-      <section
-        class="flex items-center justify-center md:min-h-[52vh] py-12 px-5 text-center"
-      >
-        <div class="max-w-3xl">
-          <!-- Paragraph -->
-          <p
-            class="mx-auto max-w-[150px] md:max-w-auto text-[12px] md:text-[13px] mb-8 md:mb-4 text-brand-maroon block md:hidden"
-          >
-            Garsiausių mados namų dizainerių drabužiai
-          </p>
-
-          <!-- Title -->
-          <h1
-            class="text-[24px] max-w-[251px] md:max-w-full text-brand-maroon md:text-[40px] font-serif font-normal md:font-bold mb-8"
-          >
-            VYRIŠKŲ DRABUŽIŲ IR ĮVAIZDŽIO PARTNERIS
-          </h1>
-
-          <!-- Paragraph -->
-          <p
-            class="text-[12px] md:text-[13px] mb-8 md:mb-4 text-brand-maroon hidden md:block"
-          >
-            Garsiausių mados namų dizainerių drabužiai
-          </p>
-          <p class="text-[13px] text-[#C7C9C7] mb-12 hidden md:block">
-            PRISTATYSIME.
-            <span class="text-brand-beige">SUPAŽINDINSIME.</span> IŠBANDYSITE.
-          </p>
-
-          <!-- Button -->
-          <a
-            href="#catalog"
-            class="tw-button-bg-mrm inline-block bg-black text-white p-[8.5px] text-sm transition-all duration-300 opacity-70"
-          >
-            Rinktis
-          </a>
+      <section class="py-[50px]">
+        <div class="container">
+          <div class="max-w-[1008px] mx-auto text-center">
+            <h1 class="upercase text-base md:text-2xl font-bold mb-2">
+              UŽSAKYMAS PRIIMTAS
+            </h1>
+            <p class="text-base mb-5 md:mb-[50px] font-bold">Užsakymo nr.</p>
+            <p
+              class="text-brand-maroon text-lg mb-5 mb:mb-[50px] md:text-2xl font-serif font-bold"
+            >
+              Ačiū, kad pirkote ,,Urock’’. Jūsų užsakymas gautas ir pradėtas
+              vykdyti.
+            </p>
+            <p
+              class="text-[15px] md:text-2xl mb-8 md:mb-[50px] md:max-w-[654px] mx-auto"
+            >
+              Pasirinktas atsiskaitymas: apmokėjimas atsiimant. (Kortele
+              kurjeriui arba paštomate; Jei sutarta - grynais.)
+            </p>
+            <p
+              class="text-base md:text-2xl mb-8 md:mb-[50px] md:max-w-[654px] mx-auto"
+            >
+              Apie eigą informuosime el. paštu {{email}}. Pristatymas Lietuvoje
+              įprastai užtrunka 2–3 darbo dienas.Jei turite klausimų, rašykite
+              <a class="text-xl text-brand-maroon" href="mailto:info@urock.lt"
+                >info@urock.lt</a
+              >
+            </p>
+            <p class="text-xs md:text-2xl mb-2">
+              Peradresuosime į katalogą po 5 sek. Jei neperadresuoja, spauskite
+              <a
+                class="text-xs md:text-2xl text-brand-maroon font-bold hover:text-brand-beige"
+                href="#"
+              >
+                grįžti į katalogą.
+              </a>
+            </p>
+          </div>
         </div>
-      </section>
-
-      <section class="hidden md:grid grid-cols-2">
-        <img
-          src="/fe/assets/img/du-modeliai-su-svarku.jpg"
-          alt="Image 1"
-          class="w-full h-auto object-cover"
-        />
-        <img
-          src="/fe/assets/img/modelis-su-svarku-4.jpg"
-          alt="Image 2"
-          class="w-full h-auto object-cover"
-        />
-        <img
-          src="/fe/assets/img/du-modeliai-su-marskineliais.jpg"
-          alt="Image 3"
-          class="w-full h-auto object-cover"
-        />
-        <img
-          src="/fe/assets/img/du-modeliai-su-svarku-2.jpg"
-          alt="Image 4"
-          class="w-full h-auto object-cover"
-        />
-      </section>
-      <section class="block md:hidden mb-12">
-        <img
-          src="/fe/assets/img/modelis-su-svarku-1.jpg"
-          alt="Image 1"
-          class="w-full h-auto object-cover"
-        />
-        <img
-          src="/fe/assets/img/modelis-su-svarku-2.jpg"
-          alt="Image 2"
-          class="w-full h-auto object-cover"
-        />
-        <img
-          src="/fe/assets/img/modelis-su-svarku-3.jpg"
-          alt="Image 3"
-          class="w-full h-auto object-cover"
-        />
-        <img
-          src="/fe/assets/img/modelis-su-svarku-5.jpg"
-          alt="Image 4"
-          class="w-full h-auto object-cover"
-        />
       </section>
     </main>
     <footer id="footer" class="pb-4 pt-8 md:py-10 bg-brand-beige relative">
