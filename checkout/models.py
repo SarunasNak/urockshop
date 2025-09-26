@@ -26,6 +26,9 @@ class Order(models.Model):
     city = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=20)
 
+    coupon_code = models.CharField(max_length=64, blank=True, default="")
+    discount_amount = models.DecimalField(max_digits=9, decimal_places=2, default=Decimal("0.00"))
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

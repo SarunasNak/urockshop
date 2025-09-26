@@ -16,7 +16,7 @@
   <p>{{ product.description|linebreaks }}</p>
 </article>
 
-<form action="{% url 'cart_add' %}" method="post" style="margin-top:12px;">
+<form action="{% url 'cart:cart_add' %}" method="post">
   {% csrf_token %}
   <label>Variantas:</label>
   <select name="variant_id">

@@ -72,7 +72,7 @@
       <a href="{% url 'home' %}">{% firstof site.site_name 'Urock' %}</a>
     {% endif %}
     | <a href="{% url 'product_list' %}">Shop</a>
-    | <a href="{% url 'cart_view' %}">Cart</a>
+    | <a href="{% url 'cart:cart_view' %}">Cart</a>
     | <a href="{% url 'about' %}">About</a>
     | <a href="{% url 'blog_list' %}">Blog</a>
   </div>

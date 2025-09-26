@@ -110,6 +110,9 @@ class Product(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
+    def __str__(self):
+        return self.name or f"Product {self.pk}"
+
     # ---- sekantis SKU iš esamų URxxxx
     @classmethod
     def next_sku(cls) -> str:

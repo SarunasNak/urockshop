@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "catalog",
     "pages",
     "cart",
+    "discounts.apps.DiscountsConfig",
     "checkout.apps.CheckoutConfig",  # jei turite AppConfig – puiku
     "blog",
     "paysera",
@@ -51,6 +52,8 @@ INSTALLED_APPS = [
 ]
 
 INSTALLED_APPS += ["django.contrib.sitemaps"]
+INSTALLED_APPS += ["newsletter"]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -132,14 +135,40 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 STRIPE_CURRENCY = os.getenv("STRIPE_CURRENCY", "eur")
 
 INSTALLED_APPS += ["django_ckeditor_5"]
+
 CKEDITOR_5_CONFIGS = {
     "default": {
+        "language": "lt",
         "toolbar": [
-            "heading", "|", "bold", "italic", "link", "blockQuote",
-            "bulletedList", "numberedList", "insertTable", "mediaEmbed",
-            "imageUpload", "undo", "redo",
+            "heading", "|",
+            "bold", "italic", "link", "|",
+            "fontColor",                 # <- pridėta
+            "bulletedList", "numberedList", "|",
+            "undo", "redo", "removeFormat",
         ],
-    }
+        "fontColor": {
+            "colors": [
+                {"color": "#800020", "label": "Bordó"},
+                {"color": "#000000", "label": "Juoda"},
+            ],
+            "columns": 5,
+        },
+    },
+    "products": {  # palik kaip yra
+        "language": "lt",
+        "toolbar": [
+            "heading", "|",
+            "bold", "italic", "link", "|",
+            "fontColor", "|",
+            "bulletedList", "numberedList", "|",
+            "undo", "redo", "removeFormat",
+        ],
+        "fontColor": {
+            "colors": [
+                {"color": "#800020", "label": "Bordó"},
+                {"color": "#000000", "label": "Juoda"},
+            ],
+            "columns": 5,
+        },
+    },
 }
-
-

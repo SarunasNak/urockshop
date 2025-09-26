@@ -1,23 +1,25 @@
+# checkout/views.py
 from decimal import Decimal
+import logging
+
+from django.conf import settings
 from django.contrib import messages
 from django.db import transaction
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from stripe_payments.views import _ensure_pi_for_order
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.views.decorators.http import require_http_methods, require_POST
 
-from cart.services import Cart
+import stripe
+
+from cart.services import Cart, CART_SESSION_KEY, COUPON_SESSION_KEY
 from catalog.models import Variant
 from .forms import CheckoutForm
 from .models import Order, OrderItem
-import logging
-import stripe
-from django.conf import settings
 
 from paysera.utils import parse_callback
 from paysera.views import _mark_paid_and_decrease_stock
+from stripe_payments.views import _ensure_pi_for_order
 
 logger = logging.getLogger(__name__)
 
@@ -27,21 +29,21 @@ FLAT_SHIPPING = Decimal("4.99")
 @require_http_methods(["GET", "POST"])
 def checkout_view(request):
     cart = Cart(request)
-    items = list(cart.items())  # materializuojam
+    s = cart.summary()             # {items, subtotal, discount, total, coupon_code, coupon_error}
+    items = list(s["items"])       # materializuojam
 
     if request.method == "GET":
         if not items:
             messages.info(request, "Krepšelis tuščias.")
-            return redirect("cart_view")
+            return redirect("cart:cart_view")
 
-        form = CheckoutForm()
         ctx = {
-            "form": form,
+            "form": CheckoutForm(),
             "items": items,
-            "subtotal": cart.total,
+            "subtotal": s["subtotal"],
+            "discount": s["discount"],
             "shipping": FLAT_SHIPPING,
-            "total": cart.total + FLAT_SHIPPING,
-
+            "total": s["total"] + FLAT_SHIPPING,
             # SEO
             "meta_title": "Apmokėjimas – Urock",
             "meta_description": "Užsakymo apmokėjimo žingsnis.",
@@ -56,10 +58,10 @@ def checkout_view(request):
         ctx = {
             "form": form,
             "items": items,
-            "subtotal": cart.total,
+            "subtotal": s["subtotal"],
+            "discount": s["discount"],
             "shipping": FLAT_SHIPPING,
-            "total": cart.total + FLAT_SHIPPING,
-
+            "total": s["total"] + FLAT_SHIPPING,
             # SEO
             "meta_title": "Apmokėjimas – Urock",
             "meta_description": "Užsakymo apmokėjimo žingsnis.",
@@ -70,7 +72,7 @@ def checkout_view(request):
 
     # Pasirinktas apmokėjimo būdas
     payment_method = request.POST.get("payment_method", "cod").strip().lower()
-    if payment_method not in ("cod", "paysera", "stripe"):  # <<< pridėtas 'stripe'
+    if payment_method not in ("cod", "paysera", "stripe"):
         payment_method = "cod"
 
     with transaction.atomic():
@@ -82,16 +84,16 @@ def checkout_view(request):
                     request,
                     f"Prekei „{v.product.name} {v.color} {v.size}“ trūksta likučio."
                 )
-                return redirect("cart_view")
+                return redirect("cart:cart_view")
 
-        # 2) Sukuriam užsakymą su teisingu statusu pagal PM
-        if payment_method == "cod":
-            initial_status = "cod_placed"
-        elif payment_method == "paysera":
-            initial_status = "paysera_pending"   # palieku kaip pas tave, nes tavo SS1 fallback to tikisi
-        else:  # stripe
-            initial_status = "pending"           # Stripe laukimo būsena
+        # 2) Pradinis statusas pagal PM
+        initial_status = (
+            "cod_placed" if payment_method == "cod"
+            else "paysera_pending" if payment_method == "paysera"
+            else "pending"   # stripe
+        )
 
+        # 3) Užsakymas (įrašom kuponą ir nuolaidą)
         order = Order.objects.create(
             first_name=form.cleaned_data["first_name"],
             last_name=form.cleaned_data["last_name"],
@@ -102,9 +104,11 @@ def checkout_view(request):
             shipping_cost=FLAT_SHIPPING,
             payment_method=payment_method,
             status=initial_status,
+            coupon_code=(s.get("coupon_code") or ""),
+            discount_amount=(s.get("discount") or Decimal("0")),
         )
 
-        # 3) Eilutės (be stock mažinimo — darysime tik kai apmokėta)
+        # 4) Eilutės (stock mažinsim tik kai apmokėta)
         for line in items:
             v = line.variant
             OrderItem.objects.create(
@@ -117,28 +121,30 @@ def checkout_view(request):
                 line_total=(v.price * line.qty),
             )
 
-        # 4) Suma
-        order.recalc_total()
+        # 5) Bendra suma PO kupono + pristatymas
+        order.total = s["total"] + FLAT_SHIPPING
         order.save(update_fields=["total"])
 
-    # 5) išvalom krepšelį (visais atvejais)
-    request.session.pop("cart", None)
-    request.session.modified = True
+    # 6) Krepšelio išvalymas
+    if payment_method != "stripe":
+        request.session.pop(CART_SESSION_KEY, None)
+        request.session.pop(COUPON_SESSION_KEY, None)
+        request.session.modified = True
 
-    # 6) Nukreipimas pagal apmokėjimo būdą
+    # 7) Nukreipimas pagal apmokėjimo būdą
     if payment_method == "paysera":
         return redirect(reverse("paysera_redirect", kwargs={"order_id": order.id}))
 
     if payment_method == "stripe":
-        # Grąžinam tą patį checkout šabloną su 'order' — JS turės ORDER_ID ir atliks apmokėjimą kortele
+        # sugrąžinam tą patį šabloną – FE pradės Stripe apmokėjimą
         ctx = {
-            "form": form,               # gali rodyti užpildytus laukus (nebūtina)
-            "items": items,             # galima nerodyti, bet palieku
-            "subtotal": cart.total,
+            "form": form,
+            "items": items,
+            "subtotal": s["subtotal"],
+            "discount": s["discount"],
             "shipping": FLAT_SHIPPING,
             "total": order.total,
-            "order": order,             # <<< svarbu: kad šablonas gautų ORDER_ID ir SUCCESS_URL
-
+            "order": order,
             # SEO
             "meta_title": "Apmokėjimas – Urock",
             "meta_description": "Užsakymo apmokėjimo žingsnis.",
@@ -152,17 +158,14 @@ def checkout_view(request):
     return redirect(reverse("checkout_success", kwargs={"order_id": order.id}))
 
 
-
 def checkout_success(request, order_id: int):
     order = get_object_or_404(Order, pk=order_id)
 
-    # --- SS1 fallback: jei grįžtam iš Payseros su ?data=...&sign=... ---
-    # Tik 'paysera' užsakymams ir tik jei dar ne 'paid'
+    # --- SS1 fallback iš Payseros ---
     if order.payment_method == "paysera" and order.status in ("paysera_pending", "failed"):
         data, sign = request.GET.get("data"), request.GET.get("sign")
         if data and sign:
             try:
-                # Patikrina sign (md5) viduje; meta ValueError, jei blogas
                 parsed = parse_callback(request.GET)
             except Exception:
                 parsed = None
@@ -174,7 +177,6 @@ def checkout_success(request, order_id: int):
                 currency  = (parsed.get("currency") or "").upper()
 
                 if status in ("1", "success"):
-                    # (pasirinktinai) tikrinam sumą/valiutą, jei Paysera atsiuntė
                     try:
                         expected_ct = int((order.total * Decimal("100")).quantize(Decimal("1")))
                     except Exception:
@@ -192,7 +194,7 @@ def checkout_success(request, order_id: int):
                         order.save(update_fields=["status"])
     # --- /SS1 fallback ---
 
-    # --- Stripe fallback: jei atėjom į success ir webhook dar nepažymėjo ---
+    # --- Stripe fallback (jei webhook dar nepažymėjo) ---
     if order.payment_method == "stripe" and order.status != "paid":
         pi_id = getattr(order, "stripe_pi_id", None)
         if pi_id:
@@ -206,14 +208,12 @@ def checkout_success(request, order_id: int):
                 elif pi_status in {"requires_payment_method", "canceled"} and order.status != "paid":
                     order.status = "failed"
                     order.save(update_fields=["status"])
-                # 'processing' ir pan. – paliekame 'pending'
             except Exception:
                 logger.exception("Stripe fallback poll failed on success page")
     # --- /Stripe fallback ---
 
     ctx = {
         "order": order,
-
         # SEO
         "meta_title": "Užsakymas priimtas – Urock",
         "meta_description": f"Užsakymas #{order.id} priimtas. Ačiū!",
@@ -222,10 +222,13 @@ def checkout_success(request, order_id: int):
     }
     return render(request, "checkout/success.html", ctx)
 
+
 @require_POST
 def checkout_create_order_api(request):
     cart = Cart(request)
-    if not list(cart.items()):
+    s = cart.summary()
+    items = list(s["items"])
+    if not items:
         return JsonResponse({"error": "Krepšelis tuščias."}, status=400)
 
     form = CheckoutForm(request.POST)
@@ -234,7 +237,7 @@ def checkout_create_order_api(request):
 
     with transaction.atomic():
         # 1) likučiai
-        for line in cart.items():
+        for line in items:
             v = Variant.objects.select_for_update().get(pk=line.variant.pk)
             if line.qty > v.stock:
                 return JsonResponse({"error": f"Likutis nepakankamas: {v.product.name} {v.color} {v.size}."}, status=400)
@@ -250,9 +253,11 @@ def checkout_create_order_api(request):
             shipping_cost=FLAT_SHIPPING,
             payment_method="stripe",
             status="pending",
+            coupon_code=(s.get("coupon_code") or ""),
+            discount_amount=(s.get("discount") or Decimal("0")),
         )
 
-        for line in cart.items():
+        for line in items:
             v = line.variant
             OrderItem.objects.create(
                 order=order,
@@ -264,13 +269,8 @@ def checkout_create_order_api(request):
                 line_total=v.price * line.qty,
             )
 
-        order.recalc_total()
+        order.total = s["total"] + FLAT_SHIPPING
         order.save(update_fields=["total"])
 
-    # 3) čia pat pasirūpinam PaymentIntent ir gaunam clientSecret
     client_secret = _ensure_pi_for_order(order)
-
-    # (pasirinktinai) krepšelį išvalyk po sėkmės FE pusėje
     return JsonResponse({"order_id": order.id, "clientSecret": client_secret})
-
-

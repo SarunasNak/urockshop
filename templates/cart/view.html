@@ -1,12 +1,19 @@
 {% extends "base.html" %}
 
 {% block title %}Krepšelis – Urock{% endblock %}
+
 {% block content %}
 <h1>Krepšelis</h1>
 
 <table>
   <thead>
-    <tr><th>Prekė</th><th>Kiekis</th><th>Kaina</th><th>Suma</th><th></th></tr>
+    <tr>
+      <th>Prekė</th>
+      <th>Kiekis</th>
+      <th>Kaina</th>
+      <th>Suma</th>
+      <th></th>
+    </tr>
   </thead>
   <tbody>
   {% for it in items %}
@@ -16,7 +23,7 @@
         ({{ it.variant.color|default_if_none:"" }} {{ it.variant.size|default_if_none:"" }})
       </td>
       <td>
-        <form action="{% url 'cart_update' %}" method="post" style="display:inline">
+        <form action="{% url 'cart:cart_update' %}" method="post" style="display:inline">
           {% csrf_token %}
           <input type="hidden" name="variant_id" value="{{ it.variant.id }}">
           <label class="sr-only" for="qty-{{ it.variant.id }}">Kiekis</label>
@@ -29,7 +36,7 @@
       <td>{{ it.variant.price|floatformat:2 }} €</td>
       <td>{{ it.line_total|floatformat:2 }} €</td>
       <td>
-        <form action="{% url 'cart_remove' %}" method="post">
+        <form action="{% url 'cart:cart_remove' %}" method="post">
           {% csrf_token %}
           <input type="hidden" name="variant_id" value="{{ it.variant.id }}">
           <button type="submit">Šalinti</button>
@@ -41,6 +48,39 @@
   {% endfor %}
   </tbody>
 </table>
+
+{# --- Kupono zona --- #}
+{% if items %}
+  <hr>
+  <h2>Nuolaidos kodas</h2>
+
+  <form method="post" action="{% url 'cart:cart_apply_coupon' %}">
+    {% csrf_token %}
+    <input type="text"
+           name="coupon"
+           placeholder="Nuolaidos kodas"
+           value="{{ coupon_code|default:'' }}"
+           autocomplete="off">
+    <button type="submit">Taikyti</button>
+    {% if coupon_code %}
+      <button form="remove-coupon" type="submit">Nuimti</button>
+    {% endif %}
+  </form>
+
+  <form id="remove-coupon" method="post" action="{% url 'cart:cart_remove_coupon' %}">
+    {% csrf_token %}
+  </form>
+
+  {% if coupon_error %}
+    <p style="color:#b91c1c">{{ coupon_error }}</p>
+  {% endif %}
+{% endif %}
+
+{# Parodome tarpinę ir nuolaidą, jei yra #}
+{% if discount and coupon_code %}
+  <p><strong>Tarpinė suma:</strong> {{ subtotal|floatformat:2 }} €</p>
+  <p><strong>Nuolaida ({{ coupon_code }}):</strong> −{{ discount|floatformat:2 }} €</p>
+{% endif %}
 
 <p><strong>Iš viso:</strong> {{ total|floatformat:2 }} €</p>
 

@@ -2,13 +2,14 @@
 from django import forms
 from django.contrib import admin
 from django.core.exceptions import ValidationError
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Sum
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.db.models import Sum, Max
 from django.utils.html import format_html
 from decimal import Decimal
 from adminsortable2.admin import SortableAdminMixin
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 from .models import Category, Product, ProductImage, Variant, Size
 
@@ -82,6 +83,7 @@ class VariantInline(admin.TabularInline):
     verbose_name_plural = "Drabužio kiekiai"
 
 # ============= Product form (4 SKU + masinis įkėlimas) =============
+
 class ProductAdminForm(forms.ModelForm):
     # 4 SKU laukai „panašioms“
     related_sku_1 = forms.CharField(label="Susijusi prekė #1 (SKU)", required=False)
@@ -89,7 +91,7 @@ class ProductAdminForm(forms.ModelForm):
     related_sku_3 = forms.CharField(label="Susijusi prekė #3 (SKU)", required=False)
     related_sku_4 = forms.CharField(label="Susijusi prekė #4 (SKU)", required=False)
 
-    # masinis galerinų nuotraukų įkėlimas
+    # masinis galerijos nuotraukų įkėlimas
     bulk_images = MultipleFileField(
         label="Įkelti kelias detalės nuotraukas",
         required=False,
@@ -97,16 +99,26 @@ class ProductAdminForm(forms.ModelForm):
         help_text="Pasirink kelis failus – po išsaugojimo jie atsiras žemiau „Drabužio kortelės nuotraukos“ sąraše.",
     )
 
-    # >>> nauji laukai (vienas varianto rinkinys viršuje, po Slug):
-    v_size  = forms.CharField(label="Dydis", required=False)
+    # viršutiniai varianto laukai (Dydis → ModelChoiceField)
+    v_size = forms.ModelChoiceField(
+        label="Dydis",
+        required=False,
+        queryset=Size.objects.filter(is_active=True).order_by("order", "label"),
+    )
     v_price = forms.DecimalField(label="Kaina", max_digits=10, decimal_places=2)
-    v_stock = forms.IntegerField(label="Kiekis", min_value=0, initial=0)
+    v_stock = forms.IntegerField(label="Kiekis", min_value=0)  # be initial=0!
 
-    # papildomi (nerodomi pirmoje eilėje, bet palikti patogumui)
     v_color = forms.CharField(label="Spalva", required=False)
-    v_sku   = forms.CharField(label="Varianto SKU (nebūtina)", required=False)
+    v_sku = forms.CharField(label="Varianto SKU (nebūtina)", required=False)
     v_compare_at_price = forms.DecimalField(
         label="Kaina be nuolaidos", max_digits=10, decimal_places=2, required=False
+    )
+
+    # CKEditor aprašymui
+    description = forms.CharField(
+        label="Aprašymas",
+        required=False,
+        widget=CKEditor5Widget(config_name="products"),
     )
 
     class Meta:
@@ -122,23 +134,33 @@ class ProductAdminForm(forms.ModelForm):
             for i, sku in enumerate(skus, start=1):
                 self.fields[f"related_sku_{i}"].initial = sku
 
-        # help text kortelės nuotraukoms
+        # help text nuotraukoms
         if "main_image" in self.fields:
             self.fields["main_image"].help_text = "Kortelės nuotrauka /shop/ sąraše (pagrindinė)."
         if "hover_image" in self.fields:
             self.fields["hover_image"].help_text = "Kortelės nuotrauka /shop/ sąraše (rodoma ant „hover“)."
 
-        # užpildom viršutinius varianto laukus, jei toks jau yra
+        # užpildom viršutinius varianto laukus
         v = self.instance.variants.first() if (self.instance and self.instance.pk) else None
+
+        # ► svarbu: size_obj apibrėžiam prieš naudojimą
+        size_obj = None
+        if v and v.size:
+            # jei Variant.size saugo label (tekstą) – bandome rasti atitinkamą Size
+            size_obj = Size.objects.filter(label=v.size).first()
+
+        # visada saugu nustatyti initial (gali būti None)
+        self.fields["v_size"].initial = size_obj
+
         if v:
-            self.fields["v_size"].initial  = v.size
             self.fields["v_price"].initial = v.price
             self.fields["v_stock"].initial = v.stock
             self.fields["v_color"].initial = v.color
-            self.fields["v_sku"].initial   = v.sku
+            self.fields["v_sku"].initial = v.sku
             self.fields["v_compare_at_price"].initial = v.compare_at_price
         else:
-            # siūlom varianto SKU = produkto SKU
+            # naujas produktas – pagal nutylėjimą 1 vnt
+            self.fields["v_stock"].initial = getattr(self.instance, "stock", 1) or 1
             self.fields["v_sku"].initial = getattr(self.instance, "sku", "")
 
     def clean(self):
@@ -164,9 +186,26 @@ class ProductAdminForm(forms.ModelForm):
         return cleaned
 
     def save(self, commit=True):
-        instance = super().save(commit=commit)
+        instance = super().save(commit=False)
 
-        # priskiriam „panašias“
+        v_price = self.cleaned_data["v_price"]
+        v_stock = self.cleaned_data["v_stock"]
+        v_size_obj = self.cleaned_data.get("v_size")  # Size objektas
+        v_color = (self.cleaned_data.get("v_color") or "").strip()
+        v_sku = (self.cleaned_data.get("v_sku") or "").strip() or None
+        v_compare = self.cleaned_data.get("v_compare_at_price") or None
+
+        # priskiriam Product.size FK
+        instance.size = v_size_obj
+        instance.price = v_price
+        instance.stock = v_stock
+
+        if instance.pk is None:
+            instance.save()
+        if commit:
+            instance.save()
+
+        # priskiriam M2M „panašias“
         def apply_m2m():
             instance.related_products.set(getattr(self, "_resolved_related", []))
         if commit:
@@ -174,23 +213,21 @@ class ProductAdminForm(forms.ModelForm):
         else:
             self.save_m2m = apply_m2m  # type: ignore
 
-        # masinis ProductImage sukūrimas
+        # masinis galerijos įkėlimas
         files = self.cleaned_data.get("bulk_images", []) or []
         if files:
             start = instance.images.aggregate(m=Max("sort"))["m"] or 0
             for i, f in enumerate(files, start=1):
                 ProductImage.objects.create(product=instance, image=f, sort=start + i)
 
-        # >>> išsaugom / atnaujinam VIENĄ varianto įrašą (viršutiniai laukai)
-        v = instance.variants.first()
-        if not v:
-            v = Variant(product=instance)
-        v.size  = self.cleaned_data.get("v_size") or ""
-        v.price = self.cleaned_data["v_price"]
-        v.stock = self.cleaned_data["v_stock"]
-        v.color = self.cleaned_data.get("v_color") or ""
-        v.sku   = (self.cleaned_data.get("v_sku") or instance.sku or "").strip() or None
-        v.compare_at_price = self.cleaned_data.get("v_compare_at_price") or None
+        # atnaujinam/sukuriam variantą
+        v = instance.variants.first() or Variant(product=instance)
+        v.price = v_price
+        v.stock = v_stock
+        v.color = v_color
+        v.sku = v_sku or instance.sku
+        v.compare_at_price = v_compare
+        v.size = v_size_obj.label if v_size_obj else ""  # variantui dedam tekstą
         v.is_active = True
         v.save()
 
@@ -204,21 +241,21 @@ class ProductAdmin(_BaseProductAdmin):
     list_filter = ("category",)
     search_fields = ("sku", "name", "brand", "description")
     prepopulated_fields = {"slug": ("name",)}
-    # variantų inline nebėra – naudojam viršuje esančius laukus
     inlines = [ProductImageInline]
     readonly_fields = ("related_preview", "main_image_preview", "hover_image_preview")
 
+    class Media:
+        css = {"all": ("ckeditor.css",)}  # kelias nuo STATIC_URL
+
     fieldsets = (
-        # 1) Viskas pagrindiniame bloke: po Slug – Kaina, Dydis, Kiekis
         ("Naujas katalogo drabužis", {
             "fields": (
                 "sku", "brand", "category",
                 "name", "slug",
-                ("v_price", "v_size", "v_stock"),   # <<< čia perkelta
+                ("v_price", "v_size", "v_stock"),
                 "description", "is_active",
             )
         }),
-        # (nebūtina, bet palieku papildomus varianto laukus atskirai, suskleidžiamus)
         ("Papildoma varianto informacija", {
             "fields": (("v_color", "v_sku", "v_compare_at_price"),),
             "classes": ("collapse",),
@@ -243,8 +280,6 @@ class ProductAdmin(_BaseProductAdmin):
         }),
     )
 
-    # --- likusi klasė be pokyčių ---
-
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if obj is None and "sku" in form.base_fields:
@@ -260,9 +295,24 @@ class ProductAdmin(_BaseProductAdmin):
             ro.append("sku")
         return ro
 
+    # --- svarbiausia: dinaminis sandėlis iš Variantų ---
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        return qs.select_related("category").prefetch_related("images", "variants", "related_products__images")
+        return qs.annotate(
+            _total_stock=Sum("variants__stock", filter=Q(variants__is_active=True))
+        )
+
+    @admin.display(ordering="_total_stock", description="STOCK")
+    def stock_col(self, obj):
+        # rodom sumą iš aktyvių Variantų (jei None – 0)
+        return getattr(obj, "_total_stock", 0) or 0
+
+    @admin.display(description="Price")
+    def price_col(self, obj):
+        if hasattr(obj, "price"):
+            return obj.price
+        v = obj.variants.order_by("price").first()
+        return v.price if v else None
 
     @admin.display(description="Preview")
     def thumb(self, obj):
@@ -275,19 +325,6 @@ class ProductAdmin(_BaseProductAdmin):
         if img and img.image:
             return format_html('<img src="{}" style="height:60px;border-radius:6px;" />', img.image.url)
         return "—"
-
-    @admin.display(description="Price")
-    def price_col(self, obj):
-        if hasattr(obj, "price"):
-            return obj.price
-        v = obj.variants.order_by("price").first()
-        return v.price if v else None
-
-    @admin.display(description="Stock")
-    def stock_col(self, obj):
-        if hasattr(obj, "stock"):
-            return obj.stock
-        return obj.variants.aggregate(s=Sum("stock"))["s"] or 0
 
     @admin.display(description="Panašių peržiūra")
     def related_preview(self, obj):
@@ -334,7 +371,6 @@ class ProductAdmin(_BaseProductAdmin):
                 pass
         return "—"
 
-
 # ================= Variant =================
 @admin.register(Variant)
 class VariantAdmin(admin.ModelAdmin):
@@ -342,6 +378,7 @@ class VariantAdmin(admin.ModelAdmin):
         "thumb",
         "sku",
         "product",
+        "product_brand",
         "color",
         "size",
         "price",
@@ -350,16 +387,25 @@ class VariantAdmin(admin.ModelAdmin):
         "stock",
         "is_active",
     )
+    list_display_links = ("sku", "product")
+
     list_editable = ("price", "compare_at_price", "stock", "is_active")
-    list_filter = ("size",)  # tik dydis
-    search_fields = ("sku", "product__name")
+    list_filter = ("size",)
+    search_fields = ("sku", "product__name", "product__brand")
     list_select_related = ("product",)
 
     actions = ["discount_10", "discount_20", "clear_discount"]
 
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.select_related("product").prefetch_related("product__images")
+
+
+    @admin.display(description="Brand", ordering="product__brand")
+    def product_brand(self, obj):
+        return getattr(obj.product, "brand", "") or "—"
+
 
     @admin.display(description="Preview")
     def thumb(self, obj):
@@ -474,3 +520,4 @@ class SizeAdmin(SortableAdminMixin, admin.ModelAdmin):
         url = reverse("admin:catalog_product_changelist")
         params = urlencode({"size__id__exact": obj.id})
         return format_html('<a href="{}?{}">{}</a>', url, params, obj.all_products_count)
+

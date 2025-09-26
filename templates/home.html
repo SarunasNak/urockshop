@@ -1,5 +1,28 @@
 {% extends "base.html" %}
+
 {% block content %}
 <h1>Home</h1>
 <p>Pasveikinimo puslapis. Eik į <a href="{% url 'product_list' %}">Shop</a>.</p>
+
+<hr>
+
+<!-- Laikinas footer/newsletter blokas -->
+<form id="nl-form" method="post" action="{% url 'newsletter_subscribe' %}">
+  {% csrf_token %}
+  <label for="nl-email">Naujienlaiškis</label>
+  <input id="nl-email" type="email" name="email" placeholder="Jūsų el. paštas" required>
+  <input type="text" name="hp" style="display:none">  <!-- honeypot nuo botų -->
+  <button type="submit">Prenumeruoti</button>
+</form>
+
+<script>
+document.getElementById("nl-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const resp = await fetch(form.action, { method: "POST", body: new FormData(form) });
+  alert(resp.ok ? "Ačiū! Prenumerata užregistruota." : "Patikrinkite el. pašto adresą.");
+  if (resp.ok) form.reset();
+});
+</script>
 {% endblock %}
+

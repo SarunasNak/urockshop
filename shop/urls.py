@@ -25,9 +25,10 @@ urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path("about/", about_view, name="about"),
     path("shop/", include("catalog.urls")),      # list + detail
-    path("cart/", include("cart.urls")),
+    path("cart/", include("cart.urls", namespace="cart")),
     path("checkout/", include("checkout.urls")),
     path("blog/", include("blog.urls")),
+    path("newsletter/", include("newsletter.urls")),
 
     # API (paliekam, tik rekomenduoju suversijuoti)
     path("api/v1/", include("catalog.urls_api")),
