@@ -66,10 +66,7 @@
   <body id="top" class="mt-[68px] md:mt-[92.5px] font-mont">
     <div id="preloader"></div>
     <!-- Navbar -->
-    <header
-      class="header bg-white z-20 transition-all duration-300"
-      x-data="{ open: false }"
-    >
+    <header class="header bg-white z-20" x-data="{ open: false }">
       <!-- Running text -->
       <div
         class="bg-brand-beige text-white text-[10px] md:text-xs py-2 font-serif"
@@ -86,17 +83,17 @@
           <nav class="hidden md:flex space-x-2 lg:space-x-5 text-[13px]">
             <a
               href="#"
-              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              class="transition-text duration-300 hover:text-brand-beige p-[10px]"
               >APIE MUS</a
             >
             <a
               href="#"
-              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              class="transition-text duration-300 hover:text-brand-beige p-[10px]"
               >BLOGAS</a
             >
             <a
               href="#"
-              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              class="transition-text duration-300 hover:text-brand-beige p-[10px]"
               >KATALOGAS</a
             >
           </nav>
@@ -122,7 +119,7 @@
             class="flex items-center justify-between w-full md:w-auto space-x-4"
           >
             <!-- Burger (mobile only) -->
-            <button @click="open = !open" class="md:hidden focus:outline-none">
+            <button @click="open = !open" class="md:hidden">
               <svg
                 x-show="!open"
                 xmlns="http://www.w3.org/2000/svg"
@@ -175,21 +172,9 @@
           x-transition
           class="md:hidden flex flex-col items-center space-y-1 py-12 text-sm"
         >
-          <a
-            href="#"
-            class="transition-all duration-300 hover:text-brand-beige p-5"
-            >APIE MUS</a
-          >
-          <a
-            href="#"
-            class="transition-all duration-300 hover:text-brand-beige p-5"
-            >BLOGAS</a
-          >
-          <a
-            href="#"
-            class="transition-all duration-300 hover:text-brand-beige p-5"
-            >KATALOGAS</a
-          >
+          <a href="#" class="p-5">APIE MUS</a>
+          <a href="#" class="p-5">BLOGAS</a>
+          <a href="#" class="p-5">KATALOGAS</a>
         </div>
       </div>
     </header>
@@ -203,7 +188,7 @@
             <li>
               <a
                 href="#"
-                class="transition-all duration-300 text-brand-beige hover:text-black p-[10px]"
+                class="text-brand-beige hover:text-black p-[10px]"
                 >APIE MUS</a
               >
               /
@@ -211,7 +196,7 @@
             <li>
               <a
                 href="#"
-                class="transition-all duration-300 text-brand-beige hover:text-black p-[10px]"
+                class="text-brand-beige hover:text-black p-[10px]"
                 >BLOGAS</a
               >
             </li>
@@ -222,7 +207,7 @@
                 *Čia rasite tik dalį mūsų siūlomų drabužių.
               </p>
               <a
-                href="#"
+                href="#newsletter"
                 class="text-[10px] font-bold hover:text-brand-beige hover:underline"
               >
                 Noriu daugiau.
@@ -240,7 +225,7 @@
                   @click="open = !open; active = true"
                   @mouseenter="active = true"
                   @mouseleave="if (!open && selected === 'Dydis') active = false"
-                  class="w-full flex items-center justify-center border-b border-brand-beige px-3 py-2 bg-white pb-2 md:pb-6 transition-all duration-300"
+                  class="w-full flex items-center justify-center border-b border-brand-beige px-3 py-2 bg-white pb-2 md:pb-6 transition-border transition-text duration-300"
                   :class="{ 'text-black border-black': active, 'text-brand-beige': !active }"
                 >
                   <div class="flex items-center space-x-2">
@@ -253,7 +238,7 @@
                       fill="none"
                     >
                       <path
-                        class="transition-all duration-300"
+                        class="transition-fill duration-300"
                         d="M24.356 25.1927L16.5285 17.3652C15.9035 17.8977 15.1848 18.3098 14.3723 18.6014C13.5598 18.8931 12.7431 19.0389 11.9223 19.0389C9.9206 19.0389 8.22643 18.346 6.83977 16.9602C5.4531 15.5743 4.75977 13.8806 4.75977 11.8789C4.75977 9.87726 5.45227 8.18268 6.83727 6.79518C8.22227 5.40768 9.9156 4.7131 11.9173 4.71143C13.9189 4.70976 15.6139 5.4031 17.0023 6.79143C18.3906 8.17976 19.0848 9.87435 19.0848 11.8752C19.0848 12.7435 18.931 13.5839 18.6235 14.3964C18.316 15.2089 17.9118 15.9039 17.411 16.4814L25.2385 24.3077L24.356 25.1927ZM11.9235 17.7877C13.5818 17.7877 14.9818 17.2168 16.1235 16.0752C17.2652 14.9335 17.836 13.5331 17.836 11.8739C17.836 10.2148 17.2652 8.81476 16.1235 7.67393C14.9818 6.5331 13.5818 5.96226 11.9235 5.96143C10.2652 5.9606 8.86477 6.53143 7.72227 7.67393C6.57977 8.81643 6.00893 10.2164 6.00977 11.8739C6.0106 13.5314 6.58143 14.9314 7.72227 16.0739C8.8631 17.2164 10.2631 17.7873 11.9223 17.7864"
                         :class="{ 'fill-black': active, 'fill-[#9E9288]': !active }"
                       />
@@ -275,7 +260,7 @@
                       <li>
                         <button
                           @click="selected = option; open = false; active = true"
-                          class="block w-full text-center px-2 py-2 hover:text-brand-beige uppercase mb-2 md:mb-[17px] transition-all duration-300"
+                          class="block w-full text-center px-2 py-2 hover:text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300"
                           x-text="option"
                         ></button>
                       </li>
@@ -293,7 +278,7 @@
                   @click="open = !open; active = true"
                   @mouseenter="active = true"
                   @mouseleave="if (!open && selected === 'Visi') active = false"
-                  class="w-full flex items-center justify-center border-b border-brand-beige px-3 py-2 bg-white pb-2 md:pb-6 transition-all duration-300"
+                  class="w-full flex items-center justify-center border-b border-brand-beige px-3 py-2 bg-white pb-2 md:pb-6 transition-border transition-text duration-300"
                   :class="{ 'text-black border-black': active, 'text-brand-beige': !active }"
                 >
                   <div class="flex items-center space-x-2">
@@ -306,7 +291,7 @@
                       fill="none"
                     >
                       <path
-                        class="transition-all duration-300"
+                        class="transition-fill duration-300"
                         d="M24.356 25.1927L16.5285 17.3652C15.9035 17.8977 15.1848 18.3098 14.3723 18.6014C13.5598 18.8931 12.7431 19.0389 11.9223 19.0389C9.9206 19.0389 8.22643 18.346 6.83977 16.9602C5.4531 15.5743 4.75977 13.8806 4.75977 11.8789C4.75977 9.87726 5.45227 8.18268 6.83727 6.79518C8.22227 5.40768 9.9156 4.7131 11.9173 4.71143C13.9189 4.70976 15.6139 5.4031 17.0023 6.79143C18.3906 8.17976 19.0848 9.87435 19.0848 11.8752C19.0848 12.7435 18.931 13.5839 18.6235 14.3964C18.316 15.2089 17.9118 15.9039 17.411 16.4814L25.2385 24.3077L24.356 25.1927ZM11.9235 17.7877C13.5818 17.7877 14.9818 17.2168 16.1235 16.0752C17.2652 14.9335 17.836 13.5331 17.836 11.8739C17.836 10.2148 17.2652 8.81476 16.1235 7.67393C14.9818 6.5331 13.5818 5.96226 11.9235 5.96143C10.2652 5.9606 8.86477 6.53143 7.72227 7.67393C6.57977 8.81643 6.00893 10.2164 6.00977 11.8739C6.0106 13.5314 6.58143 14.9314 7.72227 16.0739C8.8631 17.2164 10.2631 17.7873 11.9223 17.7864"
                         :class="{ 'fill-black': active, 'fill-[#9E9288]': !active }"
                       />
@@ -329,7 +314,7 @@
                       <li>
                         <button
                           @click="selected = option; open = false; active = true"
-                          class="block w-full text-center px-2 py-2 hover:text-brand-beige uppercase mb-2 md:mb-[17px] transition-all duration-300"
+                          class="block w-full text-center px-2 py-2 hover:text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300"
                           x-text="option"
                         ></button>
                       </li>
@@ -357,6 +342,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/dzinsai-melyni-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -369,7 +356,7 @@
                   <div
                     class="text-[12px] md:text-[13px] flex items-center line-through"
                   >
-                    425
+                    425.15
                     <svg
                       class="ml-1"
                       xmlns="http://www.w3.org/2000/svg"
@@ -395,7 +382,7 @@
                       -50%
                     </span>
                     <span class="text-[12px] md:text-[13px] flex items-center">
-                      212.5
+                      212.50
                       <svg
                         class="ml-1"
                         xmlns="http://www.w3.org/2000/svg"
@@ -428,6 +415,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -440,7 +429,7 @@
                   <div
                     class="text-[12px] md:text-[13px] flex items-center line-through"
                   >
-                    600
+                    600.30
                     <svg
                       class="ml-1"
                       xmlns="http://www.w3.org/2000/svg"
@@ -466,7 +455,7 @@
                       -39%
                     </span>
                     <span class="text-[12px] md:text-[13px] flex items-center">
-                      366
+                      366.50
                       <svg
                         class="ml-1"
                         xmlns="http://www.w3.org/2000/svg"
@@ -499,6 +488,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -510,7 +501,7 @@
                   </div>
                   <!-- class line-trought needs to be added if has discount -->
                   <div class="text-[12px] md:text-[13px] flex items-center">
-                    600
+                    600.30
                     <svg
                       class="ml-1"
                       xmlns="http://www.w3.org/2000/svg"
@@ -535,7 +526,7 @@
                       -39%
                     </span>
                     <span class="text-[12px] md:text-[13px] flex items-center">
-                      366
+                      366.50
                       <svg
                         class="ml-1"
                         xmlns="http://www.w3.org/2000/svg"
@@ -568,6 +559,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/dzinsai-melyni-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -580,7 +573,7 @@
                   <div
                     class="text-[12px] md:text-[13px] flex items-center line-through"
                   >
-                    425
+                    425.15
                     <svg
                       class="ml-1"
                       xmlns="http://www.w3.org/2000/svg"
@@ -606,7 +599,7 @@
                       -50%
                     </span>
                     <span class="text-[12px] md:text-[13px] flex items-center">
-                      212.5
+                      212.50
                       <svg
                         class="ml-1"
                         xmlns="http://www.w3.org/2000/svg"
@@ -639,6 +632,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -651,7 +646,7 @@
                   <div
                     class="text-[12px] md:text-[13px] flex items-center line-through"
                   >
-                    600
+                    600.30
                     <svg
                       class="ml-1"
                       xmlns="http://www.w3.org/2000/svg"
@@ -677,7 +672,7 @@
                       -39%
                     </span>
                     <span class="text-[12px] md:text-[13px] flex items-center">
-                      366
+                      366.50
                       <svg
                         class="ml-1"
                         xmlns="http://www.w3.org/2000/svg"
@@ -710,6 +705,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -721,7 +718,7 @@
                   </div>
                   <!-- class line-trought needs to be added if has discount -->
                   <div class="text-[12px] md:text-[13px] flex items-center">
-                    600
+                    600.30
                     <svg
                       class="ml-1"
                       xmlns="http://www.w3.org/2000/svg"
@@ -746,7 +743,7 @@
                       -39%
                     </span>
                     <span class="text-[12px] md:text-[13px] flex items-center">
-                      366
+                      366.50
                       <svg
                         class="ml-1"
                         xmlns="http://www.w3.org/2000/svg"
@@ -772,6 +769,8 @@
                   class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
                   src="/fe/assets/img/dzinsai-melyni-aa.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
 
                 <!-- Second image (shown on hover) -->
@@ -779,6 +778,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/dzinsai-melyni-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -791,7 +792,7 @@
                   <div
                     class="text-[12px] md:text-[13px] flex items-center line-through"
                   >
-                    425
+                    425.15
                     <svg
                       class="ml-1"
                       xmlns="http://www.w3.org/2000/svg"
@@ -817,7 +818,7 @@
                       -50%
                     </span>
                     <span class="text-[12px] md:text-[13px] flex items-center">
-                      212.5
+                      212.50
                       <svg
                         class="ml-1"
                         xmlns="http://www.w3.org/2000/svg"
@@ -843,6 +844,8 @@
                   class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
                   src="/fe/assets/img/etro-svarkas-aa.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
 
                 <!-- Second image (shown on hover) -->
@@ -850,6 +853,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -869,7 +874,7 @@
                   <!-- <div
                     class="text-[12px] md:text-[13px] flex items-center line-through"
                   >
-                    600
+                    600.30
                     <svg
                       class="ml-1"
                       xmlns="http://www.w3.org/2000/svg"
@@ -896,7 +901,7 @@
                       -39%
                     </span>
                     <span class="text-[12px] md:text-[13px] flex items-center">
-                      366
+                      366.50
                       <svg
                         class="ml-1"
                         xmlns="http://www.w3.org/2000/svg"
@@ -922,6 +927,8 @@
                   class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
                   src="/fe/assets/img/etro-svarkas-aa.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
 
                 <!-- Second image (shown on hover) -->
@@ -929,6 +936,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -940,7 +949,7 @@
                   </div>
                   <!-- class line-trought needs to be added if has discount -->
                   <div class="text-[12px] md:text-[13px] flex items-center">
-                    600
+                    600.30
                     <svg
                       class="ml-1"
                       xmlns="http://www.w3.org/2000/svg"
@@ -965,7 +974,238 @@
                       -39%
                     </span>
                     <span class="text-[12px] md:text-[13px] flex items-center">
-                      366
+                      366.50
+                      <svg
+                        class="ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="12"
+                        viewBox="0 0 13 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+            <div>
+              <a href="#" class="relative block w-full group">
+                <!-- First image (default) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  src="/fe/assets/img/dzinsai-melyni-aa.jpg"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+
+                <!-- Second image (shown on hover) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  src="/fe/assets/img/dzinsai-melyni-a.jpg"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+              <div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1"
+                  >
+                    Off-White
+                  </div>
+                  <div
+                    class="text-[12px] md:text-[13px] flex items-center line-through"
+                  >
+                    425.15
+                    <svg
+                      class="ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="12"
+                      viewBox="0 0 13 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-white bg-brand-maroon flex">
+                    <span
+                      class="text-[12px] md:text-[13px] flex items-center mr-2"
+                    >
+                      -50%
+                    </span>
+                    <span class="text-[12px] md:text-[13px] flex items-center">
+                      212.50
+                      <svg
+                        class="ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="12"
+                        viewBox="0 0 13 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <a href="#" class="relative block w-full group">
+                <!-- First image (default) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  src="/fe/assets/img/etro-svarkas-aa.jpg"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+
+                <!-- Second image (shown on hover) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  src="/fe/assets/img/etro-svarkas-a.jpg"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+              <div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1"
+                  >
+                    Off-White
+                  </div>
+                  <!-- Jei parduota rodom sita-->
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1 uppercase"
+                  >
+                    Parduota
+                  </div>
+                  <!-- Jei parduota nerodom sito-->
+                  <!-- <div
+                    class="text-[12px] md:text-[13px] flex items-center line-through"
+                  >
+                    600.30
+                    <svg
+                      class="ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="12"
+                      viewBox="0 0 13 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div> -->
+                </div>
+                <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-white bg-brand-maroon flex">
+                    <!-- Jei parduota nerodom sito-->
+                    <!-- <span
+                      class="text-[12px] md:text-[13px] flex items-center mr-2"
+                    >
+                      -39%
+                    </span>
+                    <span class="text-[12px] md:text-[13px] flex items-center">
+                      366.50
+                      <svg
+                        class="ml-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="13"
+                        height="12"
+                        viewBox="0 0 13 12"
+                        fill="none"
+                      >
+                        <path
+                          d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </span> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <a href="#" class="relative block w-full group">
+                <!-- First image (default) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  src="/fe/assets/img/etro-svarkas-aa.jpg"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+
+                <!-- Second image (shown on hover) -->
+                <img
+                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  src="/fe/assets/img/etro-svarkas-a.jpg"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+              <div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div
+                    class="text-[13px] md:text-[18px] text-brand-maroon font-serif mb-1"
+                  >
+                    Off-White
+                  </div>
+                  <!-- class line-trought needs to be added if has discount -->
+                  <div class="text-[12px] md:text-[13px] flex items-center">
+                    600.30
+                    <svg
+                      class="ml-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="13"
+                      height="12"
+                      viewBox="0 0 13 12"
+                      fill="none"
+                    >
+                      <path
+                        d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
+                <div class="flex justify-between items-center space-x-2">
+                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <!-- best way I think just not to render this part if there is no discont -->
+                  <!-- <div class="text-white bg-brand-maroon flex">
+                    <span class="text-[12px] md:text-[13px] flex items-center mr-2">
+                      -39%
+                    </span>
+                    <span class="text-[12px] md:text-[13px] flex items-center">
+                      366.50
                       <svg
                         class="ml-1"
                         xmlns="http://www.w3.org/2000/svg"
@@ -991,7 +1231,7 @@
           class="flex items-center justify-center space-x-2 md:space-x-4 mt-2 md:mt-[50px] py-4"
         >
           <!-- Previous -->
-          <button class="group text-black transition-all duration-300 px-2">
+          <button class="group text-black duration-300 px-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="6"
@@ -1004,7 +1244,7 @@
                 stroke="currentColor"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="transition-all duration-300 group-hover:stroke-brand-beige"
+                class="transition-stroke duration-300 group-hover:stroke-brand-beige"
               />
             </svg>
           </button>
@@ -1013,35 +1253,35 @@
           <div class="flex space-x-2 md:space-x-4 text-xs font-sans">
             <button class="text-black px-2">1</button>
             <button
-              class="text-brand-beige hover:text-black transition-all duration-300 px-2"
+              class="text-brand-beige hover:text-black transition-text duration-300 px-2"
             >
               2
             </button>
             <button
-              class="text-brand-beige hover:text-black transition-all duration-300 px-2"
+              class="text-brand-beige hover:text-black transition-text duration-300 px-2"
             >
               3
             </button>
             <span class="text-brand-beige">…</span>
             <button
-              class="text-brand-beige hover:text-black transition-all duration-300 px-2"
+              class="text-brand-beige hover:text-black transition-text duration-300 px-2"
             >
               18
             </button>
             <button
-              class="text-brand-beige hover:text-black transition-all duration-300 px-2"
+              class="text-brand-beige hover:text-black transition-text duration-300 px-2"
             >
               19
             </button>
             <button
-              class="text-brand-beige hover:text-black transition-all duration-300 px-2"
+              class="text-brand-beige hover:text-black transition-text duration-300 px-2"
             >
               20
             </button>
           </div>
 
           <!-- Next -->
-          <button class="group text-black transition-all duration-300 px-2">
+          <button class="group text-black duration-300 px-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="6"
@@ -1054,7 +1294,7 @@
                 stroke="currentColor"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="transition-all duration-300 group-hover:stroke-brand-beige"
+                class="transition-stroke duration-300 group-hover:stroke-brand-beige"
               />
             </svg>
           </button>
@@ -1164,14 +1404,14 @@
           <div class="md:max-w-[249px] order-3">
             <div>
               <p class="font-bold">Mūsų drabužių naujienos</p>
-              <div class="form-element w-full mb-6">
+              <div id="newsletter" class="form-element w-full mb-6">
                 <input
                   class="w-[230px] text-[12px] text-center placeholder:text-white h-[40px] border border-brand-gray-light bg-transparent mb-1 block mx-auto"
                   type="email"
                   placeholder="El. paštas"
                 />
                 <input
-                  class="w-[230px] text-[12px] tw-button-bg-mrm inline-block bg-black text-black p-[8.5px] text-sm hover:bg-gray-800 transition-all duration-300 opacity-70 cursor-pointer block mx-auto"
+                  class="w-[230px] text-[12px] tw-button-bg-mrm inline-block bg-black text-black p-[8.5px] text-sm hover:bg-gray-800 transition-background duration-300 opacity-70 cursor-pointer block mx-auto"
                   type="submit"
                   value="PRENUMERUOTI"
                 />
@@ -1218,11 +1458,15 @@
     <script>
       window.addEventListener("load", function () {
         const preloader = document.getElementById("preloader");
-        if (preloader) {
-          preloader.style.transition = "opacity 0.5s ease";
-          preloader.style.opacity = "0";
-          setTimeout(() => preloader.remove(), 500);
-        }
+        if (!preloader) return;
+
+        // Start fade-out
+        preloader.style.opacity = "0";
+
+        // Remove from DOM after fade-out duration (500ms)
+        setTimeout(() => {
+          preloader.remove();
+        }, 500);
       });
     </script>
   </body>

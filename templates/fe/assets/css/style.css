@@ -63,8 +63,7 @@
     format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 a {
-  transition: all;
-  transition-duration: 0.3s;
+  transition: color 0.3s, background 0.3s;
 }
 .header {
   position: fixed;
@@ -113,19 +112,35 @@ a {
   background-repeat: no-repeat;
   background-position: center;
 }
-ß
-/* Preloader container */
+/* Full-screen preloader */
 #preloader {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: #fff;
   z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* Optional: smooth fade-out */
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+/*loader animation (optional) */
+.loader {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #000;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 /* swiper controls */
 .swiper-button-next::after,
@@ -165,4 +180,8 @@ a {
 }
 .ck-content p {
   margin-bottom: 20px;
+}
+/* Bendras focus stilius */
+:focus-visible {
+  outline: 1px solid #6d1f36;
 }

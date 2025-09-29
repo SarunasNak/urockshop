@@ -66,10 +66,7 @@
   <body id="top" class="mt-[68px] md:mt-[92.5px] font-mont">
     <div id="preloader"></div>
     <!-- Navbar -->
-    <header
-      class="header bg-white z-20 transition-all duration-300"
-      x-data="{ open: false }"
-    >
+    <header class="header bg-white z-20" x-data="{ open: false }">
       <!-- Running text -->
       <div
         class="bg-brand-beige text-white text-[10px] md:text-xs py-2 font-serif"
@@ -86,17 +83,17 @@
           <nav class="hidden md:flex space-x-2 lg:space-x-5 text-[13px]">
             <a
               href="#"
-              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              class="transition-text duration-300 hover:text-brand-beige p-[10px]"
               >APIE MUS</a
             >
             <a
               href="#"
-              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              class="transition-text duration-300 hover:text-brand-beige p-[10px]"
               >BLOGAS</a
             >
             <a
               href="#"
-              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              class="transition-text duration-300 hover:text-brand-beige p-[10px]"
               >KATALOGAS</a
             >
           </nav>
@@ -122,10 +119,7 @@
             class="flex items-center justify-between w-full md:w-auto space-x-4"
           >
             <!-- Burger (mobile only) -->
-            <button
-              @click="open = !open"
-              class="md:hidden focus:outline-brand-maroon"
-            >
+            <button @click="open = !open" class="md:hidden">
               <svg
                 x-show="!open"
                 xmlns="http://www.w3.org/2000/svg"
@@ -178,21 +172,9 @@
           x-transition
           class="md:hidden flex flex-col items-center space-y-1 py-12 text-sm"
         >
-          <a
-            href="#"
-            class="transition-all duration-300 hover:text-brand-beige p-5"
-            >APIE MUS</a
-          >
-          <a
-            href="#"
-            class="transition-all duration-300 hover:text-brand-beige p-5"
-            >BLOGAS</a
-          >
-          <a
-            href="#"
-            class="transition-all duration-300 hover:text-brand-beige p-5"
-            >KATALOGAS</a
-          >
+          <a href="#" class="p-5">APIE MUS</a>
+          <a href="#" class="p-5">BLOGAS</a>
+          <a href="#" class="p-5">KATALOGAS</a>
         </div>
       </div>
     </header>
@@ -341,14 +323,14 @@
           <div class="md:max-w-[249px] order-3">
             <div>
               <p class="font-bold">Mūsų drabužių naujienos</p>
-              <div class="form-element w-full mb-6">
+              <div id="newsletter" class="form-element w-full mb-6">
                 <input
                   class="w-[230px] text-[12px] text-center placeholder:text-white h-[40px] border border-brand-gray-light bg-transparent mb-1 block mx-auto"
                   type="email"
                   placeholder="El. paštas"
                 />
                 <input
-                  class="w-[230px] text-[12px] tw-button-bg-mrm inline-block bg-black text-black p-[8.5px] text-sm hover:bg-gray-800 transition-all duration-300 opacity-70 cursor-pointer block mx-auto"
+                  class="w-[230px] text-[12px] tw-button-bg-mrm inline-block bg-black text-black p-[8.5px] text-sm hover:bg-gray-800 transition-background duration-300 opacity-70 cursor-pointer block mx-auto"
                   type="submit"
                   value="PRENUMERUOTI"
                 />
@@ -395,11 +377,15 @@
     <script>
       window.addEventListener("load", function () {
         const preloader = document.getElementById("preloader");
-        if (preloader) {
-          preloader.style.transition = "opacity 0.5s ease";
-          preloader.style.opacity = "0";
-          setTimeout(() => preloader.remove(), 500);
-        }
+        if (!preloader) return;
+
+        // Start fade-out
+        preloader.style.opacity = "0";
+
+        // Remove from DOM after fade-out duration (500ms)
+        setTimeout(() => {
+          preloader.remove();
+        }, 500);
       });
     </script>
   </body>

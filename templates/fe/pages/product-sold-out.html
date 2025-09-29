@@ -66,10 +66,7 @@
   <body id="top" class="mt-[68px] md:mt-[92.5px] font-mont">
     <div id="preloader"></div>
     <!-- Navbar -->
-    <header
-      class="header bg-white z-20 transition-all duration-300"
-      x-data="{ open: false }"
-    >
+    <header class="header bg-white z-20" x-data="{ open: false }">
       <!-- Running text -->
       <div
         class="bg-brand-beige text-white text-[10px] md:text-xs py-2 font-serif"
@@ -86,17 +83,17 @@
           <nav class="hidden md:flex space-x-2 lg:space-x-5 text-[13px]">
             <a
               href="#"
-              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              class="transition-text duration-300 hover:text-brand-beige p-[10px]"
               >APIE MUS</a
             >
             <a
               href="#"
-              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              class="transition-text duration-300 hover:text-brand-beige p-[10px]"
               >BLOGAS</a
             >
             <a
               href="#"
-              class="transition-all duration-300 hover:text-brand-beige p-[10px]"
+              class="transition-text duration-300 hover:text-brand-beige p-[10px]"
               >KATALOGAS</a
             >
           </nav>
@@ -122,7 +119,7 @@
             class="flex items-center justify-between w-full md:w-auto space-x-4"
           >
             <!-- Burger (mobile only) -->
-            <button @click="open = !open" class="md:hidden focus:outline-none">
+            <button @click="open = !open" class="md:hidden">
               <svg
                 x-show="!open"
                 xmlns="http://www.w3.org/2000/svg"
@@ -175,21 +172,9 @@
           x-transition
           class="md:hidden flex flex-col items-center space-y-1 py-12 text-sm"
         >
-          <a
-            href="#"
-            class="transition-all duration-300 hover:text-brand-beige p-5"
-            >APIE MUS</a
-          >
-          <a
-            href="#"
-            class="transition-all duration-300 hover:text-brand-beige p-5"
-            >BLOGAS</a
-          >
-          <a
-            href="#"
-            class="transition-all duration-300 hover:text-brand-beige p-5"
-            >KATALOGAS</a
-          >
+          <a href="#" class="p-5">APIE MUS</a>
+          <a href="#" class="p-5">BLOGAS</a>
+          <a href="#" class="p-5">KATALOGAS</a>
         </div>
       </div>
     </header>
@@ -201,7 +186,7 @@
           <li>
             <a
               href="#"
-              class="transition-all duration-300 text-[12px] text-brand-beige hover:text-black pr-3 uppercase"
+              class="text-[12px] text-brand-beige hover:text-black pr-3 uppercase"
               >BLOGAS</a
             >
             /
@@ -209,12 +194,12 @@
           <li>
             <a
               href="#"
-              class="transition-all duration-300 text-[12px] text-brand-beige hover:text-black uppercase"
+              class="text-[12px] text-brand-beige hover:text-black uppercase"
               >KATALOGAS</a
             >
           </li>
         </ul>
-        <div class="swiper product-slider w-full md:border border-black">
+        <div class="swiper product-slider w-full">
           <div class="swiper-wrapper relative">
             <div class="swiper-slide overflow-hidden">
               <img
@@ -228,6 +213,8 @@
                 class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
                 src="/fe/assets/img/etro-svarkas-2.jpg"
                 alt=""
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div class="swiper-slide overflow-hidden">
@@ -235,6 +222,8 @@
                 class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
                 src="/fe/assets/img/etro-svarkas-3-a.jpg"
                 alt=""
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div class="swiper-slide overflow-hidden">
@@ -242,6 +231,8 @@
                 class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
                 src="/fe/assets/img/etro-svarkas-4-aa.jpg"
                 alt=""
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div class="swiper-slide overflow-hidden">
@@ -249,6 +240,8 @@
                 class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
                 src="/fe/assets/img/etro-svarkas-5.jpg"
                 alt=""
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div class="swiper-slide overflow-hidden">
@@ -263,6 +256,8 @@
                 class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
                 src="/fe/assets/img/etro-svarkas-7.jpg"
                 alt=""
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -276,7 +271,7 @@
               <!-- Left Arrow -->
               <button
                 aria-label="Previous slide"
-                class="p-2 hover:bg-[#D8D9D8CC] transition-all duration-300 swiper-button-prev !static !w-[32px] !h-[32px] rounded-[4px] flex items-center justify-center bg-[#D8D9D833]"
+                class="p-2 hover:bg-[#D8D9D8CC] transition-background duration-300 swiper-button-prev !static !w-[32px] !h-[32px] rounded-[4px] flex items-center justify-center bg-[#D8D9D833]"
               >
                 <!-- Left SVG -->
                 <svg
@@ -303,7 +298,7 @@
               <!-- Right Arrow -->
               <button
                 aria-label="Next slide"
-                class="p-2 hover:bg-[#D8D9D8CC] transition-all duration-300 swiper-button-next !static !w-[32px] !h-[32px] rounded-[4px] flex items-center justify-center bg-[#D8D9D833]"
+                class="p-2 hover:bg-[#D8D9D8CC] transition-background duration-300 swiper-button-next !static !w-[32px] !h-[32px] rounded-[4px] flex items-center justify-center bg-[#D8D9D833]"
               >
                 <!-- Right SVG -->
                 <svg
@@ -334,7 +329,7 @@
             <li>
               <a
                 href="#"
-                class="transition-all duration-300 text-[13px] text-brand-beige hover:text-black pr-3 uppercase"
+                class="transition-text duration-300 text-[13px] text-brand-beige hover:text-black pr-3 uppercase"
                 >BLOGAS</a
               >
               /
@@ -342,7 +337,7 @@
             <li>
               <a
                 href="#"
-                class="transition-all duration-300 text-[13px] text-brand-beige hover:text-black uppercase"
+                class="transition-text duration-300 text-[13px] text-brand-beige hover:text-black uppercase"
                 >KATALOGAS</a
               >
             </li>
@@ -408,8 +403,8 @@
             </p>
             <p>
               <a
-                class="mb-5 text-brand-maroon hidden md:block hover:text-black text-xs"
-                href="#footer"
+                class="mb-5 text-brand-maroon font-bold hidden md:block text-xs hover:underline"
+                href="#newsletter"
                 >*Parduotuvėje eksponuojame tik dalį asortimento. Užsisakykite
                 naujienlaiškį ir pirmieji sužinokite apie kas mėnesį
                 atvykstančius drabužius.</a
@@ -450,7 +445,7 @@
             >
               <button
                 href="#"
-                class="w-full tw-button-bg-mrm inline-block bg-black text-[#0A0909] md:text-white p-3 text-sm hover:bg-gray-800 transition-all duration-300 opacity-70 mb-2"
+                class="w-full tw-button-bg-mrm inline-block bg-black text-[#0A0909] md:text-white p-3 text-sm hover:bg-gray-800 transition-background duration-300 opacity-70 mb-2"
               >
                 Pirkti
               </button>
@@ -481,7 +476,7 @@
               </div>
               <button
                 href="#"
-                class="w-full tw-button-bg-mrm inline-block bg-black text-[#0A0909] md:text-white p-3 text-sm hover:bg-gray-800 transition-all duration-300 opacity-70 my-2"
+                class="w-full tw-button-bg-mrm inline-block bg-black text-[#0A0909] md:text-white p-3 text-sm hover:bg-gray-800 transition-background duration-300 opacity-70 my-2"
               >
                 Noriu pasimatuoti
               </button>
@@ -507,7 +502,7 @@
           </div>
         </div>
       </section>
-      <section class="py-5">
+      <section class="py-5 md:pb-[50px]">
         <div class="container">
           <div class="grid grid-cols-2 md:grid-cols-4 gap-x-[5px] gap-y-5">
             <div>
@@ -517,6 +512,8 @@
                   class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
                   src="/fe/assets/img/dzinsai-melyni-aa.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
 
                 <!-- Second image (shown on hover) -->
@@ -524,6 +521,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/dzinsai-melyni-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -596,6 +595,8 @@
                   class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
                   src="/fe/assets/img/etro-svarkas-aa.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
 
                 <!-- Second image (shown on hover) -->
@@ -603,6 +604,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -667,6 +670,8 @@
                   class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
                   src="/fe/assets/img/etro-svarkas-aa.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
 
                 <!-- Second image (shown on hover) -->
@@ -674,6 +679,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -736,6 +743,8 @@
                   class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
                   src="/fe/assets/img/dzinsai-melyni-aa.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
 
                 <!-- Second image (shown on hover) -->
@@ -743,6 +752,8 @@
                   class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   src="/fe/assets/img/dzinsai-melyni-a.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <div>
@@ -907,14 +918,14 @@
           <div class="md:max-w-[249px] order-3">
             <div>
               <p class="font-bold">Mūsų drabužių naujienos</p>
-              <div class="form-element w-full mb-6">
+              <div id="newsletter" class="form-element w-full mb-6">
                 <input
                   class="w-[230px] text-[12px] text-center placeholder:text-white h-[40px] border border-brand-gray-light bg-transparent mb-1 block mx-auto"
                   type="email"
                   placeholder="El. paštas"
                 />
                 <input
-                  class="w-[230px] text-[12px] tw-button-bg-mrm inline-block bg-black text-black p-[8.5px] text-sm hover:bg-gray-800 transition-all duration-300 opacity-70 cursor-pointer block mx-auto"
+                  class="w-[230px] text-[12px] tw-button-bg-mrm inline-block bg-black text-black p-[8.5px] text-sm hover:bg-gray-800 transition-background duration-300 opacity-70 cursor-pointer block mx-auto"
                   type="submit"
                   value="PRENUMERUOTI"
                 />
@@ -961,11 +972,15 @@
     <script>
       window.addEventListener("load", function () {
         const preloader = document.getElementById("preloader");
-        if (preloader) {
-          preloader.style.transition = "opacity 0.5s ease";
-          preloader.style.opacity = "0";
-          setTimeout(() => preloader.remove(), 500);
-        }
+        if (!preloader) return;
+
+        // Start fade-out
+        preloader.style.opacity = "0";
+
+        // Remove from DOM after fade-out duration (500ms)
+        setTimeout(() => {
+          preloader.remove();
+        }, 500);
       });
     </script>
   </body>
