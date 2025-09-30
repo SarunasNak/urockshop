@@ -52,7 +52,10 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.css"
     />
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.js"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.js"
+    ></script>
 
     <!-- Headroom.js -->
     <script
@@ -61,7 +64,11 @@
     ></script>
 
     <!-- Custom styles -->
-    <link rel="stylesheet" href="/fe/assets/css/style.css" />
+    <link
+      fetchpriority="high"
+      rel="stylesheet"
+      href="/fe/assets/css/style.css"
+    />
   </head>
   <body id="top" class="mt-[68px] md:mt-[92.5px] font-mont">
     <div id="preloader"></div>
@@ -105,6 +112,7 @@
             <a
               class="h-[52px] max-w-[125px] md:h-[70px] md:max-w-[180px] inline-block"
               href="#"
+              aria-label="logo"
             >
               <img
                 class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full"
@@ -119,7 +127,7 @@
             class="flex items-center justify-between w-full md:w-auto space-x-4"
           >
             <!-- Burger (mobile only) -->
-            <button @click="open = !open" class="md:hidden">
+            <button aria-label="burger" @click="open = !open" class="md:hidden">
               <svg
                 x-show="!open"
                 xmlns="http://www.w3.org/2000/svg"
@@ -153,7 +161,11 @@
             </button>
 
             <!-- Cart -->
-            <a href="#" class="relative flex items-center justify-center">
+            <a
+              aria-label="cart"
+              href="#"
+              class="relative flex items-center justify-center"
+            >
               <img
                 class="max-w-[18px] md:max-w-[25px]"
                 src="/fe/assets/img/krepselis-ikona.png"
@@ -471,39 +483,53 @@
                       class="flex items-center gap-2 px-2 md:px-12 py-2 border border-brand-beige w-full text-xs h-[40px] cursor-pointer"
                     >
                       <span
-                        class="text-xs pl-4 md:pl-0"
+                        class="text-xs pl-4 md:pl-0 flex justify-between items-center w-full"
                         :class="selected === 'kreditine' ? 'text-black' : 'text-brand-beige'"
                       >
                         Kreditinė kortelė
+                        <div
+                          class="flex items-center h-[30px] md:mr-[-50px] ml-1"
+                        >
+                          <img
+                            class="aspect[1/2] object-cover max-h-full w-full"
+                            src="/fe/assets/img/visa_wordmark_placeholder.svg"
+                            alt=""
+                          />
+                          <img
+                            class="aspect[1/2] object-cover max-h-full w-full"
+                            src="/fe/assets/img/mastercard_symbol_placeholder.svg"
+                            alt=""
+                          />
+                        </div>
                       </span>
                     </label>
 
                     <div class="hidden peer-checked:block w-full">
-                      <div class="flex flex-col border-x border-brand-beige">
+                      <div class="flex flex-col border-brand-beige">
                         <input
                           type="text"
                           placeholder="Kortelės numeris"
-                          class="border-b border-brand-beige focus text-xs py-3 p-3 md:px-8 w-full"
+                          class="border-b border-x border-brand-beige focus text-xs py-3 p-3 md:px-8 w-full"
                           required
                         />
                         <div class="md:flex gap-2">
                           <input
                             type="text"
                             placeholder="Išdavimo data"
-                            class="md:flex-1 border-b border-brand-beige focus text-xs py-3 p-3 md:px-8 w-full"
+                            class="md:flex-1 border-b border-x border-brand-beige focus text-xs py-3 p-3 md:px-8 w-full"
                             required
                           />
                           <input
                             type="text"
                             placeholder="Saugos kodas"
-                            class="md:flex-1 border-b border-brand-beige focus text-xs py-3 p-3 md:px-8 w-full"
+                            class="md:flex-1 border-b border-x border-brand-beige focus text-xs py-3 p-3 md:px-8 w-full"
                             required
                           />
                         </div>
                         <input
                           type="text"
                           placeholder="Kreditinės kortelės pavadinimas"
-                          class="border-b border-brand-beige focus text-xs py-3 p-3 md:px-8"
+                          class="border-b border-x border-brand-beige focus text-xs py-3 p-3 md:px-8"
                           required
                         />
                       </div>
@@ -541,7 +567,7 @@
                         <div class="w-[40px] md:w-[95px]">
                           <img
                             class="aspect-[40/40] md:aspect-[95/95] object-cover w-full"
-                            src="../assets/img/pinigine.png"
+                            src="/fe/assets/img/pinigine.png"
                             alt=""
                           />
                         </div>
@@ -1408,6 +1434,7 @@
             <a
               class="h-[80px] w-[180px] md:h-[120px] md:w-[300px] inline-block"
               href="#top"
+              aria-label="logo"
             >
               <img
                 class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full invert brightness-0"
@@ -1464,7 +1491,7 @@
               >+37066519850</a
             >
             <div class="flex justify-center gap-x-2 mt-5 md:mt-8 mb-5 md:mb-0">
-              <a class="hover:opacity-70" href="#">
+              <a class="hover:opacity-70" href="#" aria-label="facebook">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="25"
@@ -1478,7 +1505,7 @@
                   />
                 </svg>
               </a>
-              <a class="hover:opacity-70" href="#">
+              <a class="hover:opacity-70" href="#" aria-label="instagram">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="25"
@@ -1552,7 +1579,7 @@
       </div>
     </footer>
     <!-- Custom script -->
-    <script src="/fe/assets/js/script.js"></script>
+    <script defer src="/fe/assets/js/script.js"></script>
     <script>
       window.addEventListener("load", function () {
         const preloader = document.getElementById("preloader");

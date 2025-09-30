@@ -183,5 +183,7 @@ a {
 }
 /* Bendras focus stilius */
 :focus-visible {
-  outline: 1px solid #6d1f36;
+  outline: 2px solid #6d1f36;
+  outline-offset: -2px;
+  z-index: 20;
 }

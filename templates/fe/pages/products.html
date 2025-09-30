@@ -52,7 +52,10 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.css"
     />
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.js"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.js"
+    ></script>
 
     <!-- Headroom.js -->
     <script
@@ -61,7 +64,11 @@
     ></script>
 
     <!-- Custom styles -->
-    <link rel="stylesheet" href="/fe/assets/css/style.css" />
+    <link
+      fetchpriority="high"
+      rel="stylesheet"
+      href="/fe/assets/css/style.css"
+    />
   </head>
   <body id="top" class="mt-[68px] md:mt-[92.5px] font-mont">
     <div id="preloader"></div>
@@ -105,6 +112,7 @@
             <a
               class="h-[52px] max-w-[125px] md:h-[70px] md:max-w-[180px] inline-block"
               href="#"
+              aria-label="logo"
             >
               <img
                 class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full"
@@ -119,7 +127,7 @@
             class="flex items-center justify-between w-full md:w-auto space-x-4"
           >
             <!-- Burger (mobile only) -->
-            <button @click="open = !open" class="md:hidden">
+            <button aria-label="burger" @click="open = !open" class="md:hidden">
               <svg
                 x-show="!open"
                 xmlns="http://www.w3.org/2000/svg"
@@ -153,7 +161,11 @@
             </button>
 
             <!-- Cart -->
-            <a href="#" class="relative flex items-center justify-center">
+            <a
+              aria-label="cart"
+              href="#"
+              class="relative flex items-center justify-center"
+            >
               <img
                 class="max-w-[18px] md:max-w-[25px]"
                 src="/fe/assets/img/krepselis-ikona.png"
@@ -186,17 +198,13 @@
             class="flex md:hidden space-x-2 lg:space-x-5 text-[10px] justify-center mb-[50px]"
           >
             <li>
-              <a
-                href="#"
-                class="text-brand-beige hover:text-black p-[10px]"
+              <a href="#" class="text-brand-beige hover:text-black p-[10px]"
                 >APIE MUS</a
               >
               /
             </li>
             <li>
-              <a
-                href="#"
-                class="text-brand-beige hover:text-black p-[10px]"
+              <a href="#" class="text-brand-beige hover:text-black p-[10px]"
                 >BLOGAS</a
               >
             </li>
@@ -208,7 +216,7 @@
               </p>
               <a
                 href="#newsletter"
-                class="text-[10px] font-bold hover:text-brand-beige hover:underline"
+                class="text-[10px] font-bold hover:text-brand-beige underline"
               >
                 Noriu daugiau.
               </a>
@@ -329,17 +337,19 @@
             class="mx-auto lg:max-w-[1080px] 2xl:max-w-[1440px] grid grid-cols-2 md:grid-cols-3 gap-x-[5px] md:gap-x-20 gap-y-5 md:gap-y-[50px]"
           >
             <div>
-              <a href="#" class="relative block w-full group">
+              <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
                   src="/fe/assets/img/dzinsai-melyni-aa.jpg"
                   alt=""
+                  fetchpriority="high"
+                  loading="eager"
                 />
 
                 <!-- Second image (shown on hover) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
                   src="/fe/assets/img/dzinsai-melyni-a.jpg"
                   alt=""
                   loading="lazy"
@@ -402,17 +412,19 @@
               </div>
             </div>
             <div>
-              <a href="#" class="relative block w-full group">
+              <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
                   src="/fe/assets/img/etro-svarkas-aa.jpg"
                   alt=""
+                  fetchpriority="high"
+                  loading="eager"
                 />
 
                 <!-- Second image (shown on hover) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
                   loading="lazy"
@@ -475,17 +487,19 @@
               </div>
             </div>
             <div>
-              <a href="#" class="relative block w-full group">
+              <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
                   src="/fe/assets/img/etro-svarkas-aa.jpg"
                   alt=""
+                  fetchpriority="high"
+                  loading="eager"
                 />
 
                 <!-- Second image (shown on hover) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
                   loading="lazy"
@@ -546,17 +560,19 @@
               </div>
             </div>
             <div>
-              <a href="#" class="relative block w-full group">
+              <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
                   src="/fe/assets/img/dzinsai-melyni-aa.jpg"
                   alt=""
+                  fetchpriority="high"
+                  loading="eager"
                 />
 
                 <!-- Second image (shown on hover) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
                   src="/fe/assets/img/dzinsai-melyni-a.jpg"
                   alt=""
                   loading="lazy"
@@ -619,17 +635,19 @@
               </div>
             </div>
             <div>
-              <a href="#" class="relative block w-full group">
+              <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
                   src="/fe/assets/img/etro-svarkas-aa.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
 
                 <!-- Second image (shown on hover) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
                   loading="lazy"
@@ -692,17 +710,19 @@
               </div>
             </div>
             <div>
-              <a href="#" class="relative block w-full group">
+              <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
                   src="/fe/assets/img/etro-svarkas-aa.jpg"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                 />
 
                 <!-- Second image (shown on hover) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
                   loading="lazy"
@@ -763,10 +783,10 @@
               </div>
             </div>
             <div>
-              <a href="#" class="relative block w-full group">
+              <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
                   src="/fe/assets/img/dzinsai-melyni-aa.jpg"
                   alt=""
                   loading="lazy"
@@ -775,7 +795,7 @@
 
                 <!-- Second image (shown on hover) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
                   src="/fe/assets/img/dzinsai-melyni-a.jpg"
                   alt=""
                   loading="lazy"
@@ -838,10 +858,10 @@
               </div>
             </div>
             <div>
-              <a href="#" class="relative block w-full group">
+              <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
                   src="/fe/assets/img/etro-svarkas-aa.jpg"
                   alt=""
                   loading="lazy"
@@ -850,7 +870,7 @@
 
                 <!-- Second image (shown on hover) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
                   loading="lazy"
@@ -921,10 +941,10 @@
               </div>
             </div>
             <div>
-              <a href="#" class="relative block w-full group">
+              <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
                   src="/fe/assets/img/etro-svarkas-aa.jpg"
                   alt=""
                   loading="lazy"
@@ -933,7 +953,7 @@
 
                 <!-- Second image (shown on hover) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
                   loading="lazy"
@@ -994,10 +1014,10 @@
               </div>
             </div>
             <div>
-              <a href="#" class="relative block w-full group">
+              <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
                   src="/fe/assets/img/dzinsai-melyni-aa.jpg"
                   alt=""
                   loading="lazy"
@@ -1006,7 +1026,7 @@
 
                 <!-- Second image (shown on hover) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
                   src="/fe/assets/img/dzinsai-melyni-a.jpg"
                   alt=""
                   loading="lazy"
@@ -1069,10 +1089,10 @@
               </div>
             </div>
             <div>
-              <a href="#" class="relative block w-full group">
+              <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
                   src="/fe/assets/img/etro-svarkas-aa.jpg"
                   alt=""
                   loading="lazy"
@@ -1081,7 +1101,7 @@
 
                 <!-- Second image (shown on hover) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
                   loading="lazy"
@@ -1152,10 +1172,10 @@
               </div>
             </div>
             <div>
-              <a href="#" class="relative block w-full group">
+              <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
                   src="/fe/assets/img/etro-svarkas-aa.jpg"
                   alt=""
                   loading="lazy"
@@ -1164,7 +1184,7 @@
 
                 <!-- Second image (shown on hover) -->
                 <img
-                  class="aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
                   src="/fe/assets/img/etro-svarkas-a.jpg"
                   alt=""
                   loading="lazy"
@@ -1231,7 +1251,7 @@
           class="flex items-center justify-center space-x-2 md:space-x-4 mt-2 md:mt-[50px] py-4"
         >
           <!-- Previous -->
-          <button class="group text-black duration-300 px-2">
+          <button aria-label="prev" class="group text-black duration-300 px-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="6"
@@ -1251,37 +1271,42 @@
 
           <!-- Page numbers -->
           <div class="flex space-x-2 md:space-x-4 text-xs font-sans">
-            <button class="text-black px-2">1</button>
+            <button aria-label="pages" class="text-black px-2">1</button>
             <button
               class="text-brand-beige hover:text-black transition-text duration-300 px-2"
+              aria-label="pages"
             >
               2
             </button>
             <button
               class="text-brand-beige hover:text-black transition-text duration-300 px-2"
+              aria-label="pages"
             >
               3
             </button>
             <span class="text-brand-beige">…</span>
             <button
               class="text-brand-beige hover:text-black transition-text duration-300 px-2"
+              aria-label="pages"
             >
               18
             </button>
             <button
               class="text-brand-beige hover:text-black transition-text duration-300 px-2"
+              aria-label="pages"
             >
               19
             </button>
             <button
               class="text-brand-beige hover:text-black transition-text duration-300 px-2"
+              aria-label="pages"
             >
               20
             </button>
           </div>
 
           <!-- Next -->
-          <button class="group text-black duration-300 px-2">
+          <button aria-label="next" class="group text-black duration-300 px-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="6"
@@ -1310,6 +1335,7 @@
             <a
               class="h-[80px] w-[180px] md:h-[120px] md:w-[300px] inline-block"
               href="#top"
+              aria-label="logo"
             >
               <img
                 class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full invert brightness-0"
@@ -1366,7 +1392,7 @@
               >+37066519850</a
             >
             <div class="flex justify-center gap-x-2 mt-5 md:mt-8 mb-5 md:mb-0">
-              <a class="hover:opacity-70" href="#">
+              <a class="hover:opacity-70" href="#" aria-label="facebook">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="25"
@@ -1380,7 +1406,7 @@
                   />
                 </svg>
               </a>
-              <a class="hover:opacity-70" href="#">
+              <a class="hover:opacity-70" href="#" aria-label="instagram">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="25"
@@ -1454,7 +1480,7 @@
       </div>
     </footer>
     <!-- Custom script -->
-    <script src="/fe/assets/js/script.js"></script>
+    <script defer src="/fe/assets/js/script.js"></script>
     <script>
       window.addEventListener("load", function () {
         const preloader = document.getElementById("preloader");
