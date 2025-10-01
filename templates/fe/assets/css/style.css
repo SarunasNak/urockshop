@@ -187,3 +187,141 @@ a {
   outline-offset: -2px;
   z-index: 20;
 }
+.entry-content {
+  padding: 0 5px;
+}
+.entry-content h1 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 50px;
+  font-weight: 700;
+}
+.entry-content h2 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 50px;
+  font-weight: 700;
+}
+.entry-content a:hover {
+  text-decoration: underline;
+}
+@media only screen and (max-width: 768px) {
+  .entry-content h1 {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  .entry-content h2 {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+}
+
+.entry-blog h1 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 50px;
+  font-weight: 700;
+}
+.entry-blog h2 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 50px;
+  font-weight: 700;
+}
+.entry-blog p {
+  font-size: 18px;
+}
+.entry-blog a:hover {
+  text-decoration: underline;
+}
+@media only screen and (max-width: 768px) {
+  .entry-blog h1 {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  .entry-blog h2 {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  .entry-blog p {
+    font-size: 12px;
+  }
+}
+.entry-about-us h1 {
+  font-size: 24px;
+  margin-bottom: 50px;
+  font-family: "Playfair Display";
+  
+}
+.entry-about-us h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-decoration: underline;
+  font-family: "Playfair Display";
+}
+.entry-about-us p {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.entry-about-us p:last-child {
+  margin-bottom: 0px;
+}
+.entry-about-us a:hover {
+  text-decoration: underline;
+}
+@media only screen and (max-width: 768px) {
+  .entry-about-us h1 {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+  .entry-about-us h2 {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  .entry-about-us p {
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+}
+
+/* Container */
+.marquee-max {
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  width: 100%; /* full width */
+}
+
+/* Inner track */
+.marquee-max__inner {
+  display: inline-flex;
+  animation: marquee-max 10s linear infinite;
+}
+
+/* Each repeated block */
+.marquee-max__inner span {
+  padding-right: 32px;
+  font-size: 24px;
+}
+
+/* Animation */
+@keyframes marquee-max {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.clip-diagonal {
+  clip-path: polygon(0 0, 80% 0, 100% 12%, 100% 100%, 0 100%);
+}
+.clip-diagonal-left {
+  clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 100%, 0 20%);
+}
+
+@media only screen and (max-width: 768px) {
+  .clip-diagonal {
+    clip-path: polygon(0 0, 85% 0, 100% 7%, 100% 100%, 0 100%);
+  }
+}
