@@ -5,6 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>Keitimo ir grąžinimo sąlygos</title>
+    <!-- Preload Montserrat -->
+    <link
+      rel="preload"
+      href="/fe/assets/fonts/monserrat/montserrat-latin-400-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fe/assets/fonts/monserrat/montserrat-latin-700-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Preload Playfair Display -->
+    <link
+      rel="preload"
+      href="/fe/assets/fonts/playfair-display/playfair-display-v40-latin-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <!-- Preload Inter -->
+    <link
+      rel="preload"
+      href="/fe/assets/fonts/inter/inter-v20-latin-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <link
+      rel="preload"
+      href="/fe/assets/fonts/inter/inter-v20-latin-700.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
 
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -32,9 +72,9 @@
               "brand-gray-medium": "#B7B1B1",
             },
             fontFamily: {
-              sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
-              serif: ["Playfair Display", "ui-serif", "Georgia", "serif"],
               mont: ["Montserrat", "ui-sans-serif", "system-ui", "sans-serif"],
+              serif: ["Playfair Display", "ui-serif", "Georgia", "serif"],
+              sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
             },
           },
         },
@@ -45,16 +85,6 @@
     <script
       defer
       src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.0/dist/cdn.min.js"
-    ></script>
-
-    <!-- Swiper.js -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.css"
-    />
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.js"
     ></script>
 
     <!-- Headroom.js -->
@@ -118,6 +148,8 @@
                 class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full"
                 src="/fe/assets/img/logo-urock.svg"
                 alt=""
+                fetchpriority="high"
+                loading="eager"
               />
             </a>
           </div>
@@ -170,6 +202,8 @@
                 class="max-w-[18px] md:max-w-[25px]"
                 src="/fe/assets/img/krepselis-ikona.png"
                 alt=""
+                fetchpriority="high"
+                loading="eager"
               />
               <span class="text-[15px] rounded-full px-1 inline-block"
                 >(0)</span
@@ -291,6 +325,8 @@
                 class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full invert brightness-0"
                 src="/fe/assets/img/logo-urock.svg"
                 alt=""
+                loading="lazy"
+                decoding="async"
               />
             </a>
           </div>

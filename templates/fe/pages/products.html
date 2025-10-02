@@ -47,16 +47,6 @@
       src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.0/dist/cdn.min.js"
     ></script>
 
-    <!-- Swiper.js -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.css"
-    />
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/swiper@11.1.0/swiper-bundle.min.js"
-    ></script>
-
     <!-- Headroom.js -->
     <script
       defer
@@ -118,6 +108,10 @@
                 class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full"
                 src="/fe/assets/img/logo-urock.svg"
                 alt=""
+                width="110"
+                height="42"
+                fetchpriority="high"
+                loading="eager"
               />
             </a>
           </div>
@@ -170,6 +164,10 @@
                 class="max-w-[18px] md:max-w-[25px]"
                 src="/fe/assets/img/krepselis-ikona.png"
                 alt=""
+                width="25"
+                height="25"
+                fetchpriority="high"
+                loading="eager"
               />
               <span class="text-[15px] rounded-full px-1 inline-block"
                 >(0)</span
@@ -339,22 +337,52 @@
             <div>
               <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
-                <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-                  src="/fe/assets/img/dzinsai-melyni-aa.jpg"
-                  alt=""
-                  fetchpriority="high"
-                  loading="eager"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-aa.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-aa.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+                    src="/fe/assets/img/dzinsai-melyni-aa.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product image"
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                </picture>
 
                 <!-- Second image (shown on hover) -->
-                <img
-                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-                  src="/fe/assets/img/dzinsai-melyni-a.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-a.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-a.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+                    src="/fe/assets/img/dzinsai-melyni-a.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product hover image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <div>
                 <div class="flex justify-between items-center space-x-2">
@@ -384,7 +412,7 @@
                 </div>
                 <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
                 <div class="flex justify-between items-center space-x-2">
-                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-[10px] h-[20px] md:text-xs">Dydis XL</div>
                   <div class="text-white bg-brand-maroon flex">
                     <span
                       class="text-[12px] md:text-[13px] flex items-center mr-2"
@@ -414,22 +442,52 @@
             <div>
               <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
-                <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-                  src="/fe/assets/img/etro-svarkas-aa.jpg"
-                  alt=""
-                  fetchpriority="high"
-                  loading="eager"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+                    src="/fe/assets/img/etro-svarkas-aa.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product image"
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                </picture>
 
                 <!-- Second image (shown on hover) -->
-                <img
-                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-                  src="/fe/assets/img/etro-svarkas-a.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+                    src="/fe/assets/img/etro-svarkas-a.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product hover image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <div>
                 <div class="flex justify-between items-center space-x-2">
@@ -459,7 +517,7 @@
                 </div>
                 <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
                 <div class="flex justify-between items-center space-x-2">
-                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-[10px] h-[20px] md:text-xs">Dydis XL</div>
                   <div class="text-white bg-brand-maroon flex">
                     <span
                       class="text-[12px] md:text-[13px] flex items-center mr-2"
@@ -489,22 +547,52 @@
             <div>
               <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
-                <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-                  src="/fe/assets/img/etro-svarkas-aa.jpg"
-                  alt=""
-                  fetchpriority="high"
-                  loading="eager"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+                    src="/fe/assets/img/etro-svarkas-aa.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product image"
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                </picture>
 
                 <!-- Second image (shown on hover) -->
-                <img
-                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-                  src="/fe/assets/img/etro-svarkas-a.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+                    src="/fe/assets/img/etro-svarkas-a.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product hover image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <div>
                 <div class="flex justify-between items-center space-x-2">
@@ -533,7 +621,7 @@
                 </div>
                 <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
                 <div class="flex justify-between items-center space-x-2">
-                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-[10px] h-[20px] md:text-xs">Dydis XL</div>
                   <!-- best way I think just not to render this part if there is no discont -->
                   <!-- <div class="text-white bg-brand-maroon flex">
                     <span class="text-[12px] md:text-[13px] flex items-center mr-2">
@@ -562,22 +650,52 @@
             <div>
               <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
-                <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-                  src="/fe/assets/img/dzinsai-melyni-aa.jpg"
-                  alt=""
-                  fetchpriority="high"
-                  loading="eager"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-aa.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-aa.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+                    src="/fe/assets/img/dzinsai-melyni-aa.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product image"
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                </picture>
 
                 <!-- Second image (shown on hover) -->
-                <img
-                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-                  src="/fe/assets/img/dzinsai-melyni-a.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-a.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-a.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+                    src="/fe/assets/img/dzinsai-melyni-a.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product hover image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <div>
                 <div class="flex justify-between items-center space-x-2">
@@ -607,7 +725,7 @@
                 </div>
                 <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
                 <div class="flex justify-between items-center space-x-2">
-                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-[10px] h-[20px] md:text-xs">Dydis XL</div>
                   <div class="text-white bg-brand-maroon flex">
                     <span
                       class="text-[12px] md:text-[13px] flex items-center mr-2"
@@ -637,22 +755,52 @@
             <div>
               <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
-                <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-                  src="/fe/assets/img/etro-svarkas-aa.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+                    src="/fe/assets/img/etro-svarkas-aa.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product image"
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                </picture>
 
                 <!-- Second image (shown on hover) -->
-                <img
-                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-                  src="/fe/assets/img/etro-svarkas-a.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+                    src="/fe/assets/img/etro-svarkas-a.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product hover image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <div>
                 <div class="flex justify-between items-center space-x-2">
@@ -682,7 +830,7 @@
                 </div>
                 <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
                 <div class="flex justify-between items-center space-x-2">
-                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-[10px] h-[20px] md:text-xs">Dydis XL</div>
                   <div class="text-white bg-brand-maroon flex">
                     <span
                       class="text-[12px] md:text-[13px] flex items-center mr-2"
@@ -712,22 +860,52 @@
             <div>
               <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
-                <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-                  src="/fe/assets/img/etro-svarkas-aa.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+                    src="/fe/assets/img/etro-svarkas-aa.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product image"
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                </picture>
 
                 <!-- Second image (shown on hover) -->
-                <img
-                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-                  src="/fe/assets/img/etro-svarkas-a.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+                    src="/fe/assets/img/etro-svarkas-a.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product hover image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <div>
                 <div class="flex justify-between items-center space-x-2">
@@ -756,7 +934,7 @@
                 </div>
                 <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
                 <div class="flex justify-between items-center space-x-2">
-                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-[10px] h-[20px] md:text-xs">Dydis XL</div>
                   <!-- best way I think just not to render this part if there is no discont -->
                   <!-- <div class="text-white bg-brand-maroon flex">
                     <span class="text-[12px] md:text-[13px] flex items-center mr-2">
@@ -785,22 +963,52 @@
             <div>
               <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
-                <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-                  src="/fe/assets/img/dzinsai-melyni-aa.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-aa.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-aa.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+                    src="/fe/assets/img/dzinsai-melyni-aa.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product image"
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                </picture>
 
                 <!-- Second image (shown on hover) -->
-                <img
-                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-                  src="/fe/assets/img/dzinsai-melyni-a.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-a.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-a.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+                    src="/fe/assets/img/dzinsai-melyni-a.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product hover image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <div>
                 <div class="flex justify-between items-center space-x-2">
@@ -830,7 +1038,7 @@
                 </div>
                 <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
                 <div class="flex justify-between items-center space-x-2">
-                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-[10px] h-[20px] md:text-xs">Dydis XL</div>
                   <div class="text-white bg-brand-maroon flex">
                     <span
                       class="text-[12px] md:text-[13px] flex items-center mr-2"
@@ -860,22 +1068,52 @@
             <div>
               <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
-                <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-                  src="/fe/assets/img/etro-svarkas-aa.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+                    src="/fe/assets/img/etro-svarkas-aa.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product image"
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                </picture>
 
                 <!-- Second image (shown on hover) -->
-                <img
-                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-                  src="/fe/assets/img/etro-svarkas-a.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+                    src="/fe/assets/img/etro-svarkas-a.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product hover image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <div>
                 <div class="flex justify-between items-center space-x-2">
@@ -912,7 +1150,7 @@
                 </div>
                 <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
                 <div class="flex justify-between items-center space-x-2">
-                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-[10px] h-[20px] md:text-xs">Dydis XL</div>
                   <div class="text-white bg-brand-maroon flex">
                     <!-- Jei parduota nerodom sito-->
                     <!-- <span
@@ -943,22 +1181,52 @@
             <div>
               <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
-                <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-                  src="/fe/assets/img/etro-svarkas-aa.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+                    src="/fe/assets/img/etro-svarkas-aa.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product image"
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                </picture>
 
                 <!-- Second image (shown on hover) -->
-                <img
-                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-                  src="/fe/assets/img/etro-svarkas-a.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+                    src="/fe/assets/img/etro-svarkas-a.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product hover image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <div>
                 <div class="flex justify-between items-center space-x-2">
@@ -987,7 +1255,7 @@
                 </div>
                 <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
                 <div class="flex justify-between items-center space-x-2">
-                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-[10px] h-[20px] md:text-xs">Dydis XL</div>
                   <!-- best way I think just not to render this part if there is no discont -->
                   <!-- <div class="text-white bg-brand-maroon flex">
                     <span class="text-[12px] md:text-[13px] flex items-center mr-2">
@@ -1016,22 +1284,52 @@
             <div>
               <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
-                <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-                  src="/fe/assets/img/dzinsai-melyni-aa.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-aa.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-aa.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+                    src="/fe/assets/img/dzinsai-melyni-aa.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product image"
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                </picture>
 
                 <!-- Second image (shown on hover) -->
-                <img
-                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-                  src="/fe/assets/img/dzinsai-melyni-a.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-a.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/dzinsai-melyni-a.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+                    src="/fe/assets/img/dzinsai-melyni-a.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product hover image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <div>
                 <div class="flex justify-between items-center space-x-2">
@@ -1061,7 +1359,7 @@
                 </div>
                 <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
                 <div class="flex justify-between items-center space-x-2">
-                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-[10px] h-[20px] md:text-xs">Dydis XL</div>
                   <div class="text-white bg-brand-maroon flex">
                     <span
                       class="text-[12px] md:text-[13px] flex items-center mr-2"
@@ -1091,22 +1389,52 @@
             <div>
               <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
-                <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-                  src="/fe/assets/img/etro-svarkas-aa.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+                    src="/fe/assets/img/etro-svarkas-aa.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product image"
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                </picture>
 
                 <!-- Second image (shown on hover) -->
-                <img
-                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-                  src="/fe/assets/img/etro-svarkas-a.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+                    src="/fe/assets/img/etro-svarkas-a.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product hover image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <div>
                 <div class="flex justify-between items-center space-x-2">
@@ -1143,7 +1471,7 @@
                 </div>
                 <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
                 <div class="flex justify-between items-center space-x-2">
-                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-[10px] h-[20px] md:text-xs">Dydis XL</div>
                   <div class="text-white bg-brand-maroon flex">
                     <!-- Jei parduota nerodom sito-->
                     <!-- <span
@@ -1174,22 +1502,52 @@
             <div>
               <a href="#" class="relative block w-full group" aria-label="prod">
                 <!-- First image (default) -->
-                <img
-                  class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-                  src="/fe/assets/img/etro-svarkas-aa.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-aa.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+                    src="/fe/assets/img/etro-svarkas-aa.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product image"
+                    fetchpriority="high"
+                    loading="eager"
+                  />
+                </picture>
 
                 <!-- Second image (shown on hover) -->
-                <img
-                  class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-                  src="/fe/assets/img/etro-svarkas-a.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <!-- Try AVIF first -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.avif"
+                    type="image/avif"
+                  />
+                  <!-- Then WebP -->
+                  <source
+                    srcset="/fe/assets/img/etro-svarkas-a.webp"
+                    type="image/webp"
+                  />
+                  <!-- Finally fallback JPG -->
+                  <img
+                    class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+                    src="/fe/assets/img/etro-svarkas-a.jpg"
+                    width="308"
+                    height="460"
+                    alt="Product hover image"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <div>
                 <div class="flex justify-between items-center space-x-2">
@@ -1218,7 +1576,7 @@
                 </div>
                 <div class="text-[10px] md:text-xs mb-1">Kelnės</div>
                 <div class="flex justify-between items-center space-x-2">
-                  <div class="text-[10px] md:text-xs">Dydis XL</div>
+                  <div class="text-[10px] h-[20px] md:text-xs">Dydis XL</div>
                   <!-- best way I think just not to render this part if there is no discont -->
                   <!-- <div class="text-white bg-brand-maroon flex">
                     <span class="text-[12px] md:text-[13px] flex items-center mr-2">
@@ -1341,6 +1699,10 @@
                 class="aspect-[79.00/29.87] md:aspect-[110.00/41.60] object-cover w-full h-full invert brightness-0"
                 src="/fe/assets/img/logo-urock.svg"
                 alt=""
+                width="110"
+                height="42"
+                loading="lazy"
+                decoding="async"
               />
             </a>
           </div>
