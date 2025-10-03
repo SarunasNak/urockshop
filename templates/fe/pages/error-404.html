@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="lt" x-data>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Error 404</title>
+    <!-- Preload Montserrat -->
+    <link
+      rel="preload"
+      href="/fe/assets/fonts/monserrat/montserrat-latin-400-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fe/assets/fonts/monserrat/montserrat-latin-700-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Preload Playfair Display -->
+    <link
+      rel="preload"
+      href="/fe/assets/fonts/playfair-display/playfair-display-v40-latin-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <!-- Preload Inter -->
+    <link
+      rel="preload"
+      href="/fe/assets/fonts/inter/inter-v20-latin-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <link
+      rel="preload"
+      href="/fe/assets/fonts/inter/inter-v20-latin-700.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind config -->
+    <script>
+      tailwind.config = {
+        theme: {
+          container: {
+            center: true,
+            padding: "5px",
+            screens: {
+              sm: "600px",
+              md: "728px",
+              lg: "984px",
+              xl: "1200px",
+              "2xl": "1440px",
+            },
+          },
+          extend: {
+            colors: {
+              "brand-beige": "#9E9288",
+              "brand-maroon": "#6D1F36",
+              "brand-gray-light": "#D9D9D9",
+              "brand-gray-medium": "#B7B1B1",
+            },
+            fontFamily: {
+              mont: ["Montserrat", "ui-sans-serif", "system-ui", "sans-serif"],
+              serif: ["Playfair Display", "ui-serif", "Georgia", "serif"],
+              sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Custom styles -->
+    <link
+      fetchpriority="high"
+      rel="stylesheet"
+      href="/fe/assets/css/style.css"
+    />
+  </head>
+  <body id="top" class="font-mont">
+    <div id="preloader"></div>
+
+    <main>
+      <section
+        class="h-screen w-full flex justify-center items-center bg-brand-gray-light"
+      >
+        <div class="py-10 px-16 bg-white">
+          <div
+            class="max-w-[375px] grid gap-y-[15px] md:gap-y-[30px] text-center font-sans"
+          >
+            <h1 class="text-[15px] md:text-[32px] text-[#FF0101] font-bold">
+              404 - Puslapis nerastas
+            </h1>
+            <div>
+              <p class="text-[10px] md:text-[15px] mb-3">
+                Deja, neradome šio puslapio.
+              </p>
+              <p class="text-[8px] md:text-[15px]">
+                Galbūt jis buvo pašalintas arba nuoroda neteisinga.
+              </p>
+            </div>
+
+            <p>
+              <a
+                href="#"
+                class="tw-button-bg-mrm inline-block bg-black text-white p-[8.5px] text-sm transition-background duration-300 opacity-70"
+              >
+                Grįžti į pradžią
+              </a>
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Custom script -->
+    <script defer src="/fe/assets/js/script.js"></script>
+    <script>
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        if (!preloader) return;
+
+        // Start fade-out
+        preloader.style.opacity = "0";
+
+        // Remove from DOM after fade-out duration (500ms)
+        setTimeout(() => {
+          preloader.remove();
+        }, 500);
+      });
+    </script>
+  </body>
+</html>
