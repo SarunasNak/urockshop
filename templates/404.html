@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{# 404 rodome be header/footer ir be top margin #}
+{% block body_class %}font-mont{% endblock %}
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block extra_head %}
+  <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+<main>
+  <section class="h-screen w-full flex justify-center items-center bg-brand-gray-light">
+    <div class="py-10 px-16 bg-white">
+      <div class="max-w-[375px] grid gap-y-[15px] md:gap-y-[30px] text-center font-sans">
+        <h1 class="text-[15px] md:text-[32px] text-[#FF0101] font-bold">
+          404 - Puslapis nerastas
+        </h1>
+
+        <div>
+          <p class="text-[10px] md:text-[15px] mb-3">Deja, neradome šio puslapio.</p>
+          <p class="text-[8px] md:text-[15px]">Galbūt jis buvo pašalintas arba nuoroda neteisinga.</p>
+        </div>
+
+        <p>
+          <a href="{% url 'home' %}"
+             class="tw-button-bg-mrm inline-block bg-black text-white p-[8.5px] text-sm transition-background duration-300 opacity-70">
+            Grįžti į pradžią
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

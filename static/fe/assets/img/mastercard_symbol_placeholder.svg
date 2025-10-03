@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80" viewBox="0 0 120 80" role="img" aria-label="Mastercard symbol">
+  <title>Mastercard symbol (placeholder, transparent)</title>
+  <g transform="translate(10,10) scale(0.8)">
+    <circle cx="40" cy="40" r="30" fill="#EB001B"/>
+    <circle cx="70" cy="40" r="30" fill="#F79E1B" opacity="0.98"/>
+  </g>
+</svg>

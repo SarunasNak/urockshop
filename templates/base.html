@@ -10,27 +10,18 @@
     <title>{% firstof meta_title site.site_name SITE.title "Urock Shop" %}</title>
 
     {# ─── SEO basics ─── #}
-    <meta name="description"
-          content="{% firstof meta_description site.meta_description SITE.meta_description '' %}">
+    <meta name="description" content="{% firstof meta_description site.meta_description SITE.meta_description '' %}">
 
-    {# canonical: nebandyk kviesti build_absolute_uri šablone; rely on context #}
+    {# canonical: rely on context #}
     {% if canonical_url %}
       <link rel="canonical" href="{{ canonical_url }}">
     {% endif %}
 
     {# ─── Open Graph ─── #}
-    <meta property="og:title"
-          content="{% firstof og_title meta_title site.site_name SITE.title 'Urock' %}">
-    <meta property="og:description"
-          content="{% firstof og_description meta_description site.meta_description SITE.meta_description '' %}">
+    <meta property="og:title" content="{% firstof og_title meta_title site.site_name SITE.title 'Urock' %}">
+    <meta property="og:description" content="{% firstof og_description meta_description site.meta_description SITE.meta_description '' %}">
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-
-    {# og:url – naudok canonical, jis turi būti absoliutus ir ateina iš view #}
-    {% if canonical_url %}
-      <meta property="og:url" content="{{ canonical_url }}">
-    {% endif %}
-
-    {# og:image – saugūs patikrinimai, kad nejudintume neegzistuojančių kintamųjų #}
+    {% if canonical_url %}<meta property="og:url" content="{{ canonical_url }}">{% endif %}
     {% if og_image %}
       <meta property="og:image" content="{{ og_image }}">
     {% elif site and site.og_image_url %}
@@ -41,10 +32,8 @@
 
     {# ─── Twitter Cards ─── #}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title"
-          content="{% firstof og_title meta_title site.site_name SITE.title 'Urock' %}">
-    <meta name="twitter:description"
-          content="{% firstof og_description meta_description site.meta_description SITE.meta_description '' %}">
+    <meta name="twitter:title" content="{% firstof og_title meta_title site.site_name SITE.title 'Urock' %}">
+    <meta name="twitter:description" content="{% firstof og_description meta_description site.meta_description SITE.meta_description '' %}">
     {% if og_image %}
       <meta name="twitter:image" content="{{ og_image }}">
     {% elif site and site.og_image_url %}
@@ -58,49 +47,44 @@
 
     <link rel="icon" href="{% static 'favicon.ico' %}">
 
+    <!-- Šriftas: preload tik Playfair (H1) -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+          href="{% static 'fe/assets/fonts/playfair-display/playfair-display-v40-latin-regular.woff2' %}">
+
+    <!-- CSS: Tailwind build (app.css) + FE style.css -->
+    <link rel="stylesheet" href="{% static 'fe/assets/css/app.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'fe/assets/css/style.css' %}?v=3">
+
+    {# Paliekame ir šį bloką, jei kur nors naudotas #}
     {% block head_extra %}{% endblock %}
   </head>
-  <body>
 
-<header style="padding:8px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;gap:12px;">
-  <div>
-    {% if site and site.logo %}
-      <a href="{% url 'home' %}">
-        <img src="{{ site.logo.url }}" alt="{% firstof site.site_name 'Urock' %}" style="height:28px;vertical-align:middle">
-      </a>
-    {% else %}
-      <a href="{% url 'home' %}">{% firstof site.site_name 'Urock' %}</a>
-    {% endif %}
-    | <a href="{% url 'product_list' %}">Shop</a>
-    | <a href="{% url 'cart_view' %}">Cart</a>
-    | <a href="{% url 'about' %}">About</a>
-    | <a href="{% url 'blog_list' %}">Blog</a>
-  </div>
-  <div>
-    <span>Cart: {{ cart_count }} vnt — {{ cart_total|floatformat:2 }} €</span>
-  </div>
-</header>
+  <body id="top" class="{% block body_class %}mt-[68px] md:mt-[92.5px] font-mont{% endblock %}">
 
-{% if messages %}
-  <ul>
-    {% for m in messages %}<li>{{ m }}</li>{% endfor %}
-  </ul>
-{% endif %}
+    {# HEADER per bloką, kad 404/500 galėtų „užtildyti“ #}
+    {% block header %}
+      {% include "partials/header.html" %}
+    {% endblock %}
 
-<main style="padding:16px">
-  {% block content %}{% endblock %}
-</main>
+    <main>
+      {% if messages %}
+        <ul class="container my-4">
+          {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+        </ul>
+      {% endif %}
 
-{# ⬇︎ ČIA – vieta footeriui. Kol kas paliekam minimalų fallback'ą. #}
-{% block footer %}
-<footer style="margin-top:32px;padding:16px;border-top:1px solid #eee;text-align:center">
-  {% if site and site.footer_html %}
-    {{ site.footer_html|safe }}
-  {% else %}
-    <small>© {% firstof site.site_name 'Urock' %}</small>
-  {% endif %}
-</footer>
-{% endblock %}
+      {% block content %}{% endblock %}
+    </main>
 
+    {# FOOTER per bloką, kad 404/500 galėtų „užtildyti“ #}
+    {% block footer %}
+      {% include "partials/footer.html" %}
+    {% endblock %}
+
+    {% block body_end %}
+      <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.0/dist/cdn.min.js"></script>
+      <script defer src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/headroom.min.js"></script>
+      <script defer src="{% static 'fe/assets/js/script.js' %}"></script>
+    {% endblock %}
   </body>
 </html>

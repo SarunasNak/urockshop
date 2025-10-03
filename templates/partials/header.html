@@ -1,0 +1,46 @@
+{% load static %}
+<header class="header bg-white z-20" x-data="{ open: false }">
+  <div class="bg-brand-beige text-white text-[10px] md:text-xs py-2 font-serif">
+    <div class="marquee"><span>Konfidencialus drabužių pristatymas</span></div>
+  </div>
+
+  <div class="container">
+    <div class="flex items-center justify-between py-[6px] md:pt-3 md:pb-2 relative">
+      <nav class="hidden md:flex space-x-2 lg:space-x-5 text-[13px]">
+        <a href="{% url 'about' %}" class="transition-text duration-300 hover:text-brand-beige p-[10px]">APIE MUS</a>
+        <a href="{% url 'blog_list' %}" class="transition-text duration-300 hover:text-brand-beige p-[10px]">BLOGAS</a>
+        <a href="{% url 'product_list' %}" class="transition-text duration-300 hover:text-brand-beige p-[10px]">KATALOGAS</a>
+      </nav>
+
+      <div class="absolute left-1/2 -translate-x-1/2 top-[-17%] md:top-[-7%]">
+        <a class="h-[52px] max-w-[125px] md:h-[70px] md:max-w-[180px] inline-block" href="{% url 'home' %}" aria-label="logo">
+          <img class="aspect-[79/29.87] md:aspect-[110/41.6] object-cover w-full h-full"
+               src="{% if site and site.logo %}{{ site.logo.url }}{% else %}{% static 'fe/assets/img/logo-urock.svg' %}{% endif %}"
+               alt="{% firstof site.site_name 'Urock' %}" width="110" height="42" fetchpriority="high" loading="eager" />
+        </a>
+      </div>
+
+      <div class="flex items-center justify-between w-full md:w-auto space-x-4">
+        <button aria-label="burger" @click="open = !open" class="md:hidden">
+          <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg x-show="open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
+        <a aria-label="cart" href="{% url 'cart_view' %}" class="relative flex items-center justify-center">
+          <img class="max-w-[18px] md:max-w-[25px]" src="{% static 'fe/assets/img/krepselis-ikona.png' %}" alt="Krepšelis" width="25" height="25" fetchpriority="high" loading="eager" />
+          <span class="text-[15px] rounded-full px-1 inline-block">({{ cart_count|default:0 }})</span>
+        </a>
+      </div>
+    </div>
+
+    <div x-show="open" x-transition class="md:hidden flex flex-col items-center space-y-1 py-12 text-sm">
+      <a href="{% url 'about' %}" class="p-5">APIE MUS</a>
+      <a href="{% url 'blog_list' %}" class="p-5">BLOGAS</a>
+      <a href="{% url 'product_list' %}" class="p-5">KATALOGAS</a>
+    </div>
+  </div>
+</header>
