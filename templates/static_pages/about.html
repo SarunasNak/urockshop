@@ -1,9 +1,234 @@
 {% extends "base.html" %}
-{% block title %}{{ page.title }} – {{ site.site_name|default:'Urock' }}{% endblock %}
+{% load static %}
+
+{% block title %}Apie mus{% endblock %}
+
+{# Hero preloading (padeda LCP) #}
+{% block extra_head %}
+<link rel="preload" as="image"
+      href="{% static 'fe/assets/img/intro-about.jpg' %}"
+      imagesizes="100vw" fetchpriority="high">
+{% endblock %}
+
 {% block content %}
-<h1>{{ page.title }}</h1>
-{% if page.hero %}
-  <img src="{{ page.hero.url }}" alt="{{ page.title }}" style="max-width:100%;height:auto;margin:12px 0">
-{% endif %}
-<div>{{ page.body|linebreaks }}</div>
+<main class="overflow-hidden md:overflow-visible">
+  <section>
+    <picture class="w-full">
+      <!-- Desktop -->
+      <source srcset="{% static 'fe/assets/img/intro-about.avif' %}" type="image/avif" media="(min-width: 768px)" />
+      <source srcset="{% static 'fe/assets/img/intro-about.webp' %}" type="image/webp" media="(min-width: 768px)" />
+      <!-- Mobile -->
+      <source srcset="{% static 'fe/assets/img/into-about-mob.avif' %}" type="image/avif" media="(max-width: 767px)" />
+      <source srcset="{% static 'fe/assets/img/into-about-mob.webp' %}" type="image/webp" media="(max-width: 767px)" />
+      <!-- Fallback -->
+      <img class="object-cover w-full md:aspect-[1280/380] clip-diagonal-left"
+           src="{% static 'fe/assets/img/intro-about.jpg' %}"
+           alt="Intro about" width="1280" height="380" fetchpriority="high" />
+    </picture>
+  </section>
+
+  <section class="py-4 md:py-[50px]">
+    <div class="container flex flex-col md:flex-row md:justify-between relative">
+      <!-- LEFT -->
+      <div class="w-full md:w-1/2 order-2 md:order-1">
+        <div class="entry-about-us px-4 md:pl-0 mb-5">
+          <h1 class="text-center">UROCK Luxury Boutique įkūrėjas</h1>
+          <p>Aš esu Šarūnas Nakvosas – pastaruosius penkiolika metų paskyriau vyriškai aukštajai madai: dizainerių drabužiams, jų prekybai, išskirtinių drabužių archyvo kaupimui ir žinių gilinimui apie vyrišką madą. Supratau, kad drabužiai nėra skirti paslėpti nuogą kūną – jie be žodžių pasako aplinkiniams, kas esi. Man ši veikla tai tapo ne tik verslu, bet ir gyvenimo būdu. Kadangi pats puikiai žinau, ką reiškia laiko trūkumas, įkūriau elektroninę parduotuvę UROCK luxury boutique – vietą vyrams, kur svarbiausias asmeninis ryšys, partnerystė ir prestižiški drabužiai vyrams iš vilnos, kašmyro ar šilko. Su mūsų pagalba tu gali atnaujinti įvaizdį iš kruopščiai atrinkto asortimento ir pamatyti mūsų siūlomų stilių kryptis.</p>
+          <p>Drabužiai man svarbūs nuo vaikystės – dar paauglystėje taupydavau kišenpinigius batams ar džinsams. Paskui baigęs mokyklą studijavau politikos mokslus, todėl drabužius buvau palikęs šone ir rimčiau į šią sritį grįžau 27-erių.</p>
+        </div>
+
+        <div class="md:grid md:grid-cols-2 items-center md:gap-10 mb-5">
+          <div class="mb-5 md:mb-0">
+            <picture>
+              <source srcset="{% static 'fe/assets/img/sarunas.avif' %}" type="image/avif" />
+              <source srcset="{% static 'fe/assets/img/sarunas.webp' %}" type="image/webp" />
+              <img class="aspect-[327/480] md:aspect-[260/392] w-screen max-w-[100vw] ml-[-5px] md:ml-0 md:w-full object-cover"
+                   src="{% static 'fe/assets/img/sarunas.jpg' %}" alt="Sarunas" loading="lazy" decoding="async" width="327" height="480" />
+            </picture>
+          </div>
+          <h2 class="text-brand-maroon text-base lg:text-[24px] font-serif font-semibold text-center leading-[1.88] md:leading-[1.67]">
+            ,,UROCK - nuo 2012 metų ne tik prekės ženklas, bet ir pažadas
+            vyrui: MŪSŲ PATIRTIS IR ASORTIMENTAS SUSTIPRINS TAVO ĮVAIZDĮ.”
+          </h2>
+        </div>
+
+        <div class="entry-about-us px-4 md:pl-0 mb-5">
+          <p>Pradėjau nuo vyriškų džinsų ir kitų drabužių prekybos internetu. Mano dvi įmonės prekiavo tokiais prekiniais ženklais kaip: The North Face, Fjallraven, Diesel, Mammut, G Star, Hugo Boss. Bet greitai supratau, kad ilgalaikė sėkmė įmanoma tik su originaliais aukštos mados drabužiais. Todėl ėmiau gilintis į mados namų istorijas, dizainerius, tokius kaip Helmut Lang, Hedi Slimane, Raf Simons, Martin Margiela, Dries van Noten bei jų kūrybines kryptis. Atradau daug įdomių naujų dalykų ir visa galva pasinėriau į šią veiklą</p>
+          <p>Su laiku aukštoji mada tapo mano kasdienybe – Hermès, Dior, Saint Laurent, Gucci, Prada ir daugybė kitų ženklų. Retus, vienetinius gaminius parsivežame į Lietuvą kas mėnesį, o man bendrauti, ieškoti naujų drabužių, derėtis, tikrinti autentiškumą ir rūpintis logistika tapo taip įprasta, kaip daugeliui – rytinė kava.</p>
+          <p>UROCK gyvuoja jau beveik trylika metų ir tikrai nežada sustoti. Nors prekyba užsienyje dėl didelės konkurencijos šiandien sumažėjusi, mes nepasiduodame ir tikime tuo, ką darome. Nuo pat pradžių orientavomės ne į kiekybę, o į kokybę – būtent tai leidžia stabiliai veikti net sudėtingomis sąlygomis, kūrybiškai žiūrėti į veiklą ir ieškoti sprendimų.</p>
+        </div>
+
+        <picture>
+          <source srcset="{% static 'fe/assets/img/stilius.avif' %}" type="image/avif" />
+          <source srcset="{% static 'fe/assets/img/stilius.webp' %}" type="image/webp" />
+          <img class="aspect-[327/120] md:aspect-[570/130] w-screen max-w-[100vw] ml-[-5px] md:ml-0 md:w-full object-cover mb-5"
+               src="{% static 'fe/assets/img/stilius.jpg' %}" alt="Stilius" loading="lazy" decoding="async" width="327" height="120" />
+        </picture>
+
+        <div class="entry-about-us px-4 md:pl-0 mb-5">
+          <p>Pavadinimas UROCK kilo iš angliškos frazės you rock – „tu esi uola“. Tai simbolizuoja vyrišką tvirtumą, statusą, brandumą ir išlaikytą stilių. UROCK man yra daugiau nei prekės ženklas – tai pažadas kiekvienam vyrui, kad mūsų asortimentas ir patirtis padės sustiprinti jo įvaizdį. Šis pažadas skirtas vyrui – vadovui, verslininkui, politikui, kūrybininkui ar tam, kuriam svarbu, kad jo įvaizdis neatsiliktų nuo asmenybės, o ją dar labiau pabrėžtų.</p>
+          <p>Per savo įmonės gyvavimo laikotarpį turėjome daug įvairių viešų projektų, kurių metu rengėme ne vieną Lietuvoje žinomą asmenybę: mūsų drabužius dėvėjo Eurovizijos dalyviai, televizijos talentų šou vedėjai, scenos žmonės, muzikantai ir aktoriai.</p>
+          <h2>Kas yra UROCK – Luxury Boutique</h2>
+        </div>
+
+        <div class="md:grid md:grid-cols-2 items-center md:gap-10 mb-5">
+          <video
+            src="{% static 'fe/assets/video/video-2-small.mp4' %}"
+            class="w-full aspect-[327/480] md:aspect-[260/392] object-cover w-screen max-w-[100vw] ml-[-5px] md:ml-0 md:w-full"
+            autoplay muted loop playsinline preload="none" decoding="async"></video>
+
+          <picture class="hidden md:block">
+            <source srcset="{% static 'fe/assets/img/tase.avif' %}" type="image/avif" />
+            <source srcset="{% static 'fe/assets/img/tase.webp' %}" type="image/webp" />
+            <img class="aspect-[327/480] md:aspect-[260/392] w-full object-cover"
+                 src="{% static 'fe/assets/img/tase.jpg' %}" alt="Tase" loading="lazy" decoding="async" width="327" height="480" />
+          </picture>
+        </div>
+
+        <div class="entry-about-us px-4 md:pl-0 mb-5">
+          <p>Man svarbu, kad vyrai, pasirinkę bendradarbiauti su mumis, jaustųsi aptarnaujami ne sistemos, o gyvų žmonių. Kad kilus klausimams jie galėtų tiesiog paskambinti ir sulaukti pagalbos, taupydami savo laiką.</p>
+          <p>Suprantame, kad vienas didžiausių barjerų perkant internetu – abejonė, ar drabužiai tiks. Todėl sukūrėme paslaugą „Noriu pasimatuoti“. Klientas sudeda drabužius į krepšelį, pateikia užsakymą, o mes susisiekiame ir pristatome į sutartą vietą visoje Lietuvoje. Jei reikia – atsivežame ir veidrodį. Tai nėra paprasta logistika, o asmeninė patirtis ir gyvas bendravimas. Jei vis dėlto įsigijus internetu drabužis netiks ar nepatiks, grąžinimas visada nemokamas. Jokių papildomų klausimų ar mokesčių – visa rizika mūsų rankose.</p>
+          <p>Kviečiame skirti kelias minutes mūsų elektroninės parduotuvės katalogui. Jei atrasite jums artimą drabužį – drąsiai dėkite į krepšelį arba rinkitės paslaugą „Noriu pasimatuoti“. Galbūt taip užsimegs mūsų partnerystė.</p>
+        </div>
+
+        <div class="md:grid md:grid-cols-2 items-center md:gap-10 mb-5">
+          <picture class="hidden md:block">
+            <source srcset="{% static 'fe/assets/img/stilius-2.avif' %}" type="image/avif" />
+            <source srcset="{% static 'fe/assets/img/stilius-2.webp' %}" type="image/webp" />
+            <img class="aspect-[327/480] md:aspect-[260/392] w-full object-cover"
+                 src="{% static 'fe/assets/img/stilius-2.jpg' %}" alt="Stilius 2" loading="lazy" decoding="async" width="327" height="480" />
+          </picture>
+
+          <video
+            src="{% static 'fe/assets/video/video-1-small.mp4' %}"
+            class="w-full aspect-[327/480] md:aspect-[260/392] object-cover w-screen max-w-[100vw] ml-[-5px] md:ml-0 md:w-full"
+            autoplay muted loop playsinline preload="none" decoding="async"></video>
+        </div>
+
+        <div class="entry-about-us px-4 md:pl-0 mb-5">
+          <p>Mūsų asortimentą sudaro daugiausia vienetiniai drabužiai – turime tik po vieną vienetą, be skirtingų dydžių. Visi jie nauji arba idealios būklės, tačiau vis tiek – tik po vieną. Už kiekvieno slypi garsūs mados namai: Bottega Veneta kelnės, Gucci švarkas, Dior ar Prada marškiniai, Brunello Cucinelli megztinis, Canali ar Burberry švarkas.</p>
+          <p>Elektroninėje parduotuvėje matote tik dalį mūsų archyvo, o asortimentas pasipildo net du kartus per savaitę – tad visada rasite naujų stiliaus sprendimų.</p>
+          <h2>Originalumo patikra ir požiūris į klastotes</h2>
+        </div>
+
+        <div class="grid grid-cols-3 items-center gap-[10px] mb-5">
+          <picture>
+            <source srcset="{% static 'fe/assets/img/marskiniai-1.avif' %}" type="image/avif" />
+            <source srcset="{% static 'fe/assets/img/marskiniai-1.webp' %}" type="image/webp" />
+            <img class="aspect-[90/120] md:aspect-[180/240] w-full object-cover"
+                 src="{% static 'fe/assets/img/marskiniai-1.jpg' %}" alt="Marskiniai 1" loading="lazy" decoding="async" width="90" height="120" />
+          </picture>
+
+          <picture>
+            <source srcset="{% static 'fe/assets/img/marskiniai-2.avif' %}" type="image/avif" />
+            <source srcset="{% static 'fe/assets/img/marskiniai-2.webp' %}" type="image/webp" />
+            <img class="aspect-[90/120] md:aspect-[180/240] w-full object-cover"
+                 src="{% static 'fe/assets/img/marskiniai-2.jpg' %}" alt="Marskiniai 2" loading="lazy" decoding="async" width="90" height="120" />
+          </picture>
+
+          <picture>
+            <source srcset="{% static 'fe/assets/img/marskiniai-3.avif' %}" type="image/avif" />
+            <source srcset="{% static 'fe/assets/img/marskiniai-3.webp' %}" type="image/webp" />
+            <img class="aspect-[90/120] md:aspect-[180/240] w-full object-cover"
+                 src="{% static 'fe/assets/img/marskiniai-3.jpg' %}" alt="Marskiniai 3" loading="lazy" decoding="async" width="90" height="120" />
+          </picture>
+        </div>
+
+        <div class="entry-about-us px-4 md:pl-0 mb-5">
+          <p>Mūsų penkiolikos metų patirtis leidžia užtikrinti, kad prekiaujame tik originaliais dizainerių drabužiais. Esu griežtai prieš klastotes, todėl kiekvieną gaminį tikriname kompleksiškai: nuo sagų, užtrauktukų, etikečių ir kniedžių iki medžiagos, kodų, pagaminimo vietos, siūlių ir apsiuvimo kokybės. Dirbame atmetimo principu – jei kyla bent menkiausia abejonė, drabužis nepatenka į mūsų asortimentą.</p>
+          <p>Sudėtingesniais atvejais kreipiamės į konkrečių prekės ženklų bendruomenes ar ekspertus. Laikui bėgant patys tapome tokiais – mūsų „Instagram“ auditorija neretai prašo pagalbos dėl drabužių autentiškumo, ir mes visada padedame.</p>
+        </div>
+
+        <p class="font-serif leading-[1.12] px-4 md:pl-0">
+          Tikiu, kad kokybė, skaidrumas ir pagarba klientui kuria ilgalaikę
+          partnerystę. Jei vertini šias pačias vertybes – kviečiu pradėti
+          mūsų bendrą kelionę su UROCK.
+        </p>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="w-full md:w-[40%] relative z-10 order-1 md:order-2 px-[45px] md:px-0 mb-[15px] md:mb-0">
+        <div class="relative md:h-[852px]">
+          <!-- Mobile inline video (GRĄŽINTA) + Desktop poster+modal -->
+          <div class="relative w-full aspect-[220/220] md:aspect-[428/395] md:[box-shadow:10px_5px_5px_0_rgba(0,0,0,0.25)]">
+            <!-- Mobile inline video -->
+            <video class="w-full h-full object-cover block md:hidden"
+                   src="{% static 'fe/assets/video/video-1-small.mp4' %}"
+                   controls autoplay muted loop playsinline preload="metadata" decoding="async"></video>
+
+            <!-- Desktop poster trigger -->
+            <div id="video-trigger" class="relative w-full h-full cursor-pointer hidden md:block group">
+              <picture>
+                <source srcset="{% static 'fe/assets/img/video-1-poster.avif' %}" type="image/avif" />
+                <source srcset="{% static 'fe/assets/img/video-1-poster.webp' %}" type="image/webp" />
+                <img src="{% static 'fe/assets/img/video-1-poster.jpg' %}" alt="Video preview"
+                     class="object-cover w-full h-full aspect-[428/395]" loading="lazy" decoding="async" width="428" height="395" />
+              </picture>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-16 h-16 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+                  <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M4 2v20l18-10L4 2z"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop modal -->
+          <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-90 hidden items-center justify-center z-50">
+            <button id="video-close" class="absolute top-[100px] right-6 text-white text-4xl z-50">&times;</button>
+            <div class="relative w-full max-w-4xl mx-auto pt-24 flex flex-col items-center justify-center h-full">
+              <video id="modal-video" class="w-full aspect-[220/220] md:aspect-[428/395] object-cover h-[70vh] w-[70vw]" controls autoplay playsinline></video>
+            </div>
+          </div>
+
+          <script>
+            // Desktop modal
+            const trigger = document.getElementById("video-trigger");
+            const modal = document.getElementById("video-modal");
+            const closeBtn = document.getElementById("video-close");
+            const video = document.getElementById("modal-video");
+            if (window.matchMedia("(min-width: 768px)").matches && trigger) {
+              const videoSrc = "{% static 'fe/assets/video/video-1-small.mp4' %}";
+              trigger.addEventListener("click", () => { modal.classList.remove("hidden"); video.src = videoSrc; video.play(); });
+              function closeModal(){ modal.classList.add("hidden"); video.pause(); video.src=""; }
+              closeBtn.addEventListener("click", closeModal);
+              modal.addEventListener("click", (e)=>{ if(e.target===modal) closeModal(); });
+              document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeModal(); });
+            }
+          </script>
+        </div>
+
+        <!-- Sticky images -->
+        <div class="sticky md:top-[72px] mt-6 hidden md:block">
+          <picture>
+            <source srcset="{% static 'fe/assets/img/striukes.avif' %}" type="image/avif" />
+            <source srcset="{% static 'fe/assets/img/striukes.webp' %}" type="image/webp" />
+            <img class="aspect-[456/340] object-cover"
+                 src="{% static 'fe/assets/img/striukes.jpg' %}" alt="Preview image" loading="lazy" decoding="async" width="456" height="340" />
+          </picture>
+        </div>
+        <div class="h-[430px] hidden md:block"></div>
+
+        <div class="sticky md:top-[72px] mt-6 hidden md:block">
+          <picture>
+            <source srcset="{% static 'fe/assets/img/paltai.avif' %}" type="image/avif" />
+            <source srcset="{% static 'fe/assets/img/paltai.webp' %}" type="image/webp" />
+            <img class="aspect-[456/340] object-cover"
+                 src="{% static 'fe/assets/img/paltai.jpg' %}" alt="Preview image" loading="lazy" decoding="async" width="456" height="340" />
+          </picture>
+        </div>
+        <div class="h-[430px] hidden md:block"></div>
+
+        <div class="sticky md:top-[72px] mt-6 hidden md:block">
+          <picture>
+            <source srcset="{% static 'fe/assets/img/rankines.avif' %}" type="image/avif" />
+            <source srcset="{% static 'fe/assets/img/rankines.webp' %}" type="image/webp" />
+            <img class="aspect-[456/340] object-cover"
+                 src="{% static 'fe/assets/img/rankines.jpg' %}" alt="Preview image" loading="lazy" decoding="async" width="456" height="340" />
+          </picture>
+        </div>
+        <div class="h-[430px] hidden md:block"></div>
+      </div>
+    </div>
+  </section>
+</main>
 {% endblock %}

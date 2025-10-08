@@ -60,8 +60,10 @@
       href="/fe/assets/css/style.css"
     />
   </head>
+
   <body id="top" class="mt-[68px] md:mt-[92.5px] font-mont">
     <div id="preloader"></div>
+
     <!-- Navbar -->
     <header class="header bg-white z-20" x-data="{ open: false }">
       <!-- Running text -->
@@ -72,6 +74,7 @@
           <span>Konfidencialus drabužių pristatymas</span>
         </div>
       </div>
+
       <div class="container">
         <div
           class="flex items-center justify-between py-[6px] md:pt-3 md:pb-2 relative"
@@ -188,6 +191,7 @@
         </div>
       </div>
     </header>
+
     <main>
       <section>
         <div class="container py-[50px]">
@@ -219,6 +223,7 @@
               >
             </li>
           </ul>
+
           <div
             class="flex flex-col md:flex-row md:space-x-4 justify-between md:max-w-[1016px] mx-auto"
           >
@@ -228,6 +233,7 @@
               >
                 Kontaktinė informacija Norintiems pasimatuoti
               </div>
+
               <div class="grid grid-cols-2 gap-x-1 md:grid-cols-1">
                 <input
                   type="email"
@@ -237,7 +243,6 @@
                   onfocus="this.setAttribute('data-placeholder', this.placeholder); this.placeholder = '...';"
                   onblur="this.placeholder = this.getAttribute('data-placeholder');"
                 />
-
                 <input
                   type="tel"
                   placeholder="Tel."
@@ -246,7 +251,6 @@
                   onfocus="this.setAttribute('data-placeholder', this.placeholder); this.placeholder = '...';"
                   onblur="this.placeholder = this.getAttribute('data-placeholder');"
                 />
-
                 <input
                   type="text"
                   placeholder="Ūgis"
@@ -255,7 +259,6 @@
                   onfocus="this.setAttribute('data-placeholder', this.placeholder); this.placeholder = '...';"
                   onblur="this.placeholder = this.getAttribute('data-placeholder');"
                 />
-
                 <input
                   type="text"
                   placeholder="Svoris"
@@ -273,6 +276,7 @@
                   value="Siųsti"
                 />
               </div>
+
               <div class="px-6 md:px-0 mb-[50px]">
                 <!-- Checkbox 1 -->
                 <label class="flex items-center space-x-2 mb-4 cursor-pointer">
@@ -304,6 +308,7 @@
                   </span>
                 </label>
               </div>
+
               <div class="mb-[50px]">
                 <div class="text-center md:text-start mb-5">
                   <h2
@@ -317,6 +322,7 @@
                     PRISTATYMO ADRESAS
                   </div>
                 </div>
+
                 <div class="grid grid-cols-2 gap-x-2 md:gap-x-10 mb-2 md:mb-5">
                   <input
                     type="text"
@@ -386,6 +392,7 @@
                   />
                 </div>
               </div>
+
               <div class="mb-[50px]">
                 <h2
                   class="text-center md:text-start text-2xl md:text-[32px] font-serif font-bold text-brand-maroon mb-5 uppercase"
@@ -422,9 +429,7 @@
                       class="peer appearance-none w-2 h-2 border border-brand-beige checked:bg-black checked:border-black"
                       required
                     />
-                    <span
-                      class="text-xs text-brand-beige peer-checked:text-black"
-                    >
+                    <span class="text-xs text-brand-beige peer-checked:text-black">
                       DPD paštomatas
                     </span>
                   </label>
@@ -457,6 +462,7 @@
                   </div>
                 </div>
               </div>
+
               <div class="">
                 <h2
                   class="text-center md:text-start text-2xl md:text-[32px] font-serif font-bold text-brand-maroon mb-5 uppercase"
@@ -475,7 +481,6 @@
                       class="peer appearance-none w-2 h-2 border border-brand-beige checked:bg-black checked:border-black absolute top-[16px] left-[9px] md:left-[33px] cursor-pointer"
                       required
                     />
-
                     <label
                       for="pay-card"
                       class="flex items-center gap-2 px-2 md:px-12 py-2 border border-brand-beige w-full text-xs h-[40px] cursor-pointer"
@@ -485,9 +490,7 @@
                         :class="selected === 'kreditine' ? 'text-black' : 'text-brand-beige'"
                       >
                         Kreditinė kortelė
-                        <div
-                          class="flex items-center h-[30px] md:mr-[-50px] ml-1"
-                        >
+                        <div class="flex items-center h-[30px] md:mr-[-50px] ml-1">
                           <img
                             class="aspect[1/2] object-cover max-h-full w-full"
                             src="/fe/assets/img/visa_wordmark_placeholder.svg"
@@ -509,7 +512,6 @@
                         </div>
                       </span>
                     </label>
-
                     <div class="hidden peer-checked:block w-full">
                       <div class="flex flex-col border-brand-beige">
                         <input
@@ -553,7 +555,6 @@
                       class="peer appearance-none w-2 h-2 border border-brand-beige checked:bg-black checked:border-black absolute top-[16px] left-[9px] md:left-[33px] cursor-pointer"
                       required
                     />
-
                     <label
                       for="pay-transfer"
                       class="flex items-center gap-2 px-2 md:px-12 py-2 border border-brand-beige w-full text-xs h-[40px] cursor-pointer"
@@ -565,7 +566,6 @@
                         Elektroninė bankininkystė
                       </span>
                     </label>
-
                     <div class="hidden peer-checked:block w-full">
                       <div
                         class="flex items-center justify-center lg:w-[75%] mx-auto py-5 md:py-8"
@@ -581,9 +581,7 @@
                             decoding="async"
                           />
                         </div>
-                        <div
-                          class="text-[10px] md:text-xs w-[80%] md:w-[60%] pl-3 md:pl-16"
-                        >
+                        <div class="text-[10px] md:text-xs w-[80%] md:w-[60%] pl-3 md:pl-16">
                           Paspaudus „Apmokėti“, būsite nukreipti į visus
                           populiarius mokėjimo būdus, kad galėtumėte saugiai
                           užbaigti pirkimą.
@@ -612,6 +610,7 @@
                     </span>
                   </label>
                 </div>
+
                 <div
                   class="flex md:hidden items-center justify-between space-x-1 mt-10 mb-5 px-10"
                 >
@@ -627,6 +626,7 @@
                     onblur="this.placeholder = this.getAttribute('data-placeholder');"
                   />
                 </div>
+
                 <div class="text-center md:text-start">
                   <input
                     class="w-full tw-button-bg-mrm inline-block bg-black max-w-[230px] text-black p-[12px] text-xs transition-background duration-300 mb-3 uppercase"
@@ -634,11 +634,10 @@
                     value="Užsakyti"
                   />
                 </div>
+
                 <div class="px-6 md:px-0">
                   <!-- Checkbox 1 -->
-                  <label
-                    class="flex items-center space-x-2 mb-4 cursor-pointer"
-                  >
+                  <label class="flex items-center space-x-2 mb-4 cursor-pointer">
                     <input
                       type="checkbox"
                       name="consent1"
@@ -654,9 +653,7 @@
                   </label>
 
                   <!-- Checkbox 2 -->
-                  <label
-                    class="flex items-center space-x-2 mb-4 cursor-pointer"
-                  >
+                  <label class="flex items-center space-x-2 mb-4 cursor-pointer">
                     <input
                       type="checkbox"
                       name="consent2"
@@ -668,6 +665,7 @@
                       tikslais.
                     </span>
                   </label>
+
                   <div x-data="{ showCompanyFields: false }" class="space-y-2">
                     <!-- Checkbox 3 -->
                     <label class="flex items-center space-x-2 cursor-pointer">
@@ -683,10 +681,7 @@
                     </label>
 
                     <!-- Additional fields -->
-                    <div
-                      x-show="showCompanyFields"
-                      class="flex flex-col gap-2 mt-2"
-                    >
+                    <div x-show="showCompanyFields" class="flex flex-col gap-2 mt-2">
                       <input
                         type="text"
                         placeholder="Įmonės PVM kodas"
@@ -704,9 +699,8 @@
                 </div>
               </div>
             </div>
-            <div
-              class="md:max-w-[412px] md:w-1/2 order-1 md:order-2 px-3 md:px-0"
-            >
+
+            <div class="md:max-w-[412px] md:w-1/2 order-1 md:order-2 px-3 md:px-0">
               <div x-data="{ open: false }" class="mb-5">
                 <div
                   class="relative text-xs md:text-xl md:mb-5 p-[10px] text-brand-maroon md:text-black border border-brand-beige md:border-none flex justify-center intems-center md:block"
@@ -724,13 +718,13 @@
                       fill="#6D1F36"
                     />
                   </svg>
-                  Noriu pasimatuoti
-                  <span class="md:hidden inline-block ml-1">(1)</span>
+                  Noriu pasimatuoti <span class="md:hidden inline-block ml-1">(1)</span>
                   <div
                     @click="open = !open"
                     class="block z-10 absolute top-0 left-0 right-0 bottom-0 md:hidden cursor-pointer w-full"
                   ></div>
                 </div>
+
                 <div
                   :class="{ 'hidden': !open }"
                   class="p-5 border border-brand-beige md:h-[345px] md:overflow-y-auto grid gap-y-4 md:gap-y-8 bg-brand-beige md:bg-white md:grid"
@@ -767,10 +761,7 @@
                         >
                           Keisti
                         </button>
-                        <button
-                          aria-label="close"
-                          class="hidden md:inline-block"
-                        >
+                        <button aria-label="close" class="hidden md:inline-block">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -795,6 +786,7 @@
                           </svg>
                         </button>
                       </div>
+
                       <div
                         class="md:flex justify-between md:space-x-2 items-center"
                       >
@@ -818,9 +810,8 @@
                           </svg>
                         </div>
                       </div>
-                      <div
-                        class="md:hidden flex justify-between items-center mt-auto"
-                      >
+
+                      <div class="md:hidden flex justify-between items-center mt-auto">
                         <button
                           class="text-xs font-bold hover:text-[#AE9F9F] transition-color duration-300 underline"
                         >
@@ -853,6 +844,7 @@
                       </div>
                     </div>
                   </div>
+
                   <div class="flex justify-between">
                     <picture>
                       <!-- AVIF first -->
@@ -885,10 +877,7 @@
                         >
                           Keisti
                         </button>
-                        <button
-                          aria-label="close"
-                          class="hidden md:inline-block"
-                        >
+                        <button aria-label="close" class="hidden md:inline-block">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -913,6 +902,7 @@
                           </svg>
                         </button>
                       </div>
+
                       <div
                         class="md:flex justify-between md:space-x-2 items-center"
                       >
@@ -936,9 +926,8 @@
                           </svg>
                         </div>
                       </div>
-                      <div
-                        class="md:hidden flex justify-between items-center mt-auto"
-                      >
+
+                      <div class="md:hidden flex justify-between items-center mt-auto">
                         <button
                           class="text-xs font-bold hover:text-[#AE9F9F] transition-color duration-300 underline"
                         >
@@ -971,6 +960,7 @@
                       </div>
                     </div>
                   </div>
+
                   <div class="flex justify-between">
                     <picture>
                       <!-- AVIF first -->
@@ -1003,10 +993,7 @@
                         >
                           Keisti
                         </button>
-                        <button
-                          aria-label="close"
-                          class="hidden md:inline-block"
-                        >
+                        <button aria-label="close" class="hidden md:inline-block">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -1031,6 +1018,7 @@
                           </svg>
                         </button>
                       </div>
+
                       <div
                         class="md:flex justify-between md:space-x-2 items-center"
                       >
@@ -1054,9 +1042,124 @@
                           </svg>
                         </div>
                       </div>
+
+                      <div class="md:hidden flex justify-between items-center mt-auto">
+                        <button
+                          class="text-xs font-bold hover:text-[#AE9F9F] transition-color duration-300 underline"
+                        >
+                          Keisti
+                        </button>
+                        <button class="">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                          >
+                            <path
+                              d="M6 6L18 18"
+                              stroke="black"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M18 6L6 18"
+                              stroke="black"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex justify-between">
+                    <picture>
+                      <!-- AVIF first -->
+                      <source
+                        srcset="/fe/assets/img/etro-svarkas-a.avif"
+                        type="image/avif"
+                      />
+                      <!-- WebP fallback -->
+                      <source
+                        srcset="/fe/assets/img/etro-svarkas-a.webp"
+                        type="image/webp"
+                      />
+                      <!-- Default JPG fallback -->
+                      <img
+                        class="inline-block aspect-[113/134] object-cover max-w-[113px]"
+                        src="/fe/assets/img/etro-svarkas-a.jpg"
+                        alt="Etro švarkas preview"
+                        width="113"
+                        height="134"
+                      />
+                    </picture>
+                    <div
+                      class="pl-5 md:px-5 w-full flex flex-col md:justify-between"
+                    >
+                      <div class="flex space-x-1 justify-between items-center">
+                        <p class="text-[11px]">Ralpf Lauren kelnės</p>
+                        <button
+                          aria-label="change"
+                          class="hidden md:inline-block text-xs font-bold hover:text-[#AE9F9F] transition-color duration-300 underline"
+                        >
+                          Keisti
+                        </button>
+                        <button aria-label="close" class="hidden md:inline-block">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                          >
+                            <path
+                              d="M6 6L18 18"
+                              stroke="black"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M18 6L6 18"
+                              stroke="black"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+
                       <div
-                        class="md:hidden flex justify-between items-center mt-auto"
+                        class="md:flex justify-between md:space-x-2 items-center"
                       >
+                        <div class="text-[10px] md:text-[11px] my-2 md:my-0">
+                          Dydis XL
+                        </div>
+                        <div class="text-[16px] flex items-center">
+                          425
+                          <svg
+                            class="ml-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="13"
+                            height="12"
+                            viewBox="0 0 13 12"
+                            fill="none"
+                          >
+                            <path
+                              d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
+                              fill="black"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+
+                      <div class="md:hidden flex justify-between items-center mt-auto">
                         <button
                           class="text-xs font-bold hover:text-[#AE9F9F] transition-color duration-300 underline"
                         >
@@ -1090,455 +1193,73 @@
                     </div>
                   </div>
                 </div>
-              </div>
-              <div x-data="{ open: false }" class="mb-[50px] md:mb-5">
-                <div
-                  class="relative text-xs md:text-xl md:mb-5 p-[10px] text-brand-maroon md:text-black border border-brand-beige md:border-none flex justify-center intems-center md:block"
-                >
-                  <svg
-                    class="inline-block md:hidden mr-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="15"
-                    height="14"
-                    viewBox="0 0 15 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M13.125 2.66667H10.5V1.94444C10.4994 1.56153 10.3412 1.19446 10.06 0.923701C9.77883 0.652939 9.39764 0.500573 9 0.5H6C5.60236 0.500573 5.22117 0.652939 4.94 0.923701C4.65882 1.19446 4.5006 1.56153 4.5 1.94444V2.66667H1.875C1.37772 2.66667 0.900805 2.85689 0.549175 3.1955C0.197544 3.53411 0 3.99336 0 4.47222V11.6944C0 12.1733 0.197544 12.6326 0.549175 12.9712C0.900805 13.3098 1.37772 13.5 1.875 13.5H13.125C13.6223 13.5 14.0992 13.3098 14.4508 12.9712C14.8025 12.6326 15 12.1733 15 11.6944V4.47222C15 3.99336 14.8025 3.53411 14.4508 3.1955C14.0992 2.85689 13.6223 2.66667 13.125 2.66667ZM5.25 1.94444C5.25 1.7529 5.32902 1.5692 5.46967 1.43376C5.61032 1.29831 5.80109 1.22222 6 1.22222H9C9.19891 1.22222 9.38968 1.29831 9.53033 1.43376C9.67098 1.5692 9.75 1.7529 9.75 1.94444V2.66667H5.25V1.94444ZM14.25 11.6944C14.25 11.9818 14.1315 12.2573 13.9205 12.4605C13.7095 12.6636 13.4234 12.7778 13.125 12.7778H1.875C1.57663 12.7778 1.29048 12.6636 1.0795 12.4605C0.868526 12.2573 0.75 11.9818 0.75 11.6944V7.0195L5.1315 8.42639C5.16974 8.43849 5.20975 8.44459 5.25 8.44444H9.75C9.79025 8.44459 9.83026 8.43849 9.8685 8.42639L14.25 7.0195V11.6944ZM14.25 6.28211C14.21 6.2808 14.1699 6.28568 14.1315 6.29656L9.68925 7.72222H5.31075L0.8685 6.29583C0.830055 6.28495 0.790048 6.28008 0.75 6.28139V4.47222C0.75 4.1849 0.868526 3.90935 1.0795 3.70619C1.29048 3.50303 1.57663 3.38889 1.875 3.38889H13.125C13.4234 3.38889 13.7095 3.50303 13.9205 3.70619C14.1315 3.90935 14.25 4.1849 14.25 4.47222V6.28211Z"
-                      fill="#6D1F36"
-                    />
-                  </svg>
-                  Jūsų užsakymas
-                  <span class="md:hidden inline-block ml-1">(1)</span>
+
+                <div class="mt-5">
                   <div
-                    @click="open = !open"
-                    class="block z-10 absolute top-0 left-0 right-0 bottom-0 md:hidden cursor-pointer w-full"
-                  ></div>
-                </div>
-                <div
-                  :class="{ 'hidden': !open }"
-                  class="p-5 border border-brand-beige grid gap-y-4 md:gap-y-8 bg-brand-beige md:bg-white md:grid"
-                >
-                  <div class="flex justify-between">
-                    <picture>
-                      <!-- AVIF first -->
-                      <source
-                        srcset="/fe/assets/img/etro-svarkas-a.avif"
-                        type="image/avif"
-                      />
-                      <!-- WebP fallback -->
-                      <source
-                        srcset="/fe/assets/img/etro-svarkas-a.webp"
-                        type="image/webp"
-                      />
-                      <!-- Default JPG fallback -->
-                      <img
-                        class="inline-block aspect-[113/134] object-cover max-w-[113px]"
-                        src="/fe/assets/img/etro-svarkas-a.jpg"
-                        alt="Etro švarkas preview"
-                        width="113"
-                        height="134"
-                      />
-                    </picture>
-                    <div
-                      class="pl-5 md:px-5 w-full flex flex-col md:justify-between"
-                    >
-                      <div class="flex space-x-1 justify-between items-center">
-                        <p class="text-[11px]">Ralpf Lauren kelnės</p>
-                        <button
-                          aria-label="change"
-                          class="hidden md:inline-block text-xs font-bold hover:text-[#AE9F9F] transition-color duration-300 underline"
-                        >
-                          Keisti
-                        </button>
-                        <button
-                          aria-label="close"
-                          class="hidden md:inline-block"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M6 6L18 18"
-                              stroke="black"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M18 6L6 18"
-                              stroke="black"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                      <div
-                        class="md:flex justify-between md:space-x-2 items-center"
-                      >
-                        <div class="text-[10px] md:text-[11px] my-2 md:my-0">
-                          Dydis XL
-                        </div>
-                        <div class="text-[16px] flex items-center">
-                          425
-                          <svg
-                            class="ml-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="13"
-                            height="12"
-                            viewBox="0 0 13 12"
-                            fill="none"
-                          >
-                            <path
-                              d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
-                              fill="black"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                      <div
-                        class="md:hidden flex justify-between items-center mt-auto"
-                      >
-                        <button
-                          class="text-xs font-bold hover:text-[#AE9F9F] transition-color duration-300 underline"
-                        >
-                          Keisti
-                        </button>
-                        <button class="">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M6 6L18 18"
-                              stroke="black"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M18 6L6 18"
-                              stroke="black"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
+                    class="md:flex items-center justify-between space-x-2 hidden mb-1"
+                  >
+                    <div class="uppercase text-xs">NUOLAIDŲ KODAS</div>
+                    <input
+                      type="text"
+                      placeholder="Nuolaidų kodas"
+                      required
+                      class="px-8 py-2 border border-brand-beige max-w-[231px] w-[60%] text-center text-xs h-[40px]"
+                      onfocus="this.setAttribute('data-placeholder', this.placeholder); this.placeholder = '...';"
+                      onblur="this.placeholder = this.getAttribute('data-placeholder');"
+                    />
                   </div>
-                  <div class="flex justify-between">
-                    <picture>
-                      <!-- AVIF first -->
-                      <source
-                        srcset="/fe/assets/img/etro-svarkas-a.avif"
-                        type="image/avif"
-                      />
-                      <!-- WebP fallback -->
-                      <source
-                        srcset="/fe/assets/img/etro-svarkas-a.webp"
-                        type="image/webp"
-                      />
-                      <!-- Default JPG fallback -->
-                      <img
-                        class="inline-block aspect-[113/134] object-cover max-w-[113px]"
-                        src="/fe/assets/img/etro-svarkas-a.jpg"
-                        alt="Etro švarkas preview"
-                        width="113"
-                        height="134"
-                      />
-                    </picture>
+
+                  <div>
                     <div
-                      class="pl-5 md:px-5 w-full flex flex-col md:justify-between"
+                      class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]"
                     >
-                      <div class="flex space-x-1 justify-between items-center">
-                        <p class="text-[11px]">Ralpf Lauren kelnės</p>
-                        <button
-                          aria-label="change"
-                          class="hidden md:inline-block text-xs font-bold hover:text-[#AE9F9F] transition-color duration-300 underline"
-                        >
-                          Keisti
-                        </button>
-                        <button
-                          aria-label="close"
-                          class="hidden md:inline-block"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M6 6L18 18"
-                              stroke="black"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M18 6L6 18"
-                              stroke="black"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </button>
+                      <div class="text-[11px] md:text-sm mb-1">
+                        Jūsų užsakymas
                       </div>
-                      <div
-                        class="md:flex justify-between md:space-x-2 items-center"
-                      >
-                        <div class="text-[10px] md:text-[11px] my-2 md:my-0">
-                          Dydis XL
-                        </div>
-                        <div class="text-[16px] flex items-center">
-                          425
-                          <svg
-                            class="ml-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="13"
-                            height="12"
-                            viewBox="0 0 13 12"
-                            fill="none"
-                          >
-                            <path
-                              d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
-                              fill="black"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                      <div
-                        class="md:hidden flex justify-between items-center mt-auto"
-                      >
-                        <button
-                          class="text-xs font-bold hover:text-[#AE9F9F] transition-color duration-300 underline"
+                      <div class="text-[16px] flex items-center">
+                        425
+                        <svg
+                          class="ml-1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="21"
+                          height="20"
+                          viewBox="0 0 21 20"
+                          fill="none"
                         >
-                          Keisti
-                        </button>
-                        <button class="">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M6 6L18 18"
-                              stroke="black"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M18 6L6 18"
-                              stroke="black"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </button>
+                          <path
+                            d="M2.1665 9.16683L2.58317 8.3335H4.97484C5.8665 5.44183 8.5665 3.3335 11.7498 3.3335C13.5248 3.3335 15.1498 3.9835 16.3915 5.06683L16.0582 5.89183C15.303 5.17325 14.3801 4.65496 13.3735 4.38415C12.3669 4.11333 11.3085 4.09859 10.2948 4.34126C9.28099 4.58394 8.34402 5.07632 7.56914 5.77359C6.79426 6.47086 6.20609 7.35086 5.85817 8.3335H15.0832L14.7498 9.16683H5.62484C5.45873 9.99189 5.45873 10.8418 5.62484 11.6668H13.7498L13.4165 12.5002H5.85817C6.7165 14.9252 9.02484 16.6668 11.7498 16.6668C13.5582 16.6668 15.1915 15.9002 16.3332 14.6668V15.8335C15.0832 16.8668 13.4998 17.5002 11.7498 17.5002C8.5665 17.5002 5.8665 15.3918 4.97484 12.5002H2.1665L2.58317 11.6668H4.77484C4.70817 11.2502 4.6665 10.8335 4.6665 10.4168C4.6665 10.0002 4.70817 9.5835 4.77484 9.16683H2.1665Z"
+                            fill="black"
+                          />
+                        </svg>
                       </div>
                     </div>
-                  </div>
-                  <div class="flex justify-between">
-                    <picture>
-                      <!-- AVIF first -->
-                      <source
-                        srcset="/fe/assets/img/etro-svarkas-a.avif"
-                        type="image/avif"
-                      />
-                      <!-- WebP fallback -->
-                      <source
-                        srcset="/fe/assets/img/etro-svarkas-a.webp"
-                        type="image/webp"
-                      />
-                      <!-- Default JPG fallback -->
-                      <img
-                        class="inline-block aspect-[113/134] object-cover max-w-[113px]"
-                        src="/fe/assets/img/etro-svarkas-a.jpg"
-                        alt="Etro švarkas preview"
-                        width="113"
-                        height="134"
-                      />
-                    </picture>
                     <div
-                      class="pl-5 md:px-5 w-full flex flex-col md:justify-between"
+                      class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]"
                     >
-                      <div class="flex space-x-1 justify-between items-center">
-                        <p class="text-[11px]">Ralpf Lauren kelnės</p>
-                        <button
-                          aria-label="change"
-                          class="hidden md:inline-block text-xs font-bold hover:text-[#AE9F9F] transition-color duration-300 underline"
-                        >
-                          Keisti
-                        </button>
-                        <button
-                          aria-label="close"
-                          class="hidden md:inline-block"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M6 6L18 18"
-                              stroke="black"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M18 6L6 18"
-                              stroke="black"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                      <div
-                        class="md:flex justify-between md:space-x-2 items-center"
-                      >
-                        <div class="text-[10px] md:text-[11px] my-2 md:my-0">
-                          Dydis XL
-                        </div>
-                        <div class="text-[16px] flex items-center">
-                          425
-                          <svg
-                            class="ml-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="13"
-                            height="12"
-                            viewBox="0 0 13 12"
-                            fill="none"
-                          >
-                            <path
-                              d="M8.52591 11.3332C7.24013 11.3332 6.13946 10.9758 5.22391 10.2612C4.30879 9.54695 3.67435 8.63939 3.32057 7.5385H0.987239V6.87184H3.18724C3.13657 6.61361 3.11413 6.31939 3.11991 5.98917C3.12568 5.65895 3.14791 5.37184 3.18657 5.12784H0.986572V4.46117H3.34657C3.69146 3.36073 4.31946 2.45317 5.23057 1.7385C6.14168 1.02384 7.23991 0.666504 8.52524 0.666504C9.18968 0.666504 9.81857 0.774948 10.4119 0.991837C11.0052 1.20873 11.543 1.50873 12.0252 1.89184L11.5499 2.35117C11.1304 2.02984 10.6644 1.77984 10.1519 1.60117C9.63946 1.4225 9.09724 1.33317 8.52524 1.33317C7.41857 1.33317 6.47813 1.63384 5.70391 2.23517C4.92968 2.8365 4.37924 3.57873 4.05257 4.46184H8.44857V5.1285H3.87057C3.81724 5.39428 3.79191 5.69428 3.79457 6.0285C3.79724 6.36273 3.82257 6.64384 3.87057 6.87184H8.44857V7.5385H4.03991C4.37457 8.42117 4.92924 9.16317 5.70391 9.7645C6.47857 10.3658 7.41924 10.6665 8.52591 10.6665C9.09746 10.6665 9.63946 10.5772 10.1519 10.3985C10.6644 10.2198 11.1304 9.96984 11.5499 9.6485L12.0259 10.1078C11.5437 10.4914 11.0059 10.7914 10.4126 11.0078C9.81924 11.2243 9.19035 11.3327 8.52591 11.3332Z"
-                              fill="black"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                      <div
-                        class="md:hidden flex justify-between items-center mt-auto"
-                      >
-                        <button
-                          class="text-xs font-bold hover:text-[#AE9F9F] transition-color duration-300 underline"
-                        >
-                          Keisti
-                        </button>
-                        <button class="">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M6 6L18 18"
-                              stroke="black"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M18 6L6 18"
-                              stroke="black"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      </div>
+                      <div class="text-[11px] md:text-sm mb-1">Siuntimas</div>
+                      <div class="text-[16px] flex items-center">0</div>
                     </div>
-                  </div>
-                  <div class="mt-5">
                     <div
-                      class="md:flex items-center justify-between space-x-2 hidden mb-1"
+                      class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]"
                     >
-                      <div class="uppercase text-xs">NUOLAIDŲ KODAS</div>
-                      <input
-                        type="text"
-                        placeholder="Nuolaidų kodas"
-                        required
-                        class="px-8 py-2 border border-brand-beige max-w-[231px] w-[60%] text-center text-xs h-[40px]"
-                        onfocus="this.setAttribute('data-placeholder', this.placeholder); this.placeholder = '...';"
-                        onblur="this.placeholder = this.getAttribute('data-placeholder');"
-                      />
-                    </div>
-                    <div>
-                      <div
-                        class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]"
-                      >
-                        <div class="text-[11px] md:text-sm mb-1">
-                          Jūsų užsakymas
-                        </div>
-                        <div class="text-[16px] flex items-center">
-                          425
-                          <svg
-                            class="ml-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="21"
-                            height="20"
-                            viewBox="0 0 21 20"
-                            fill="none"
-                          >
-                            <path
-                              d="M2.1665 9.16683L2.58317 8.3335H4.97484C5.8665 5.44183 8.5665 3.3335 11.7498 3.3335C13.5248 3.3335 15.1498 3.9835 16.3915 5.06683L16.0582 5.89183C15.303 5.17325 14.3801 4.65496 13.3735 4.38415C12.3669 4.11333 11.3085 4.09859 10.2948 4.34126C9.28099 4.58394 8.34402 5.07632 7.56914 5.77359C6.79426 6.47086 6.20609 7.35086 5.85817 8.3335H15.0832L14.7498 9.16683H5.62484C5.45873 9.99189 5.45873 10.8418 5.62484 11.6668H13.7498L13.4165 12.5002H5.85817C6.7165 14.9252 9.02484 16.6668 11.7498 16.6668C13.5582 16.6668 15.1915 15.9002 16.3332 14.6668V15.8335C15.0832 16.8668 13.4998 17.5002 11.7498 17.5002C8.5665 17.5002 5.8665 15.3918 4.97484 12.5002H2.1665L2.58317 11.6668H4.77484C4.70817 11.2502 4.6665 10.8335 4.6665 10.4168C4.6665 10.0002 4.70817 9.5835 4.77484 9.16683H2.1665Z"
-                              fill="black"
-                            />
-                          </svg>
-                        </div>
+                      <div class="text-[11px] md:text-sm mb-1 font-bold">
+                        SUMA
                       </div>
-                      <div
-                        class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]"
-                      >
-                        <div class="text-[11px] md:text-sm mb-1">Siuntimas</div>
-                        <div class="text-[16px] flex items-center">0</div>
-                      </div>
-                      <div
-                        class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]"
-                      >
-                        <div class="text-[11px] md:text-sm mb-1 font-bold">
-                          SUMA
-                        </div>
-                        <div class="text-[16px] flex items-center">
-                          425
-                          <svg
-                            class="ml-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="21"
-                            height="20"
-                            viewBox="0 0 21 20"
-                            fill="none"
-                          >
-                            <path
-                              d="M2.1665 9.16683L2.58317 8.3335H4.97484C5.8665 5.44183 8.5665 3.3335 11.7498 3.3335C13.5248 3.3335 15.1498 3.9835 16.3915 5.06683L16.0582 5.89183C15.303 5.17325 14.3801 4.65496 13.3735 4.38415C12.3669 4.11333 11.3085 4.09859 10.2948 4.34126C9.28099 4.58394 8.34402 5.07632 7.56914 5.77359C6.79426 6.47086 6.20609 7.35086 5.85817 8.3335H15.0832L14.7498 9.16683H5.62484C5.45873 9.99189 5.45873 10.8418 5.62484 11.6668H13.7498L13.4165 12.5002H5.85817C6.7165 14.9252 9.02484 16.6668 11.7498 16.6668C13.5582 16.6668 15.1915 15.9002 16.3332 14.6668V15.8335C15.0832 16.8668 13.4998 17.5002 11.7498 17.5002C8.5665 17.5002 5.8665 15.3918 4.97484 12.5002H2.1665L2.58317 11.6668H4.77484C4.70817 11.2502 4.6665 10.8335 4.6665 10.4168C4.6665 10.0002 4.70817 9.5835 4.77484 9.16683H2.1665Z"
-                              fill="black"
-                            />
-                          </svg>
-                        </div>
+                      <div class="text-[16px] flex items-center">
+                        425
+                        <svg
+                          class="ml-1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="21"
+                          height="20"
+                          viewBox="0 0 21 20"
+                          fill="none"
+                        >
+                          <path
+                            d="M2.1665 9.16683L2.58317 8.3335H4.97484C5.8665 5.44183 8.5665 3.3335 11.7498 3.3335C13.5248 3.3335 15.1498 3.9835 16.3915 5.06683L16.0582 5.89183C15.303 5.17325 14.3801 4.65496 13.3735 4.38415C12.3669 4.11333 11.3085 4.09859 10.2948 4.34126C9.28099 4.58394 8.34402 5.07632 7.56914 5.77359C6.79426 6.47086 6.20609 7.35086 5.85817 8.3335H15.0832L14.7498 9.16683H5.62484C5.45873 9.99189 5.45873 10.8418 5.62484 11.6668H13.7498L13.4165 12.5002H5.85817C6.7165 14.9252 9.02484 16.6668 11.7498 16.6668C13.5582 16.6668 15.1915 15.9002 16.3332 14.6668V15.8335C15.0832 16.8668 13.4998 17.5002 11.7498 17.5002C8.5665 17.5002 5.8665 15.3918 4.97484 12.5002H2.1665L2.58317 11.6668H4.77484C4.70817 11.2502 4.6665 10.8335 4.6665 10.4168C4.6665 10.0002 4.70817 9.5835 4.77484 9.16683H2.1665Z"
+                            fill="black"
+                          />
+                        </svg>
                       </div>
                     </div>
                   </div>
@@ -1549,6 +1270,7 @@
         </div>
       </section>
     </main>
+
     <footer id="footer" class="pb-4 pt-8 md:py-10 bg-brand-beige relative">
       <div class="container">
         <div class="relative h-[80px] md:h-[90px] pt-6 pb-2">
@@ -1572,18 +1294,18 @@
             </a>
           </div>
         </div>
+
         <div
           class="flex flex-col md:flex-row justify-center md:justify-between text-center text-white text-[15px] min-h-[319px] md:pt-8 lg:px-12"
         >
-          <div
-            class="md:max-w-[249px] order-2 md:order-1 mb-4 md:mb-0 leading-[1.7]"
-          >
+          <div class="md:max-w-[249px] order-2 md:order-1 mb-4 md:mb-0 leading-[1.7]">
             <p>ĮMONĖS KONTAKTAI</p>
             <p>UAB UROCK</p>
             <p>Įmonės kodas 302923012</p>
             <p>PVM kodas: LT 100009010615</p>
             <p>Adresas: Krėvės pr. 104A-13,50380</p>
             <p>Kaunas, Lietuva</p>
+
             <div class="mt-8 hidden md:block">
               <svg
                 class="inline-block"
@@ -1609,15 +1331,18 @@
               <span> 2025 </span>
             </div>
           </div>
+
           <div class="md:max-w-[249px] order-1 lg:order-2 leading-[1.7]">
             <p>SAVININKO KONTAKTAI</p>
             <p>Šarūnas Nakvosas</p>
+
             <a class="block hover:text-[#757171]" href="mailto:info@urock.lt"
               >info@urock.lt</a
             >
             <a class="block hover:text-[#757171]" href="tel:+37066519850"
               >+37066519850</a
             >
+
             <div class="flex justify-center gap-x-2 mt-5 md:mt-8 mb-5 md:mb-0">
               <a class="hover:opacity-70" href="#" aria-label="facebook">
                 <svg
@@ -1654,6 +1379,7 @@
               </a>
             </div>
           </div>
+
           <div class="md:max-w-[249px] order-3">
             <div>
               <p class="font-bold">Mūsų drabužių naujienos</p>
@@ -1670,6 +1396,7 @@
                 />
               </div>
             </div>
+
             <div class="flex flex-col gap-y-2 text-[11px]">
               <a class="hover:text-[#757171]" href="#">PIRKIMO SĄLYGOS</a>
               <a class="hover:text-[#757171]" href="#">PREKIŲ PRISTATYMAS</a>
@@ -1678,6 +1405,7 @@
               >
               <a class="hover:text-[#757171]" href="#">PRIVATUMO POLITIKA</a>
             </div>
+
             <div class="mt-8 block md:hidden">
               <svg
                 class="inline-block relative top-[-1px]"
@@ -1706,8 +1434,10 @@
         </div>
       </div>
     </footer>
+
     <!-- Custom script -->
     <script defer src="/fe/assets/js/script.js"></script>
+
     <script>
       window.addEventListener("load", function () {
         const preloader = document.getElementById("preloader");

@@ -1,0 +1,12 @@
+{# templates/shop/partials/_discount_badge.html #}
+{# Inputs: price, original_price #}
+{% if original_price and original_price > price %}
+  {# Kiek % pradine kaina yra didesnė už dabartinę: (orig/price*100) - 100 #}
+  {% widthratio original_price price 100 as ratio %}
+  {% with discount=ratio|add:"-100" %}
+    <div class="absolute left-2 top-2 md:left-3 md:top-3 z-20
+                bg-brand-maroon text-white px-2 py-1 text-[10px] md:text-xs rounded">
+      -{{ discount }}%
+    </div>
+  {% endwith %}
+{% endif %}

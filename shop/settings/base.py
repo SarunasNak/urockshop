@@ -74,7 +74,7 @@ TEMPLATES = [{
             "django.template.context_processors.request",
             "django.contrib.auth.context_processors.auth",
             "django.contrib.messages.context_processors.messages",
-            "cart.context_processors.cart_info",
+            "cart.context_processors.cart_info",  # ← užtenka šito
             "pages.context_processors.site_settings",
             "stripe_payments.context_processors.stripe_public_key",
         ],
@@ -130,6 +130,10 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 STRIPE_CURRENCY = os.getenv("STRIPE_CURRENCY", "eur")
+
+
+# --- CART / krepšelio nustatymai ---
+CART_ITEM_TTL_HOURS = 48  # kiek valandų laikom prekę krepšelyje (sesijoje)
 
 INSTALLED_APPS += ["django_ckeditor_5"]
 CKEDITOR_5_CONFIGS = {

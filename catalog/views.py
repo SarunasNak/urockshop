@@ -8,16 +8,13 @@ from django.utils.html import strip_tags
 from django.utils.text import Truncator
 from .models import Product, Category, Variant, ProductImage, Size
 
-
 # ----- Helperiai -------------------------------------------------------------
 
 def _abs_url(request, url: str | None) -> str | None:
-    """Padaro absoliutų URL; priima ir /media/... ir pilnus URL. Jei None – grąžina None."""
     if not url:
         return None
     if url.startswith(("http://", "https://")):
         return url
-    # užtikrinam, kad prasideda nuo '/'
     if not url.startswith("/"):
         url = "/" + url
     return request.build_absolute_uri(url)
@@ -26,20 +23,11 @@ def _truncate(text: str, length: int) -> str:
     return Truncator(strip_tags(text or "")).chars(length)
 
 def _build_canonical(request, allowed=("category", "page")) -> str:
-    """
-    Sudaro kanoninį URL iš esamo prašymo, paliekant tik leidžiamus parametrus.
-    - Paieškos ("q") specialiai NEįtraukiame į canonical (kad neindeksuotume visų kombinacijų).
-    - Jei page=1, parametrą pašaliname.
-    """
     parts = urlsplit(request.build_absolute_uri())
     qs_pairs = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=False) if k in allowed]
-
-    # drop page=1
     qs_pairs = [(k, v) for (k, v) in qs_pairs if not (k == "page" and v in ("1", 1))]
-
     query = urlencode(qs_pairs)
     return urlunsplit((parts.scheme, parts.netloc, parts.path, query, ""))
-
 
 # ----- Views -----------------------------------------------------------------
 
@@ -51,25 +39,33 @@ class ProductListView(View):
         q = (request.GET.get("q") or "").strip()
         current_category = (request.GET.get("category") or "").strip()
 
+        # dydžio filtravimas: vienas arba keli (?size=s&size=m)
+        sizes_selected = request.GET.getlist("size")
+        sizes_selected = [s.strip().lower() for s in sizes_selected if s.strip()]
+
         qs = (
             Product.objects.filter(is_active=True)
-            .select_related("category")
+            .select_related("category", "size")
             .prefetch_related(
                 Prefetch("images", queryset=ProductImage.objects.all()),
                 Prefetch("variants", queryset=Variant.objects.filter(is_active=True).order_by("price")),
             )
             .order_by("-id")
         )
+
         if q:
             qs = qs.filter(Q(name__icontains=q) | Q(description__icontains=q))
+
         if current_category:
             qs = qs.filter(category__slug=current_category)
+
+        if sizes_selected:
+            qs = qs.filter(size__slug__in=sizes_selected)
 
         paginator = Paginator(qs, self.paginate_by)
         page_obj = paginator.get_page(request.GET.get("page") or 1)
 
-        # --- SEO logika ---
-        # Bazinis pavadinimas pagal kategoriją/paiešką
+        # --- SEO ---
         base_title = "Parduotuvė – Urock"
         meta_description = "Mūsų produktų katalogas."
         og_type = "website"
@@ -84,28 +80,27 @@ class ProductListView(View):
                 pass
 
         if q:
-            # Paieškos puslapiai: noindex, canonical be ?q
-            base_title = f"Paieška „{q}“ – Urock"
+            meta_title = f"Paieška „{q}“ – Urock"
             meta_description = f"Rezultatai užklausai „{q}“."
             meta_robots = "noindex,follow"
             canonical_url = _build_canonical(request, allowed=("category", "page"))
         else:
             meta_robots = "index,follow"
+            meta_title = base_title if page_obj.number == 1 else f"{base_title} – psl. {page_obj.number}"
             canonical_url = _build_canonical(request, allowed=("category", "page"))
-
-        # Jei puslapis >1, pridėkim numerį į title (ne canonical, canonical jau tvarkingas)
-        if page_obj.number and page_obj.number > 1:
-            meta_title = f"{base_title} – psl. {page_obj.number}"
-        else:
-            meta_title = base_title
 
         ctx = {
             "page_obj": page_obj,
+            "products": page_obj.object_list,    # patogu šablonams, jei nori naudoti 'products'
             "categories": Category.objects.all().order_by("name"),
             "current_category": current_category,
             "q": q,
 
-            # SEO kontekstas
+            # Filtrų duomenys
+            "sizes": Size.objects.filter(is_active=True).order_by("order", "label"),
+            "sizes_selected": sizes_selected,
+
+            # SEO
             "meta_title": meta_title,
             "meta_description": meta_description,
             "meta_robots": meta_robots,
@@ -113,7 +108,6 @@ class ProductListView(View):
             "og_type": og_type,
             "og_title": meta_title,
             "og_description": meta_description,
-            # "og_image": _abs_url(request, static('img/catalog_og.jpg')),  # jei turite
         }
         return render(request, self.template_name, ctx)
 
@@ -123,84 +117,53 @@ class ProductDetailView(View):
 
     def get(self, request, slug):
         product = get_object_or_404(
-            Product.objects.filter(is_active=True).select_related("category").prefetch_related(
-                Prefetch("images", queryset=ProductImage.objects.all()),
+            Product.objects.filter(is_active=True)
+            .select_related("category", "size")
+            .prefetch_related(
+                Prefetch("images", queryset=ProductImage.objects.all().order_by("sort", "id")),
                 Prefetch("variants", queryset=Variant.objects.filter(is_active=True)),
             ),
             slug=slug,
         )
 
+        # Pagrindinė OG nuotrauka: main_image, kitaip pirma iš galerijos
+        main_img_url = None
+        if getattr(product, "main_image", None) and getattr(product.main_image, "url", None):
+            main_img_url = product.main_image.url
+        else:
+            first_img = product.images.first()
+            if first_img and getattr(first_img, "image", None) and getattr(first_img.image, "url", None):
+                main_img_url = first_img.image.url
+
+        # Panašūs produktai: M2M, o jei tuščia – iš tos pačios kategorijos
+        related = list(product.related_products.all()[:8])
+        if not related:
+            related = list(
+                Product.objects.filter(is_active=True, category=product.category)
+                .exclude(pk=product.pk)
+                .order_by("-created_at")[:8]
+            )
+
         desc = _truncate(getattr(product, "description", "") or "", 160)
         long_desc = _truncate(getattr(product, "description", "") or "", 200)
 
-        # --- og:image: bandome main_image_url, tada pirmą iš images ---
-        main_img = getattr(product, "main_image_url", None)
-        if not main_img:
-            first_img = product.images.first() if hasattr(product, "images") else None
-            if first_img:
-                # jei yra ImageField "image" -> imame .url
-                if hasattr(first_img, "image") and getattr(first_img.image, "url", None):
-                    main_img = first_img.image.url
-                # jei modelyje yra 'url' atributas -> naudok jį
-                elif getattr(first_img, "url", None):
-                    main_img = first_img.url
-
         ctx = {
             "product": product,
+            "related_products": related,
 
-            # SEO kontekstas
+            # SEO / OG
             "meta_title": product.name,
             "meta_description": desc,
             "meta_robots": "index,follow",
             "canonical_url": request.build_absolute_uri(),
-
-            # OG/Twitter
             "og_type": "product",
             "og_title": product.name,
             "og_description": long_desc,
-            # ↓↓↓ svarbu: nebe str(main_img), o tiesiai main_img; _abs_url padarys absoliutų
-            "og_image": _abs_url(request, main_img) if main_img else None,
+            "og_image": _abs_url(request, main_img_url) if main_img_url else None,
         }
+
+        # Aliasas, jei šablone kur nors naudojamas 'object'
+        ctx.setdefault("object", product)
+
         return render(request, self.template_name, ctx)
-
-
-#Dydziai
-def product_list(request):
-    qs = Product.objects.filter(is_published=True).select_related("size")
-
-    # visų dydžių sąrašas (filtrui ir tvarkai)
-    all_sizes = list(
-        Size.objects.filter(is_active=True).order_by("order", "label")
-    )
-    slug_chain = [s.slug for s in all_sizes]  # pvz.: ["s","m","l","xl","xxl","xxxl"]
-
-    # vartotojo pasirinktas dydis (?size=s)
-    selected = (request.GET.get("size") or "").strip().lower()
-
-    expanded = []
-    if selected and selected in slug_chain:
-        expanded.append(selected)
-        idx = slug_chain.index(selected)
-        # pridėk sekantį dydį, jei yra (pvz., S -> +M; L -> +XL; XXL -> +XXXL)
-        if idx + 1 < len(slug_chain):
-            expanded.append(slug_chain[idx + 1])
-
-        qs = qs.filter(size__slug__in=expanded)
-
-    # rikiavimas: pagal dydžio tvarką (kad pirmiau matytų pasirinktą, tada - sekantį)
-    qs = qs.order_by("size__order", "-published_at")
-
-    # dydžiai filtrui (su kiekiu)
-    sizes_for_filter = (
-        Size.objects.filter(is_active=True)
-        .annotate(num=Count("products", filter=Q(products__is_published=True)))
-        .order_by("order", "label")
-    )
-
-    return render(request, "catalog/product_list.html", {
-        "products": qs,
-        "sizes": sizes_for_filter,
-        "selected_size": selected,      # FE žinos kas pasirinkta
-        "expanded_sizes": expanded,     # pvz. ["l","xl"]
-    })
 

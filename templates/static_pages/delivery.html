@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Siuntimo sąlygos{% endblock %}
+
+{# Jei šio puslapio nenori indeksuoti: atkomentuok #}
+{# {% block extra_head %}<meta name="robots" content="noindex,follow">{% endblock %} #}
+
+{% block content %}
+<section class="pt-[50px]">
+  <div class="container">
+    <div class="entry-content mb-6 md:mb-[50px] max-w-[800px] mx-auto">
+      <h1>Siuntimo sąlygos</h1>
+
+      <p>1. Prekes Lietuvoje pristato kurjerių įmonė DPD į Pirkėjo nurodytą adresą arba į pasirinktą paštomatą. Į užsienio šalis prekės siunčiamos paštu arba UPS kurjeriu.</p>
+
+      <p>2. Įprastai prekės pristatomos per 2–3 darbo dienas nuo gauto apmokėjimo už prekes dienos. Šis terminas yra preliminarus. Pirkėjas sutinka, jog išimtiniais atvejais prekių pristatymas gali vėluoti dėl nenumatytų, nuo Pardavėjo nepriklausančių aplinkybių.</p>
+
+      <p>3. Jei su transporto / kurjerių įmonės atstovu suderintą dieną prekės Pirkėjui nepristatytos, Pirkėjas privalo apie tai informuoti Pardavėją ne vėliau kaip kitą dieną po planuotos pristatymo dienos. Nepateikus pranešimo laiku, Pirkėjas praranda teisę reikšti Pardavėjui pretenzijas dėl pavėluoto pristatymo.</p>
+
+      <p>4. Pirkėjas įsipareigoja prekes priimti pats. Priėmimo metu būtina pateikti galiojantį asmens tapatybę patvirtinantį dokumentą. Jei Pirkėjas prekių pats priimti negali, o jos pristatytos Pirkėjo nurodytu adresu, laikoma, kad prekės perduotos tinkamam gavėjui.</p>
+
+      <p>5. Jei pristatymo metu pastebimas siuntos pakuotės pažeidimas, Pirkėjas privalo apie tai pažymėti kurjerio pateiktame duomenų kaupiklyje ir nedelsdamas informuoti Pardavėją el. paštu <a href="mailto:info@urock.lt">info@urock.lt</a>.</p>
+
+      <p>6. Pirkėjui priėmus siuntą ir pasirašius kurjerio pateiktame dokumente ar elektroniniame kaupiklyje be pastabų, laikoma, kad prekės pristatytos nepažeistoje pakuotėje.</p>
+
+      <p>7. Prekių atsitiktinio sugadinimo ar praradimo rizika pereina Pirkėjui nuo to momento, kai prekės</p>
+      {# <- jei turi tęsinį 7 punkto – įklijuok čia, palikau kaip tavo FE tekste #}
+    </div>
+  </div>
+</section>
+{% endblock %}

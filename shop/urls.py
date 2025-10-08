@@ -10,7 +10,7 @@ from stripe_payments import views as stripe_views
 from pages.views_seo import robots_txt
 from django.contrib.sitemaps.views import sitemap
 from shop.sitemaps import ProductSitemap, CategorySitemap, StaticViewSitemap
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 
 sitemaps = {
     "products": ProductSitemap,
@@ -24,10 +24,15 @@ urlpatterns = [
     # SSR maršrutai (šablonai)
     path("", HomeView.as_view(), name="home"),
     path("about/", about_view, name="about"),
-    path("shop/", include("catalog.urls")),      # list + detail
-    path("cart/", include("cart.urls")),
+    path(
+        "shop/preview/",
+        TemplateView.as_view(template_name="shop/detail.html"),
+        name="product_detail_preview",
+    ),
+    path("shop/", include(("catalog.urls", "catalog"), namespace="shop")),
+    path('cart/', include(('cart.urls', 'cart'), namespace='cart')),
     path("checkout/", include("checkout.urls")),
-    path("blog/", include("blog.urls")),
+    path("blog/", include(("blog.urls", "blog"), namespace="blog")),
 
     # API (paliekam, tik rekomenduoju suversijuoti)
     path("api/v1/", include("catalog.urls_api")),
@@ -43,6 +48,20 @@ urlpatterns = [
 
 urlpatterns += [
     path("ckeditor5/", include("django_ckeditor_5.urls")),
+]
+
+urlpatterns += [
+    # LT keliai, bet paliekam tuos pačius vardus
+    path("pirkimo-salygos/",   TemplateView.as_view(template_name="static_pages/terms.html"),    name="terms"),
+    path("pristatymas/",       TemplateView.as_view(template_name="static_pages/delivery.html"), name="shipping"),
+    path("grazinimas/",        TemplateView.as_view(template_name="static_pages/returns.html"),  name="returns"),
+    path("privatumo-politika/",TemplateView.as_view(template_name="static_pages/privacy.html"),  name="privacy"),
+
+    # (nebūtina, bet gerai SEO) – seni EN keliai → 301 į naujus
+    path("terms/",    RedirectView.as_view(url="/pirkimo-salygos/",    permanent=True)),
+    path("delivery/", RedirectView.as_view(url="/pristatymas/",        permanent=True)),
+    path("returns/",  RedirectView.as_view(url="/grazinimas/",         permanent=True)),
+    path("privacy/",  RedirectView.as_view(url="/privatumo-politika/", permanent=True)),
 ]
 
 # Media failai per dev

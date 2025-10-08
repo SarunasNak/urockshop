@@ -45,46 +45,57 @@
     {# Puslapių specifiniai <head> įdėklai (pvz. noindex krepšeliui) #}
     {% block extra_head %}{% endblock %}
 
-    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
 
     <!-- Šriftas: preload tik Playfair (H1) -->
     <link rel="preload" as="font" type="font/woff2" crossorigin
           href="{% static 'fe/assets/fonts/playfair-display/playfair-display-v40-latin-regular.woff2' %}">
 
     <!-- CSS: Tailwind build (app.css) + FE style.css -->
-    <link rel="stylesheet" href="{% static 'fe/assets/css/app.css' %}?v=3">
-    <link rel="stylesheet" href="{% static 'fe/assets/css/style.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'fe/assets/css/app.css' %}?v=11">
+    <link rel="stylesheet" href="{% static 'fe/assets/css/style.css' %}?v=11">
+    <link rel="stylesheet" href="{% static 'fe/vendor/swiper/swiper-bundle.min.css' %}?v=11">
+
+    <style>
+    [x-cloak] { display: none !important; }
+    </style>
 
     {# Paliekame ir šį bloką, jei kur nors naudotas #}
     {% block head_extra %}{% endblock %}
   </head>
 
-  <body id="top" class="{% block body_class %}mt-[68px] md:mt-[92.5px] font-mont{% endblock %}">
+  <body id="top" class="{% block body_class %}font-mont{% endblock %}">
 
     {# HEADER per bloką, kad 404/500 galėtų „užtildyti“ #}
     {% block header %}
       {% include "partials/header.html" %}
     {% endblock %}
 
-    <main>
-      {% if messages %}
-        <ul class="container my-4">
-          {% for m in messages %}<li>{{ m }}</li>{% endfor %}
-        </ul>
-      {% endif %}
+   <main>
+  {% block messages %}
+    {% if messages %}
+      <ul class="container my-4 site-messages">
+        {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+  {% endblock %}
 
-      {% block content %}{% endblock %}
-    </main>
+  {% block content %}{% endblock %}
+</main>
 
     {# FOOTER per bloką, kad 404/500 galėtų „užtildyti“ #}
     {% block footer %}
       {% include "partials/footer.html" %}
     {% endblock %}
 
-    {% block body_end %}
-      <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.0/dist/cdn.min.js"></script>
-      <script defer src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/headroom.min.js"></script>
-      <script defer src="{% static 'fe/assets/js/script.js' %}"></script>
-    {% endblock %}
+   {% block body_end %}
+  <!-- Vendor (lokaliai) -->
+  <script defer src="{% static 'fe/vendor/alpinejs/alpinejs.min.js' %}"></script>
+  <script defer src="{% static 'fe/vendor/headroom/headroom.min.js' %}"></script>
+  <script defer src="{% static 'fe/vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+  <!-- Projektinis JS (po vendor) -->
+  <script defer src="{% static 'fe/assets/js/script.js' %}"></script>
+{% endblock %}
   </body>
 </html>

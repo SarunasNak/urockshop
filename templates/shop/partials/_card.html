@@ -1,0 +1,41 @@
+{% load static %}
+{# Input: product #}
+<div>
+  <a href="{{ product.get_absolute_url|default:'#' }}" class="relative block w-full group" aria-label="{{ product.name }}">
+    {% if product.image %}
+      <img class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+           src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% else %}
+      <img class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+           src="{% static 'fe/assets/img/etro-svarkas-aa.jpg' %}" alt="{{ product.name }}">
+    {% endif %}
+
+    {# optional hover image jei turi #}
+    {% if product.hover_image %}
+      <img class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+           src="{{ product.hover_image.url }}" alt="{{ product.name }} hover">
+    {% endif %}
+
+    {% include "shop/partials/_discount_badge.html" with price=product.price original_price=product.original_price only %}
+  </a>
+
+  <div>
+    <div class="flex justify-between items-center space-x-2">
+      <div class="text-[13px] md:text-[16px] text-brand-maroon font-serif mb-1">
+        {{ product.brand|default:product.name }}
+      </div>
+      {% include "shop/partials/_price.html" with price=product.price original_price=product.original_price only %}
+    </div>
+
+    <div class="text-[10px] md:text-xs mb-1">
+      {{ product.category.name|default:"" }}
+    </div>
+
+    <div class="flex justify-between items-center space-x-2">
+      <div class="text-[10px] h-[20px] md:text-xs">
+        {% if product.size_display %}Dydis {{ product.size_display }}{% endif %}
+      </div>
+      <div class="text-white bg-brand-maroon flex"></div>
+    </div>
+  </div>
+</div>

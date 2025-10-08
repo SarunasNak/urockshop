@@ -14,7 +14,6 @@
 {% endblock %}
 
 {% block content %}
-<main>
   <!-- Intro Section 562-->
   <section class="flex items-center justify-center md:min-h-[52vh] py-12 px-5 text-center">
     <div class="max-w-3xl">
@@ -33,13 +32,15 @@
         PRISTATYSIME. <span class="text-brand-beige">SUPAŽINDINSIME.</span> IŠBANDYSITE.
       </p>
 
-      <a href="#catalog" class="tw-button-bg-mrm inline-block bg-black text-white p-[8.5px] text-sm transition-background duration-300 opacity-70">
+      <a href="{% url 'shop:list' %}"
+        class="tw-button-bg-mrm inline-block p-[8.5px] text-sm transition-colors duration-300 opacity-70">
         Rinktis
       </a>
+
     </div>
   </section>
 
- <section class="grid md:grid-cols-2 gap-0 mb-12">
+ <section id="catalog" class="grid md:grid-cols-2 gap-0 mb-12">
   {# Image 1 (HERO / LCP) #}
   <picture>
     <!-- MOBILE (AVIF + JPG fallback) -->
@@ -124,8 +125,4 @@
       loading="lazy" decoding="async">
   </picture>
 </section>
-</main>
-  <!-- Pakeisk visus /fe/assets/... į {% static 'fe/assets/...' %} -->
-  <!-- Hero <img> palik loading="eager" fetchpriority="high"; kitiems viršuje – loading="lazy" -->
-  <!-- Pridėk srcset/sizes 400/600/800w mobiliai -->
 {% endblock %}

@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Užsakymas priimtas – Urock{% endblock %}
-
-{% block head_extra %}
-  {# Auto-refresh tik kai laukiama patvirtinimo #}
+{% block extra_head %}
+  <meta name="robots" content="noindex,nofollow">
+  {# Auto-refresh tik laukimo būsenoms #}
   {% if order.payment_method == "paysera" and order.status == "paysera_pending" %}
     <meta http-equiv="refresh" content="6">
   {% elif order.payment_method == "stripe" and order.status == "pending" %}
@@ -12,59 +11,85 @@
 {% endblock %}
 
 {% block content %}
-<h1>Ačiū! Jūsų užsakymas priimtas.</h1>
-<p>Užsakymo numeris: <strong>#{{ order.id }}</strong></p>
-<p>El. paštas: {{ order.email }}</p>
-<p>Iš viso: <strong>{{ order.total|floatformat:2 }} €</strong></p>
+<section class="py-[50px]">
+  <div class="container">
+    <div class="max-w-[1008px] mx-auto text-center">
 
-<h3>Užsakymo prekės</h3>
-<ul>
-  {% for it in order.items.all %}
-    <li>
-      {{ it.product_name }} ({{ it.variant_sku }}) — {{ it.qty }} vnt ×
-      {{ it.price|floatformat:2 }} € = {{ it.line_total|floatformat:2 }} €
-    </li>
-  {% empty %}
-    <li>Prekių nėra.</li>
-  {% endfor %}
-</ul>
+      <h1 class="upercase text-base md:text-2xl font-bold mb-2">UŽSAKYMAS PRIIMTAS</h1>
 
-<h3>Apmokėjimo statusas</h3>
+      <p class="text-base mb-5 md:mb-[50px] font-bold">
+        Užsakymo nr. #{{ order.id }}
+      </p>
 
-{# STRIPE #}
-{% if order.payment_method == "stripe" %}
-  {% if order.status == "paid" %}
-    <p style="color:#1a7f37;">Mokėjimas gautas per Stripe ✅</p>
-  {% elif order.status == "pending" %}
-    <p>Laukiame Stripe mokėjimo patvirtinimo… Šis puslapis atsinaujins automatiškai.</p>
-    <p>Jei apmokėjimas nepavyko —
-      <a href="/checkout/">bandykite apmokėti dar kartą</a>.
-    </p>
-  {% elif order.status == "failed" %}
-    <p style="color:#b42318;">Stripe apmokėjimas nepavyko.</p>
-    <p><a href="/checkout/">Bandykite apmokėti dar kartą</a></p>
-  {% else %}
-    <p>Stripe būklė: {{ order.status }}</p>
-  {% endif %}
+      <p class="text-brand-maroon text-lg mb-5 md:mb-[50px] md:text-2xl font-serif font-bold">
+        Ačiū, kad pirkote „Urock“. Jūsų užsakymas gautas ir pradėtas vykdyti.
+      </p>
 
-{# PAYSERA #}
-{% elif order.payment_method == "paysera" %}
-  {% if order.status == "paid" %}
-    <p style="color:#1a7f37;">Apmokėjimas gautas per Paysera ✅</p>
-  {% elif order.status == "paysera_pending" %}
-    <p>Laukiame Paysera apmokėjimo patvirtinimo… Šis puslapis atsinaujins automatiškai.</p>
-    <p><a href="{% url 'paysera_redirect' order_id=order.id %}">Bandykite apmokėti dar kartą per Paysera</a></p>
-  {% elif order.status == "failed" %}
-    <p style="color:#b42318;">Paysera apmokėjimas nepavyko.</p>
-    <p><a href="{% url 'paysera_redirect' order_id=order.id %}">Bandykite apmokėti dar kartą per Paysera</a></p>
-  {% else %}
-    <p>Paysera būklė: {{ order.status }}</p>
-  {% endif %}
+      <p class="text-base md:text-2xl mb-8 md:mb-[50px] md:max-w-[654px] mx-auto">
+        Apie eigą informuosime el. paštu {{ order.email }}.
+        Pristatymas Lietuvoje įprastai užtrunka 2–3 darbo dienas.
+        Jei turite klausimų, rašykite
+        <a class="text-xl text-brand-maroon" href="mailto:info@urock.lt">info@urock.lt</a>.
+      </p>
 
-{# COD #}
-{% else %}
-  <p>Apmokėsite kurjeriui pristatymo metu (COD).</p>
-{% endif %}
+      {# Informacinė juosta apie apmokėjimo būseną #}
+      {% if order.payment_method == "stripe" %}
+        <div class="text-sm md:text-base mb-8 md:mb-[50px] md:max-w-[654px] mx-auto">
+          {% if order.status == "paid" %}
+            <p>Mokėjimas gautas per Stripe ✅</p>
+          {% elif order.status == "pending" %}
+            <p>Laukiame Stripe mokėjimo patvirtinimo… Puslapis atsinaujins automatiškai.</p>
+          {% elif order.status == "failed" %}
+            <p>Stripe apmokėjimas nepavyko. <a class="underline" href="/checkout/">Bandykite apmokėti dar kartą</a>.</p>
+          {% endif %}
+        </div>
+      {% elif order.payment_method == "paysera" %}
+        <div class="text-sm md:text-base mb-8 md:mb-[50px] md:max-w-[654px] mx-auto">
+          {% if order.status == "paid" %}
+            <p>Apmokėjimas gautas per Paysera ✅</p>
+          {% elif order.status == "paysera_pending" %}
+            <p>Laukiame Paysera apmokėjimo patvirtinimo… Puslapis atsinaujins automatiškai.</p>
+          {% elif order.status == "failed" %}
+            <p>Paysera apmokėjimas nepavyko. <a class="underline" href="{% url 'paysera_redirect' order_id=order.id %}">Bandykite apmokėti dar kartą</a>.</p>
+          {% endif %}
+        </div>
+      {% endif %}
 
-<p style="margin-top:16px;"><a href="{% url 'product_list' %}">Grįžti į parduotuvę</a></p>
+      {# „Grįžti į katalogą“ žinutė ir 5s redirect — NE laukimo būsenoms #}
+      {% if order.payment_method == "stripe" %}
+        {% if order.status != "pending" %}
+          <p class="text-xs md:text-2xl mb-2">
+            Peradresuosime į katalogą po 5 sek. Jei neperadresuoja, spauskite
+            <a class="text-xs md:text-2xl text-brand-maroon font-bold hover:text-brand-beige"
+               href="{% url 'product_list' %}">grįžti į katalogą.</a>
+          </p>
+          <script>
+            setTimeout(function(){ window.location.href = "{% url 'product_list' %}"; }, 5000);
+          </script>
+        {% endif %}
+      {% elif order.payment_method == "paysera" %}
+        {% if order.status != "paysera_pending" %}
+          <p class="text-xs md:text-2xl mb-2">
+            Peradresuosime į katalogą po 5 sek. Jei neperadresuoja, spauskite
+            <a class="text-xs md:text-2xl text-brand-maroon font-bold hover:text-brand-beige"
+               href="{% url 'product_list' %}">grįžti į katalogą.</a>
+          </p>
+          <script>
+            setTimeout(function(){ window.location.href = "{% url 'product_list' %}"; }, 5000);
+          </script>
+        {% endif %}
+      {% else %}
+        <p class="text-xs md:text-2xl mb-2">
+          Peradresuosime į katalogą po 5 sek. Jei neperadresuoja, spauskite
+          <a class="text-xs md:text-2xl text-brand-maroon font-bold hover:text-brand-beige"
+             href="{% url 'product_list' %}">grįžti į katalogą.</a>
+        </p>
+        <script>
+          setTimeout(function(){ window.location.href = "{% url 'product_list' %}"; }, 5000);
+        </script>
+      {% endif %}
+
+    </div>
+  </div>
+</section>
 {% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Pirkimo–pardavimo taisyklės{% endblock %}
+
+{# Tik šiam puslapiui: tvarkingi tarpai, bold tik H1 #}
+{% block extra_head %}
+<style>
+  .entry-content h1{margin:0 0 24px !important; font-weight:700 !important;}
+  .entry-content p{margin:12px 0 !important;}
+  .entry-content .sec{margin:48px 0 12px !important; font-weight:400 !important;}
+  .entry-content .sec + p{margin-top:0 !important;}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="pt-[50px]">
+  <div class="container">
+    <div class="entry-content mb-6 md:mb-[50px] max-w-[800px] mx-auto">
+      <h1>Pirkimo–pardavimo taisyklės</h1>
+
+      <p>
+        Šios pirkimo–pardavimo taisyklės (toliau – Taisyklės) nustato Pirkėjo ir Pardavėjo – UAB „UROCK“, juridinio asmens kodas 302923014, adresas Krėvės pr. 104A-13, 50380 Kaunas, el. paštas
+        <a href="mailto:info@urock.lt">info@urock.lt</a>, veikiančio elektroninėje parduotuvėje www.urock.lt, teises, pareigas, atsakomybę bei pirkimo sąlygas.
+      </p>
+
+      <p class="sec">1. Pirkimo–pardavimo sutarties sudarymas</p>
+      <p>1.1. Sutartis laikoma sudaryta nuo momento, kai Pirkėjas www.urock.lt suformuoja krepšelį ir atlikdamas užsakymo veiksmus pasirenka mokėjimo būdą.</p>
+      <p>1.2. Nuo šio momento tarp Pirkėjo ir Pardavėjo atsiranda pirkimo–pardavimo teisiniai santykiai.</p>
+
+      <p class="sec">2. Pirkėjo teisės</p>
+      <p>2.1. Pirkti prekes elektroninėje parduotuvėje, vadovaujantis Taisyklėmis ir galiojančiais LR teisės aktais.</p>
+      <p>2.2. Pakeisti ar grąžinti įsigytas prekes Taisyklėse ir teisės aktuose nustatyta tvarka.</p>
+      <p>2.3. Pasinaudoti paslauga „Noriu pasimatuoti“ – palikti kontaktus, sulaukti Pardavėjo skambučio ir pasimatuoti pasirinktą rūbą sutartoje vietoje; po pasimatavimo prekę galima įsigyti atsiskaitant grynaisiais ar pavedimu.</p>
+      <p>2.4. Kitos teisės, numatytos Taisyklėse ir LR teisės aktuose.</p>
+
+      <p class="sec">3. Pirkėjo įsipareigojimai</p>
+      <p>3.1. Sumokėti už užsakytas prekes ir priimti jas nustatyta tvarka.</p>
+      <p>3.2. Užsakymo metu pateikti tikslius duomenis ir, jiems pasikeitus, juos nedelsiant atnaujinti.</p>
+      <p>3.3. Nesiimti veiksmų, galinčių pakenkti parduotuvės darbo stabilumui ar saugumui.</p>
+      <p>3.4. Laikytis LR teisės aktų ir šių Taisyklių.</p>
+
+      <p class="sec">4. Pardavėjo teisės</p>
+      <p>4.1. Laikinai stabdyti ar nutraukti parduotuvės veiklą (patvirtinti užsakymai įvykdomi, nauji – nepriimami).</p>
+      <p>4.2. Vienašališkai keisti Taisykles, apie tai paskelbiant svetainėje www.urock.lt.</p>
+      <p>4.3. Jei Pirkėjas pažeidžia įsipareigojimus ar kelia grėsmę sistemų saugumui, apriboti arba sustabdyti jo galimybę naudotis parduotuve.</p>
+      <p>4.4. Anuliuoti užsakymą, jei apmokėjimas negautas per 3 (tris) darbo dienas.</p>
+
+      <p class="sec">5. Pardavėjo įsipareigojimai</p>
+      <p>5.1. Sudaryti sąlygas Pirkėjui naudotis parduotuvės paslaugomis.</p>
+      <p>5.2. Pristatyti užsakytas prekes, atitinkančias užsakymą.</p>
+      <p>5.3. Negalint pristatyti – pasiūlyti analogišką prekę arba grąžinti pinigus per 14 dienų nuo atsisakymo.</p>
+      <p>5.4. Į Pirkėjo reikalavimus atsakyti ne vėliau kaip per 10 kalendorinių dienų, jei įstatymai nenustato kitaip.</p>
+
+      <p class="sec">6. Kainos ir atsiskaitymas</p>
+      <p>6.1. Visos kainos nurodomos eurais su PVM.</p>
+      <p>6.2. Galimi atsiskaitymo būdai: banko kortele; per Paysera sistemą (Swedbank, SEB, Luminor, Citadele, Šiaulių bankas ir kt.).</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

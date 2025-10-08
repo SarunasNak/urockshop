@@ -1,0 +1,18 @@
+{# templates/shop/partials/_price.html #}
+{# Inputs: price, original_price #}
+{% if original_price and original_price > price %}
+  <div class="flex items-center">
+    <span class="text-[12px] md:text-[13px] line-through mr-2">
+      {{ original_price|floatformat:"-2" }} €
+    </span>
+    <span class="text-[12px] md:text-[13px] font-medium">
+      {{ price|floatformat:"-2" }} €
+    </span>
+  </div>
+{% else %}
+  <div class="flex items-center">
+    <span class="text-[12px] md:text-[13px] font-medium">
+      {{ price|floatformat:"-2" }} €
+    </span>
+  </div>
+{% endif %}
