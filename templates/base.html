@@ -88,7 +88,7 @@
       {% include "partials/footer.html" %}
     {% endblock %}
 
-   {% block body_end %}
+{% block body_end %}
   <!-- Vendor (lokaliai) -->
   <script defer src="{% static 'fe/vendor/alpinejs/alpinejs.min.js' %}"></script>
   <script defer src="{% static 'fe/vendor/headroom/headroom.min.js' %}"></script>
@@ -96,6 +96,9 @@
 
   <!-- Projektinis JS (po vendor) -->
   <script defer src="{% static 'fe/assets/js/script.js' %}"></script>
+
+  {# ČIA naujas blokas per-puslapių skriptams #}
+  {% block scripts_extra %}{% endblock %}
 {% endblock %}
   </body>
 </html>
