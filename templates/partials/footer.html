@@ -65,14 +65,28 @@
         <p class="font-bold">Mūsų drabužių naujienos</p>
 
         {% url 'newsletter_subscribe' as newsletter_url %}
-        <form id="newsletter" class="form-element w-full mb-6"
-              method="post" action="{{ newsletter_url|default:'#' }}">
-          {% csrf_token %}
-          <input class="w-[230px] text-[12px] text-center placeholder:text-white h-[40px] border border-brand-gray-light bg-transparent mb-1 block mx-auto"
-                 type="email" name="email" placeholder="El. paštas" required>
-          <button class="w-[230px] text-[12px] tw-button-bg-mrm inline-block p-[8.5px] text-sm transition-colors duration-300 opacity-70 block mx-auto"
-                  type="submit">PRENUMERUOTI</button>
-        </form>
+        <form id="newsletterForm" class="form-element w-full mb-6"
+      method="post" action="{% url 'newsletter:subscribe' %}">
+  {% csrf_token %}
+  <input class="w-[230px] text-[12px] text-center placeholder:text-white h-[40px] border border-brand-gray-light bg-transparent mb-1 block mx-auto"
+         type="email" name="email" placeholder="El. paštas" required>
+  <input type="text" name="hp" value="" autocomplete="off" style="display:none">
+  <input type="hidden" name="source" value="footer">
+  <button id="subscribeBtn"
+  class="relative block mx-auto w-[230px] text-[12px] tw-button-bg-mrm p-[8.5px] pr-8 text-sm transition-colors duration-300 opacity-70"
+  type="submit"
+  data-default="PRENUMERUOTI"
+  data-done="UŽSIPRENUMERUOTA">
+  <span class="btn-label pointer-events-none block text-center">PRENUMERUOTI</span>
+
+  <!-- čekas – pririštas prie dešinės krašto -->
+  <svg class="check-icon hidden h-4 w-4 pointer-events-none absolute right-3 top-1/2 -translate-y-1/2"
+       viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <path d="M16.667 5.833L8.333 14.167 5 10.833"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+</form>
 
         {% url 'terms' as terms_url %}
         {% url 'shipping' as shipping_url %}
@@ -96,3 +110,73 @@
     </div>
   </div>
 </footer>
+
+<script>
+  function getCookie(name){const v=`; ${document.cookie}`.split(`; ${name}=`);if(v.length===2)return v.pop().split(';').shift();}
+  const csrftoken = getCookie('csrftoken');
+
+  (function () {
+    const form = document.getElementById('newsletterForm');
+    if (!form) return;
+
+    const btn = document.getElementById('subscribeBtn');
+    const labelEl = btn.querySelector('.btn-label');
+    const checkEl = btn.querySelector('.check-icon');
+    const defaultText = btn.dataset.default || 'PRENUMERUOTI';
+    const doneText = btn.dataset.done || 'UŽSIPRENUMERUOTA';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // trumpam užrakinti, kad nebūtų dvigubo submit
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: {
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+          },
+          body: new FormData(form)
+        });
+
+        const ct = res.headers.get('content-type') || '';
+        if (!ct.includes('application/json')) {
+          const text = await res.text();
+          throw new Error(`Tikėtasi JSON, gavau (${res.status}) ${ct}. ${text.slice(0,180)}`);
+        }
+
+        const data = await res.json();
+
+        if (res.ok && (data.ok || data.success)) {
+          // parodyti varnelę ir pakeisti tekstą
+          if (labelEl) labelEl.textContent = doneText;
+          if (checkEl) checkEl.classList.remove('hidden');
+
+          form.reset();
+
+          // <- svarbiausia: nepaliekam disabled (kad nebūtų „plytos“ kursoriaus)
+          btn.disabled = false;
+          btn.setAttribute('aria-disabled', 'true');
+          btn.classList.add('pointer-events-none'); // nebeleidžia spausti, bet kursorius normalus
+          return;
+        }
+        throw new Error(data.error || 'Nepavyko užsiprenumeruoti');
+      } catch (err) {
+        // atstatom
+        if (labelEl) labelEl.textContent = defaultText;
+        if (checkEl) checkEl.classList.add('hidden');
+        btn.classList.remove('pointer-events-none');
+        btn.removeAttribute('aria-disabled');
+      } finally {
+        // jei ne „return“ iš sėkmės — vėl leidžiam spausti
+        if (!btn.classList.contains('pointer-events-none')) {
+          btn.disabled = false;
+        }
+      }
+    });
+  })();
+</script>

@@ -4,6 +4,7 @@ from django.core.validators import RegexValidator
 from django.utils.text import slugify
 from django.utils.html import format_html
 from django.apps import apps
+from django.urls import reverse
 
 # ---- helper upload kelias: products/<SKU>/filename ----
 def product_upload_to(instance, filename):
@@ -110,9 +111,6 @@ class Product(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self):
-        return self.name or f"Product {self.pk}"
-
     # ---- sekantis SKU iš esamų URxxxx
     @classmethod
     def next_sku(cls) -> str:
@@ -185,7 +183,28 @@ class Product(models.Model):
 
             if fields_to_update:
                 v.save(update_fields=fields_to_update)
+    def get_absolute_url(self):
+        """Kanoninis produkto URL: /shop/<slug>/"""
+        return reverse("shop:detail", args=[self.slug])
 
+    @property
+    def image(self):
+        """Alias šablonams: naudok {{ product.image.url }} -> grąžina main_image."""
+        return self.main_image
+
+    @property
+    def size_display(self):
+        """Šablonuose {{ product.size_display }} (pvz. 'M')."""
+        return self.size.label if self.size_id else ""
+
+    @property
+    def original_price(self):
+        """
+        Kad veiktų nuolaidos ženkliukas ir _price partial:
+        grąžina 'compare_at_price' iš vienintelio varianto (jei yra).
+        """
+        v = self.variants.order_by('-compare_at_price').first()
+        return v.compare_at_price if v and v.compare_at_price else None
 
 class ProductImage(models.Model):
     """Papildomos nuotraukos produkto detalei (kortelei atidarius)."""

@@ -1,4 +1,8 @@
 from django.urls import path
 from .views import subscribe
 
-urlpatterns = [path("subscribe/", subscribe, name="newsletter_subscribe")]
+app_name = "newsletter"   # svarbu, kad galėtume naudoti namespace
+
+urlpatterns = [
+    path("subscribe/", subscribe, name="subscribe"),
+]

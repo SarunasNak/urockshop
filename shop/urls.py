@@ -34,6 +34,8 @@ urlpatterns = [
     path("checkout/", include("checkout.urls")),
     path("blog/", include(("blog.urls", "blog"), namespace="blog")),
 
+    path("newsletter/", include(("newsletter.urls", "newsletter"), namespace="newsletter")),
+
     # API (paliekam, tik rekomenduoju suversijuoti)
     path("api/v1/", include("catalog.urls_api")),
 
