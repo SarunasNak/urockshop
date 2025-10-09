@@ -61,15 +61,16 @@
       </div>
 
       <!-- Naujienlaiškis + teisinės -->
-      <div class="md:max-w-[249px] order-3">
+      <div id="newsletter" class="md:max-w-[249px] order-3">
         <p class="font-bold">Mūsų drabužių naujienos</p>
 
         {% url 'newsletter_subscribe' as newsletter_url %}
         <form id="newsletterForm" class="form-element w-full mb-6"
       method="post" action="{% url 'newsletter:subscribe' %}">
   {% csrf_token %}
-  <input class="w-[230px] text-[12px] text-center placeholder:text-white h-[40px] border border-brand-gray-light bg-transparent mb-1 block mx-auto"
-         type="email" name="email" placeholder="El. paštas" required>
+  <input id="newsletterEmail"
+       class="w-[230px] text-[12px] text-center placeholder:text-white h-[40px] border border-brand-gray-light bg-transparent mb-1 block mx-auto"
+       type="email" name="email" placeholder="El. paštas" required>
   <input type="text" name="hp" value="" autocomplete="off" style="display:none">
   <input type="hidden" name="source" value="footer">
   <button id="subscribeBtn"
@@ -104,7 +105,7 @@
             <path fill-rule="evenodd" clip-rule="evenodd" d="M0.729 7C0.729 3.537 3.537 0.729 7 0.729S13.271 3.537 13.271 7 10.463 13.271 7 13.271 0.729 10.463 0.729 7Z" fill="white"/>
             <path fill-rule="evenodd" clip-rule="evenodd" d="M7.167 5.104C5.999 5.104 5.104 5.981 5.104 7s.895 1.896 2.063 1.896c.434 0 .846-.09 1.235-.335a.74.74 0 0 1 .902 1.164c-.51.53-1.243.946-2.137.946C5.573 10.67 4.229 9.458 4.229 7.9 4.229 5.442 5.573 4.229 7.167 4.229c.4 0 .796.077 1.165.227a.74.74 0 0 1-.33 1.427c-.272.12-.555.175-.835.221Z" fill="white"/>
           </svg>
-          <span>{% now "Y" %}</span>
+          <span>2012–{% now "Y" %}</span>
         </div>
       </div>
     </div>

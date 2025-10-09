@@ -73,12 +73,12 @@
 
    <main>
   {% block messages %}
-    {% if messages %}
-      <ul class="container my-4 site-messages">
-        {% for m in messages %}<li>{{ m }}</li>{% endfor %}
-      </ul>
-    {% endif %}
-  {% endblock %}
+  {% if messages and request.resolver_match.url_name != 'product_list' %}
+    <ul class="container my-4 site-messages">
+      {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}
 
   {% block content %}{% endblock %}
 </main>
@@ -93,9 +93,13 @@
   <script defer src="{% static 'fe/vendor/alpinejs/alpinejs.min.js' %}"></script>
   <script defer src="{% static 'fe/vendor/headroom/headroom.min.js' %}"></script>
   <script defer src="{% static 'fe/vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'fe/vendor/htmx.min.js' %}" defer></script>
 
   <!-- Projektinis JS (po vendor) -->
   <script defer src="{% static 'fe/assets/js/script.js' %}"></script>
+
+  <!-- Newsletter scroll + focus -->
+  <script defer src="{% static 'fe/assets/js/newsletter.js' %}?v=1"></script>
 
   {# ČIA naujas blokas per-puslapių skriptams #}
   {% block scripts_extra %}{% endblock %}

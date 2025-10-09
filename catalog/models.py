@@ -4,25 +4,21 @@ from django.core.validators import RegexValidator
 from django.utils.text import slugify
 from django.utils.html import format_html
 from django.apps import apps
+from django.urls import reverse
+import os
 
 # ---- helper upload kelias: products/<SKU>/filename ----
 def product_upload_to(instance, filename):
     """
-    Failų saugojimo kelias pagal SKU:
-    - Product: products/<product.sku>/<filename>
-    - ProductImage: products/<product.sku>/<filename>
+    Stabilus kelias į media:
+    - products/<product_pk>/<filename>, jei turim tėvo PK
+    - products/tmp/<filename>, jei PK dar nėra (labai retas atvejis)
     """
-    sku = None
-    # jei keliame Product nuotraukas
-    if hasattr(instance, "sku") and instance.sku:
-        sku = instance.sku
-    # jei keliame ProductImage nuotraukas
-    if not sku and hasattr(instance, "product") and instance.product:
-        sku = getattr(instance.product, "sku", None)
-
-    sku = sku or "no-sku"
-    return f"products/{sku}/{filename}"
-
+    # Jei pats Product (turi main_image/hover_image) – tėvas = instance
+    product = instance if hasattr(instance, "sku") else getattr(instance, "product", None)
+    pk = getattr(product, "pk", None)
+    folder = f"products/{pk if pk else 'tmp'}"
+    return os.path.join(folder, filename)
 
 class Category(models.Model):
     name = models.CharField(max_length=120)
@@ -59,7 +55,6 @@ class Size(models.Model):
     def __str__(self):
         return self.label
 
-
 class Product(models.Model):
     sku = models.CharField(
         max_length=50,
@@ -79,11 +74,11 @@ class Product(models.Model):
 
     # >>> nauji laukai, kuriuos pildai Product formoje
     size = models.ForeignKey(
-    "Size",                 # string – veiks nepriklausomai nuo klasės vietos faile
-    null=True, blank=True,
-    on_delete=models.PROTECT,
-    related_name="products",
-    db_index=True,
+        "Size",
+        null=True, blank=True,
+        on_delete=models.PROTECT,
+        related_name="products",
+        db_index=True,
     )
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     stock = models.PositiveIntegerField(default=1, help_text="Pradinė atsarga")
@@ -112,6 +107,26 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name or f"Product {self.pk}"
+
+    # ---- URL į detalės puslapį (SU namespace)
+    def get_absolute_url(self):
+        return reverse("shop:product_detail", kwargs={"slug": self.slug})
+
+    # ---- Patogus tekstas „Dydis …“ vietoj None
+    @property
+    def size_display(self) -> str:
+        return self.size.label if self.size_id else ""
+
+    # ---- Pagrindinė nuotrauka kortelei: main_image -> pirmas iš galerijos -> None
+    def primary_image_url(self) -> str | None:
+        if self.main_image and getattr(self.main_image, "url", None):
+            return self.main_image.url
+        img = self.images.all().order_by("sort", "id").first() if hasattr(self, "images") else None
+        if not img:
+            return None
+        if hasattr(img, "image") and getattr(img.image, "url", None):
+            return img.image.url
+        return getattr(img, "url", None)
 
     # ---- sekantis SKU iš esamų URxxxx
     @classmethod
@@ -149,40 +164,31 @@ class Product(models.Model):
 
         # 2) po išsaugojimo – sukurti/atnaujinti vienintelį variantą pagal Product laukus
         Variant = apps.get_model("catalog", "Variant")
-
-        # paimam Size label kaip string (jei dydis neparinktas – tuščia)
         size_label = self.size.label if self.size_id else ""
 
         v, created = Variant.objects.get_or_create(
             product=self,
             defaults={
                 "price": self.price,
-                "size": size_label,       # ← buvo: self.size
+                "size": size_label,   # string, ne FK
                 "stock": self.stock,
                 "is_active": self.is_active,
             },
         )
-
         if not created:
             fields_to_update = []
-
             if v.price != self.price:
                 v.price = self.price
                 fields_to_update.append("price")
-
-            target_size = size_label     # ← palyginam su stringu
-            if v.size != target_size:
-                v.size = target_size
+            if v.size != size_label:
+                v.size = size_label
                 fields_to_update.append("size")
-
             if v.is_active != self.is_active:
                 v.is_active = self.is_active
                 fields_to_update.append("is_active")
-
             if v.stock != self.stock:
                 v.stock = self.stock
                 fields_to_update.append("stock")
-
             if fields_to_update:
                 v.save(update_fields=fields_to_update)
 

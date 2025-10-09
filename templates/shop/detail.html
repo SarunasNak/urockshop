@@ -25,48 +25,40 @@
       </li>
     </ul>
 
-    <section class="grid md:grid-cols-2 items-center relative">
-      {# LEFT: Swiper galerija #}
-      <div class="swiper product-slider w-full">
-        <div class="swiper-wrapper relative">
-          {# Pagrindinis paveikslas #}
-{% if product.main_image %}
-  <div class="swiper-slide overflow-hidden">
-    <img class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
-         src="{{ product.main_image.url }}"
-         alt="{{ product.name|default:product.slug }}">
-  </div>
+<section class="grid md:grid-cols-2 items-center relative">
+  {# LEFT: Swiper galerija #}
+  <div class="swiper product-slider w-full">
+    <div class="swiper-wrapper relative">
 
-{% elif product.images.all|length > 0 %}
-  {% with first=product.images.all.0 %}
-    {% if first.image %}
-      <div class="swiper-slide overflow-hidden">
-        <img class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
-             src="{{ first.image.url }}"
-             alt="{{ product.name|default:product.slug }}">
-      </div>
-    {% endif %}
-  {% endwith %}
-
-{% else %}
-  <div class="swiper-slide overflow-hidden">
-    <div class="w-full aspect-[203/305] md:aspect-[640/964] bg-brand-gray-light grid place-items-center text-xs">
-      Nėra nuotraukos
-    </div>
-  </div>
-{% endif %}
-
-          {# Papildomos nuotraukos, jei turi ryšį product.images (adjust pagal tavo modelį) #}
-          {% for img in product.images.all %}
+      {# Tik DRABUŽIO KORTELĖS nuotraukos. Jei jų nėra – rodom main_image. Jei ir jo nėra – placeholder. #}
+      {% if product.images.exists %}
+        {% for pi in product.images.all %}
+          {% if pi.image %}
             <div class="swiper-slide overflow-hidden">
-              <img class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
-                   src="{{ img.image.url }}"
-                   alt="{{ product.name|default:product.slug }} {{ forloop.counter }}">
+              <img
+                class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
+                src="{{ pi.image.url }}"
+                alt="{% firstof pi.alt product.title product.name product.slug %}">
             </div>
-          {% empty %}
-            {# jei nėra papildomų – nieko #}
-          {% endfor %}
+          {% endif %}
+        {% endfor %}
+
+      {% elif product.main_image %}
+        <div class="swiper-slide overflow-hidden">
+          <img
+            class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
+            src="{{ product.main_image.url }}"
+            alt="{% firstof product.title product.name product.slug %}">
         </div>
+
+      {% else %}
+        <div class="swiper-slide overflow-hidden">
+          <div class="w-full aspect-[203/305] md:aspect-[640/964] bg-brand-gray-light grid place-items-center text-xs">
+            Nėra nuotraukos
+          </div>
+        </div>
+      {% endif %}
+         </div>
 
         {# Swiper controls (desktop) #}
         <div class="mt-6 md:mt-8 justify-center absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-full z-10 hidden md:flex">
@@ -85,7 +77,7 @@
       </div>
 
       {# RIGHT: informacija #}
-      <div class="px-3 pt-1 md:p-[68px]">
+    <div class="px-3 pt-1 md:p-[68px]">
         <div class="border-t border-brand-beige w-[calc(50%-138px)] absolute top-0 hidden md:block"></div>
 
         {# Desktop breadcrumbai #}
@@ -128,10 +120,10 @@
           </div>
 
           {% if product.description %}
-            <div class="ck-content text-xs md:max-w-[441px]">
-              {{ product.description|linebreaks }}
-            </div>
-          {% endif %}
+  <div class="ck-content text-xs md:max-w-[441px]">
+    {{ product.description|safe }}
+  </div>
+{% endif %}
 
           {# Papildomi edukaciniai tekstai (desktop only) #}
           <p class="mb-5 text-brand-maroon hidden md:block text-xs">
@@ -139,7 +131,10 @@
           </p>
           <p class="mb-5 text-brand-maroon text-xs hidden md:block">
             *Parduotuvėje eksponuojame tik dalį asortimento.
-            <a class="font-bold text-xs hover:underline" href="#newsletter">Užsisakykite naujienlaiškį</a>
+            <a href="#newsletter"
+   class="js-newsletter-link text-[10px] font-bold underline hover:underline focus:underline underline-offset-2 hover:text-brand-beige transition-colors">
+  Prenumeruoti naujienlaiškį
+</a>
             ir pirmieji sužinokite apie kas mėnesį atvykstančius drabužius.
           </p>
 
@@ -181,11 +176,11 @@
         class="w-full tw-button-bg-mrm inline-block bg-brand-maroon text-white p-3 text-sm hover:opacity-90 transition-colors duration-300"
         data-loading-text="Pridedama…"
         data-success-text="Krepšelyje ✓">
-  Į krepšelį
+  Pirkti
 </button>
 </form>
 
-{# po "Į krepšelį" formos #}
+{# po "Pirkti" formos #}
 <div class="text-[8px] md:text-[11px] flex items-center gap-2 leading-snug mt-1">
   <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
     <path d="M15.75 3H7.5C7.30109 3 7.11032 3.07902 6.96967 3.21967C6.82902 3.36032 6.75 3.55109 6.75 3.75V12C6.75 12.1989 6.82902 12.3897 6.96967 12.5303C7.11032 12.671 7.30109 12.75 7.5 12.75H15.75C15.9489 12.75 16.1397 12.671 16.2803 12.5303C16.421 12.3897 16.5 12.1989 16.5 12V3.75C16.5 3.55109 16.421 3.36032 16.2803 3.21967C16.1397 3.07902 15.9489 3 15.75 3ZM1.5 12.75H6.75V7.5H4.125L1.5 9.92325V12.75Z"
@@ -211,7 +206,7 @@
         type="submit"
         class="w-full tw-button-bg-mrm inline-block bg-brand-maroon text-white p-3 text-sm opacity-70 hover:opacity-90 transition-colors duration-300 text-center"
         data-loading-text="Fiksuojama…"
-        data-success-text="Užfiksuota ✓">
+        data-success-text="Užfiksuota krepšelyje ✓">
   Noriu pasimatuoti
 </button>
 </form>
@@ -322,95 +317,66 @@
 {% block scripts_extra %}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-
-  // AJAX submit visoms formoms su .js-add-to-cart
+  // AJAX visoms formoms su .js-add-to-cart
   document.querySelectorAll('form.js-add-to-cart').forEach(function (form) {
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
 
       const btn = form.querySelector('button[type="submit"]');
-      if (!btn) { form.submit(); return; } // saugus atsarginis kelias
+      if (!btn) return form.submit(); // fallback
 
-      // Tekstai iš data-* (jei nenurodyta – numatytos reikšmės)
-      const originalText = btn.dataset.originalText || btn.textContent.trim();
-      const loadingText  = btn.dataset.loadingText  || 'Pridedama…';
-      const successText  = btn.dataset.successText  || (btn.id === 'btn-buy' ? 'Krepšelyje ✓' : 'Užfiksuota ✓');
+      const originalText = btn.textContent.trim();
+      const loadingText  = btn.dataset.loadingText  || 'Pildoma…';
+      const successText  = btn.dataset.successText  || 'Pridėta ✓';
 
-      // Laukimo būsena (be spalvų keitimo)
       btn.disabled = true;
       btn.setAttribute('aria-busy', 'true');
       btn.textContent = loadingText;
 
       try {
-        // CSRF (iš input arba iš cookie)
-        const csrf =
-          (form.querySelector('input[name=csrfmiddlewaretoken]') || {}).value ||
-          getCookie('csrftoken');
+        const csrf = (form.querySelector('input[name=csrfmiddlewaretoken]') || {}).value || getCookie('csrftoken');
 
-        // Siunčiam POST į tą patį endpoint'ą
         const res = await fetch(form.action, {
           method: 'POST',
           headers: {
             'X-Requested-With': 'XMLHttpRequest',
             'X-CSRFToken': csrf
           },
-          body: new FormData(form),
-          redirect: 'follow'
+          body: new FormData(form)
         });
 
-        if (!res.ok) throw new Error('Atsakas: ' + res.status);
+        // sėkmė – pakeičiam mygtuko tekstą (spalvų nekeičiam)
+        btn.textContent = successText;
+        btn.setAttribute('aria-disabled', 'true');
 
-        // Jei backendas grąžins JSON – paimam krepšelio skaičių
+        // jei grįžo JSON – paimam tikslų skaičių
         let data = null;
         const ct = (res.headers.get('content-type') || '').toLowerCase();
         if (ct.includes('application/json')) {
           data = await res.json().catch(() => null);
         }
 
-        // SĖKMĖ: keičiam tik tekstą ir būsenas (spalvos – lieka bordo)
-        btn.textContent = successText;
-        btn.classList.remove('opacity-70');         // kad „pasimatuoti“ taptų pilnu tonu
-        btn.classList.add('cursor-default');
-        btn.setAttribute('aria-disabled', 'true');
-        // Paliekam disabled, kad nespamintų
-        // btn.disabled = true;  // jis jau disabled — paliekam
-
-        // Atnaujinam krepšelio badge (jei turim)
+        // atnaujinam header badge „(n)“
         const badge = document.querySelector('#cart-count, .js-cart-count, [data-cart-count]');
         if (badge) {
-          if (data && typeof data.cart_count === 'number') {
-            badge.textContent = data.cart_count;
-          } else {
-            const cur = parseInt(badge.textContent, 10) || 0;
-            badge.textContent = cur + 1; // jei JSON negrįžo – padidinam lokaliai
-          }
+          const m = String(badge.textContent).match(/\d+/);
+          const cur = m ? parseInt(m[0], 10) : 0;
+          const next = (data && Number.isFinite(data.cart_count)) ? data.cart_count : (cur + 1);
+          badge.textContent = `(${next})`;
+          badge.setAttribute('aria-live','polite');
         }
 
       } catch (err) {
-        // Klaida: grąžinam pradinę būseną ir parodykim trumpą žinutę po forma
+        // klaida – grįžtam į pradinę būseną ir fallback
         btn.textContent = originalText;
-        btn.disabled = false;
+        form.submit();
+      } finally {
         btn.removeAttribute('aria-busy');
-
-        showInlineError(form, 'Nepavyko pridėti. Pabandykite dar kartą.');
+        btn.disabled = false;
       }
     });
   });
 
-  // Maža helper funkcija inline klaidai
-  function showInlineError(form, msg) {
-    let note = form.parentElement.querySelector('.js-inline-error');
-    if (!note) {
-      note = document.createElement('div');
-      note.className = 'js-inline-error text-xs text-brand-maroon mt-2';
-      form.parentElement.appendChild(note);
-    }
-    note.textContent = msg;
-    clearTimeout(note._t);
-    note._t = setTimeout(() => note.remove(), 4000);
-  }
-
-  // Django CSRF iš cookies (fallback)
   function getCookie(name) {
     const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
     return m ? m.pop() : '';

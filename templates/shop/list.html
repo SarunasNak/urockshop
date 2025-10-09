@@ -1,5 +1,8 @@
 {% extends "base.html" %}
+{% block messages %}{% endblock %}
 {% load static %}
+
+{% url 'catalog:list' as catalog_url %}  {# <-- ČIA #}
 
 {% block content %}
 <section class="py-[50px]">
@@ -19,14 +22,20 @@
         <p class="mb-2 text-brand-beige text-[10px]">
           *Čia rasite tik dalį mūsų siūlomų drabužių.
         </p>
-        <a href="#newsletter" class="text-[10px] font-bold hover:text-brand-beige underline">
-          Noriu daugiau.
-        </a>
+        <a href="#newsletter"
+   class="js-newsletter-link text-[10px] font-bold underline hover:underline focus:underline underline-offset-2 hover:text-brand-beige transition-colors">
+  Noriu daugiau.
+</a>
       </div>
 
-      {# Filtrai: Alpine UI + paslėpti GET laukeliai #}
-      <form method="get" class="flex justify-center items-center px-4 text-[14px] md:text-[20px] space-x-4"
-            x-ref="filtersForm">
+      {# Filtrai: HTMX forma + paslėpti GET laukeliai #}
+      <form
+        method="get"
+        class="flex justify-center items-center px-4 text-[14px] md:text-[20px] space-x-4"
+        hx-get="."
+        hx-target="#catalog-results"
+        hx-push-url="true"
+      >
         {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
         <input type="hidden" name="size" value="{{ sizes_selected.0|default:'' }}">
         <input type="hidden" name="category" value="{{ current_category|default:'' }}">
@@ -36,10 +45,11 @@
           x-data="{
             open:false,
             active: {% if sizes_selected %}true{% else %}false{% endif %},
-            selected: '{% if sizes_selected %}{% for s in sizes %}{% if s.slug == sizes_selected.0 %}{{ s.label|escapejs }}{% endif %}{% endfor %}{% else %}Dydis{% endif %}'
+            selected: '{% if sizes_selected %}{% for s in sizes %}{% if s.slug|lower == sizes_selected.0 %}{{ s.label|escapejs }}{% endif %}{% endfor %}{% else %}Dydis{% endif %}'
           }"
-          class="relative w-[120px] md:w-[180px]">
-          <button
+          class="relative w-[120px] md:w-[180px]"
+        >
+          <button type="button"
             @click="open = !open; active = true"
             @mouseenter="active = true"
             @mouseleave="if (!open && (selected === 'Dydis')) active = false"
@@ -59,12 +69,13 @@
             <ul class="max-h-[400px] overflow-y-auto mt-4">
               {% for s in sizes %}
                 <li>
-                  <button
+                  <button type="button"
                     @click="
                       selected='{{ s.label|escapejs }}';
                       open=false; active=true;
-                      $refs.filtersForm.querySelector('[name=size]').value='{{ s.slug }}';
-                      $refs.filtersForm.submit();
+                      // įrašom reikšmę ir HTMX submitinam formą
+                      $el.closest('form').querySelector('[name=size]').value='{{ s.slug }}';
+                      $event.target.closest('form').requestSubmit();
                     "
                     class="block w-full text-center px-2 py-2 hover:text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300">
                     {{ s.label }}
@@ -72,12 +83,12 @@
                 </li>
               {% endfor %}
               <li>
-                <button
+                <button type="button"
                   @click="
                     selected='Dydis';
                     open=false; active=false;
-                    $refs.filtersForm.querySelector('[name=size]').value='';
-                    $refs.filtersForm.submit();
+                    $el.closest('form').querySelector('[name=size]').value='';
+                    $event.target.closest('form').requestSubmit();
                   "
                   class="block w-full text-center px-2 py-2 text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300">
                   Visi
@@ -94,8 +105,9 @@
             active: {% if current_category %}true{% else %}false{% endif %},
             selected: '{% if current_category %}{% for c in categories %}{% if c.slug == current_category %}{{ c.name|escapejs }}{% endif %}{% endfor %}{% else %}Visi{% endif %}'
           }"
-          class="relative w-[120px] md:w-[180px]">
-          <button
+          class="relative w-[120px] md:w-[180px]"
+        >
+          <button type="button"
             @click="open = !open; active = true"
             @mouseenter="active = true"
             @mouseleave="if (!open && (selected === 'Visi')) active = false"
@@ -115,12 +127,12 @@
             <ul class="max-h-[400px] overflow-y-auto mt-4">
               {% for c in categories %}
                 <li>
-                  <button
+                  <button type="button"
                     @click="
                       selected='{{ c.name|escapejs }}';
                       open=false; active=true;
-                      $refs.filtersForm.querySelector('[name=category]').value='{{ c.slug }}';
-                      $refs.filtersForm.submit();
+                      $el.closest('form').querySelector('[name=category]').value='{{ c.slug }}';
+                      $event.target.closest('form').requestSubmit();
                     "
                     class="block w-full text-center px-2 py-2 hover:text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300">
                     {{ c.name }}
@@ -128,15 +140,15 @@
                 </li>
               {% endfor %}
               <li>
-                <button
+                <button type="button"
                   @click="
                     selected='Visi';
                     open=false; active=false;
-                    $refs.filtersForm.querySelector('[name=category]').value='';
-                    $refs.filtersForm.submit();
+                    $el.closest('form').querySelector('[name=category]').value='';
+                    $event.target.closest('form').requestSubmit();
                   "
                   class="block w-full text-center px-2 py-2 text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300">
-                  Visos
+                  Visi
                 </button>
               </li>
             </ul>
@@ -146,67 +158,9 @@
     </div>
 
     {# GRID iš DB: kortelės #}
-<div class="mx-auto lg:max-w-[1080px] 2xl:max-w-[1440px]">
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-x-[5px] md:gap-x-20 gap-y-5 md:gap-y-[50px]">
-    {% for p in products %}
-      {% include "shop/partials/_card.html" with product=p %}
-    {% empty %}
-      <p class="col-span-full text-center text-sm text-brand-beige">
-        Kataloge kol kas nėra prekių.
-      </p>
-    {% endfor %}
-  </div>
-</div>
-
-    {# Dinaminis puslapiavimas su filtrais #}
-{% if page_obj.has_other_pages %}
-  {% with qs=request.GET.urlencode %}
-    <nav class="flex items-center justify-center space-x-2 md:space-x-4 mt-2 md:mt-[50px] py-4">
-      {% if page_obj.has_previous %}
-        <a aria-label="prev" class="group text-black duration-300 px-2"
-           href="?page={{ page_obj.previous_page_number }}{% if qs %}&{{ qs }}{% endif %}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="6" height="12" viewBox="0 0 6 12" fill="none">
-            <path d="M5.5 11L0.5 6L5.5 1" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                  class="transition-stroke duration-300 group-hover:stroke-brand-beige"/>
-          </svg>
-        </a>
-      {% endif %}
-
-      <div class="flex space-x-2 md:space-x-4 text-xs font-sans">
-        {% for i in page_obj.paginator.page_range %}
-          {% if i == page_obj.number %}
-            <span class="text-black px-2">{{ i }}</span>
-
-          {% elif i <= 2
-                or i > page_obj.paginator.num_pages|add:"-2"
-                or i >= page_obj.number|add:"-1" and i <= page_obj.number|add:"1" %}
-            <a class="text-brand-beige hover:text-black transition-text duration-300 px-2"
-               href="?page={{ i }}{% if qs %}&{{ qs }}{% endif %}">{{ i }}</a>
-
-          {% elif i == 3 and page_obj.number > 4 %}
-            <span class="text-brand-beige">…</span>
-
-          {% elif i == page_obj.paginator.num_pages|add:"-2"
-                and page_obj.number < page_obj.paginator.num_pages|add:"-3" %}
-            <span class="text-brand-beige">…</span>
-          {% endif %}
-        {% endfor %}
-      </div>
-
-      {% if page_obj.has_next %}
-        <a aria-label="next" class="group text-black duration-300 px-2"
-           href="?page={{ page_obj.next_page_number }}{% if qs %}&{{ qs }}{% endif %}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="6" height="12" viewBox="0 0 6 12" fill="none">
-            <path d="M0.5 11L5.5 6L0.5 1" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                  class="transition-stroke duration-300 group-hover:stroke-brand-beige"/>
-          </svg>
-        </a>
-      {% endif %}
-    </nav>
-  {% endwith %}
-{% endif %}
-
-
+    <div id="catalog-results">
+      {% include "shop/partials/_products_grid.html" %}
+    </div>
   </div>
 </section>
 {% endblock %}

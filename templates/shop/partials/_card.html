@@ -1,21 +1,28 @@
 {% load static %}
 {# Input: product #}
 <div>
-  <a href="{{ product.get_absolute_url|default:'#' }}" class="relative block w-full group" aria-label="{{ product.name }}">
-    {% if product.image %}
-      <img class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-           src="{{ product.image.url }}" alt="{{ product.name }}">
-    {% else %}
-      <img class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-           src="{% static 'fe/assets/img/etro-svarkas-aa.jpg' %}" alt="{{ product.name }}">
-    {% endif %}
+  <a href="{{ product.get_absolute_url }}" class="relative block w-full group" aria-label="{{ product.name }}">
+    {# PAGRINDINIS PAVEIKSLAS: main_image -> galerijos pirmas -> placeholder #}
+    {% with cover=product.primary_image_url %}
+      {% if cover %}
+        <img
+          class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+          src="{{ cover }}" alt="{{ product.name }}" loading="lazy">
+      {% else %}
+        <img
+          class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+          src="{% static 'fe/assets/img/etro-svarkas-aa.jpg' %}" alt="{{ product.name }}" loading="lazy">
+      {% endif %}
+    {% endwith %}
 
-    {# optional hover image jei turi #}
+    {# HOVER paveikslas, jei yra #}
     {% if product.hover_image %}
-      <img class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-           src="{{ product.hover_image.url }}" alt="{{ product.name }} hover">
+      <img
+        class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
+        src="{{ product.hover_image.url }}" alt="{{ product.name }} hover" loading="lazy">
     {% endif %}
 
+    {# Jei turi original_price – rodys badge; jei ne, tyliai praleis #}
     {% include "shop/partials/_discount_badge.html" with price=product.price original_price=product.original_price only %}
   </a>
 
@@ -28,7 +35,7 @@
     </div>
 
     <div class="text-[10px] md:text-xs mb-1">
-      {{ product.category.name|default:"" }}
+      {{ product.name }}
     </div>
 
     <div class="flex justify-between items-center space-x-2">
@@ -39,3 +46,4 @@
     </div>
   </div>
 </div>
+

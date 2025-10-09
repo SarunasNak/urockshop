@@ -51,9 +51,11 @@
         </button>
 
         <a aria-label="cart" href="{{ cart_url|default:'/cart/' }}" class="relative flex items-center justify-center">
-          <img class="max-w-[18px] md:max-w-[25px]" src="{% static 'fe/assets/img/krepselis-ikona.png' %}" alt="" width="25" height="25" fetchpriority="high" loading="eager">
-          <span class="text-[15px] rounded-full px-1 inline-block" aria-live="polite">({{ cart_count|default:0 }})</span>
-        </a>
+  <img class="max-w-[18px] md:max-w-[25px]" src="{% static 'fe/assets/img/krepselis-ikona.png' %}" alt="" width="25" height="25" fetchpriority="high" loading="eager">
+  <span id="cart-count" class="text-[15px] rounded-full px-1 inline-block" aria-live="polite">
+    ({{ cart_count|default:0 }})
+  </span>
+</a>
       </div>
     </div>
 

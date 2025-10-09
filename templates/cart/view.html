@@ -1,5 +1,8 @@
 {% extends "base.html" %}
+{% block messages %}{% endblock %}
 {% load static %}
+
+{% url 'catalog:list' as catalog_url %}
 
 {% block extra_head %}
 <style>
@@ -38,24 +41,15 @@
 {% endblock %}
 
 {% block content %}
-<main id="cart" class="mt-[68px] md:mt-[92.5px] font-mont">
   <section>
     <div class="container py-[50px]">
 
       <!-- Breadcrumbs (mobile) -->
       <ul class="flex md:hidden space-x-2 lg:space-x-5 text-[10px] justify-center mb-[50px]">
-        <li><a href="#" class="transition-text duration-300 text-brand-beige hover:text-black p-[10px]">APIE MUS</a> /</li>
-        <li><a href="#" class="transition-text duration-300 text-brand-beige hover:text-black p-[10px]">BLOGAS</a> /</li>
-        <li><a href="#" class="transition-text duration-300 text-brand-beige hover:text-black p-[10px]">KATALOGAS</a></li>
-      </ul>
-
-      {% if messages %}
-        <div class="max-w-[1016px] mx-auto mb-5">
-          {% for message in messages %}
-            <div class="text-xs p-3 border border-brand-beige mb-2">{{ message }}</div>
-          {% endfor %}
-        </div>
-      {% endif %}
+  <li><a href="{{ about_url|default:'/about/' }}" class="transition-text duration-300 text-brand-beige hover:text-black p-[10px]">APIE MUS</a> /</li>
+  <li><a href="{{ blog_url|default:'/blog/' }}" class="transition-text duration-300 text-brand-beige hover:text-black p-[10px]">BLOGAS</a> /</li>
+  <li><a href="{{ product_list_url|default:'/shop/' }}" class="transition-text duration-300 text-brand-beige hover:text-black p-[10px]">KATALOGAS</a></li>
+</ul>
 
       <div class="flex flex-col md:flex-row md:space-x-4 justify-between md:max-w-[1016px] mx-auto">
 
@@ -261,12 +255,18 @@
 
           <!-- Turinys -->
           <div class="pl-5 md:px-5 w-full flex flex-col">
-            <!-- Viršus: pavadinimas | Keisti | X (desktop) -->
-            <div class="flex items-start justify-between">
+
+            <!-- Viršus: pavadinimas + (Keisti, X) -->
+            <div class="flex space-x-1 justify-between items-start md:items-center">
               <p class="text-[11px] leading-4 truncate">{{ p.title|default:p.name|default:"Prekė" }}</p>
 
-              <div class="hidden md:flex items-center gap-3">
-                <a href="{{ p.get_absolute_url }}" class="text-[11px] font-bold underline hover:text-[#AE9F9F]">Keisti</a>
+              <!-- DESKTOP: Keisti ir X su didesniu tarpu -->
+              <div class="hidden md:flex items-center gap-6">
+                <a href="{{ catalog_url }}"
+                   class="text-xs font-bold underline hover:text-[#AE9F9F]">
+                  Keisti
+                </a>
+
                 <form method="post" action="{% url 'cart:cart_remove' %}">
                   {% csrf_token %}
                   <input type="hidden" name="variant_id" value="{{ v.id }}">
@@ -280,28 +280,19 @@
               </div>
             </div>
 
-            <!-- Dydis + kaina: mobile – stulpeliu; desktop – vienoje eilutėje -->
-            <div class="mt-2 md:flex md:items-center md:justify-between">
-              <!-- Kairė -->
-              <div>
-                <div class="text-[10px] md:text-[11px]">
-                  Dydis {{ v.size_display|default:v.size|default:"–" }}
-                </div>
-                <!-- Kaina mobiliai po dydžio -->
-                <div class="md:hidden mt-1 text-[16px] flex items-center whitespace-nowrap">
-                  {{ it.line_total|default:it.total|default:it.price }}<span class="ml-1">€</span>
-                </div>
+            <!-- Dydis (kairė) + Kaina (dešinė) kaip FE -->
+            <div class="md:flex justify-between md:space-x-2 items-center">
+              <div class="text-[10px] md:text-[11px]">
+                Dydis {{ v.size_display|default:v.size|default:"–" }}
               </div>
-
-              <!-- Dešinė: kaina tik desktop -->
-              <div class="hidden md:flex text-[16px] items-center whitespace-nowrap">
+              <div class="text-[16px] flex items-center">
                 {{ it.line_total|default:it.total|default:it.price }}<span class="ml-1">€</span>
               </div>
             </div>
 
-            <!-- Mobile: Keisti + X vienoje eilutėje po kaina -->
-            <div class="md:hidden flex items-center gap-3 mt-3">
-              <a href="{{ p.get_absolute_url }}" class="text-xs font-bold underline">Keisti</a>
+            <!-- MOBILE: Keisti kairėje, X – dešinėje -->
+            <div class="md:hidden flex justify-between items-center mt-auto">
+              <a href="{{ catalog_url }}" class="text-xs font-bold underline">Keisti</a>
               <form method="post" action="{% url 'cart:cart_remove' %}">
                 {% csrf_token %}
                 <input type="hidden" name="variant_id" value="{{ v.id }}">
@@ -313,7 +304,8 @@
                 </button>
               </form>
             </div>
-          </div>
+
+          </div><!-- /Turinys -->
         </div>
         {% endwith %}
       {% endfor %}
@@ -324,51 +316,75 @@
 </div>
 
 
-          <!-- SUMOS -->
-<div class="mb-[50px] md:mb-5">
-  <div class="relative text-xs md:text-xl md:mb-5 p-[10px] text-brand-maroon md:text-black border border-brand-beige md:border-none flex justify-center items-center md:block">
-    Jūsų užsakymas <span class="md:hidden inline-block ml-1">({{ order_items_len }})</span>
+{# --- JŪSŲ UŽSAKYMAS --- #}
+<div class="mb-5">
+  <div class="relative text-xs md:text-xl md:mb-5 p-[10px] text-brand-maroon md:text-black border border-brand-beige md:border-none flex justify-between items-center md:block">
+    <span>Jūsų pirkimo užsakymas</span>
+    <span class="md:hidden inline-block ml-2">({{ order_items|length }})</span>
   </div>
 
-<!-- Jūsų užsakymo prekės -->
-<div class="p-5 border border-brand-beige md:h-[345px] md:overflow-y-auto grid gap-y-4 md:gap-y-8 bg-brand-beige md:bg-white mb-5">
-  {% if order_items %}
-    {% for it in order_items %}
-      {% with v=it.variant p=it.variant.product %}
-      <div class="flex justify-between">
-        <!-- Miniatiūra ( kaip FE ) -->
-        <picture class="shrink-0">
-          {% if it.image_url %}
-            <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
-                 src="{{ it.image_url }}"
-                 alt="{{ p.title|default:p.name|default:'Prekė' }}">
-          {% elif p.main_image %}
-            <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
-                 src="{{ p.main_image.url }}"
-                 alt="{{ p.title|default:p.name|default:'Prekė' }}">
-          {% else %}
-            {% static 'fe/assets/img/etro-svarkas-a.jpg' as fallback_img %}
-            <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
-                 src="{{ fallback_img }}"
-                 alt="{{ p.title|default:p.name|default:'Prekė' }}">
-          {% endif %}
-        </picture>
+  <div class="p-5 border border-brand-beige md:h-[345px] md:overflow-y-auto grid gap-y-4 md:gap-y-8 bg-brand-beige md:bg-white">
+    {% if order_items %}
+      {% for it in order_items %}
+        {% with v=it.variant p=it.variant.product %}
+        <div class="flex items-start justify-between">
+          <!-- Miniatiūra (113×134) -->
+          <picture class="shrink-0">
+            {% if it.image_url %}
+              <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
+                   src="{{ it.image_url }}"
+                   alt="{{ p.title|default:p.name|default:'Prekė' }}">
+            {% elif p.main_image %}
+              <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
+                   src="{{ p.main_image.url }}"
+                   alt="{{ p.title|default:p.name|default:'Prekė' }}">
+            {% else %}
+              <div class="inline-block w-[113px] h-[134px] aspect-[113/134] max-w-[113px] bg-brand-gray-light grid place-items-center text-[10px]">
+                Nėra nuotraukos
+              </div>
+            {% endif %}
+          </picture>
 
-        <!-- Turinys -->
-        <div class="pl-5 md:px-5 w-full flex flex-col">
-          <!-- Viršus: pavadinimas | Keisti | X (desktop) -->
-          <div class="flex items-start justify-between">
-            <div class="min-w-0">
+          <!-- Turinys -->
+          <div class="pl-5 md:px-5 w-full flex flex-col">
+            <!-- Viršus: pavadinimas + (Keisti, X) -->
+            <div class="flex space-x-1 justify-between items-start md:items-center">
               <p class="text-[11px] leading-4 truncate">{{ p.title|default:p.name|default:"Prekė" }}</p>
+
+              <!-- DESKTOP: Keisti (kairiau) ir X su didesniu tarpu -->
+              <div class="hidden md:flex items-center gap-6">
+                <a href="{{ catalog_url }}" class="text-xs font-bold underline hover:text-[#AE9F9F]">Keisti</a>
+                <form method="post" action="{% url 'cart:cart_remove' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="variant_id" value="{{ v.id }}">
+                  <button aria-label="Pašalinti" title="Pašalinti">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <path d="M6 6L18 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M18 6L6 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </form>
+              </div>
             </div>
 
-            <!-- Desktop: Keisti + X -->
-            <div class="hidden md:flex items-center gap-3">
-              <a href="{{ p.get_absolute_url }}" class="text-[11px] font-bold underline hover:text-[#AE9F9F]">Keisti</a>
+            <!-- Dydis (kairė) + Kaina (dešinė) – kaip FE -->
+            <div class="md:flex justify-between md:space-x-2 items-center">
+              <div class="text-[10px] md:text-[11px]">
+                Dydis {{ v.size_display|default:v.size|default:"–" }}
+                {% if it.qty %}<span class="hidden md:inline"> • Kiekis {{ it.qty }}</span>{% endif %}
+              </div>
+              <div class="text-[16px] flex items-center">
+                {{ it.line_total|default:it.total|default:it.price }}<span class="ml-1">€</span>
+              </div>
+            </div>
+
+            <!-- MOBILE: Keisti kairėje, X – dešinėje -->
+            <div class="md:hidden flex justify-between items-center mt-3">
+              <a href="{{ catalog_url }}" class="text-xs font-bold underline">Keisti</a>
               <form method="post" action="{% url 'cart:cart_remove' %}">
                 {% csrf_token %}
                 <input type="hidden" name="variant_id" value="{{ v.id }}">
-                <button aria-label="Pašalinti" title="Pašalinti" class="inline-flex items-center">
+                <button aria-label="Pašalinti" title="Pašalinti">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
                     <path d="M6 6L18 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M18 6L6 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -376,46 +392,15 @@
                 </button>
               </form>
             </div>
-          </div>
-
-          <!-- Dydis + kaina: mobile – stulpeliu; desktop – vienoje eilutėje -->
-          <div class="mt-2 md:flex md:items-center md:justify-between">
-            <div>
-              <div class="text-[10px] md:text-[11px]">Dydis {{ v.size_display|default:v.size|default:"–" }}</div>
-              <!-- Kaina mobiliai po dydžio -->
-              <div class="md:hidden mt-1 text-[16px] flex items-center whitespace-nowrap">
-                {{ it.line_total|default:it.total|default:it.price }}<span class="ml-1">€</span>
-              </div>
-            </div>
-
-            <!-- Kaina dešinėje tik desktop -->
-            <div class="hidden md:flex text-[16px] items-center whitespace-nowrap">
-              {{ it.line_total|default:it.total|default:it.price }}<span class="ml-1">€</span>
-            </div>
-          </div>
-
-          <!-- Mobile: Keisti + X po kainos -->
-          <div class="md:hidden flex items-center gap-3 mt-3">
-            <a href="{{ p.get_absolute_url }}" class="text-xs font-bold underline">Keisti</a>
-            <form method="post" action="{% url 'cart:cart_remove' %}">
-              {% csrf_token %}
-              <input type="hidden" name="variant_id" value="{{ v.id }}">
-              <button aria-label="Pašalinti" title="Pašalinti">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
-                  <path d="M6 6L18 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M18 6L6 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
-            </form>
-          </div>
+          </div><!-- /Turinys -->
         </div>
-      </div>
-      {% endwith %}
-    {% endfor %}
-  {% else %}
-    <div class="text-xs">Užsakymo krepšelis tuščias.</div>
-  {% endif %}
-</div>
+        {% endwith %}
+      {% endfor %}
+    {% else %}
+      <div class="text-xs">Užsakymo krepšelis tuščias.</div>
+    {% endif %}
+  </div>
+
 
   <!-- Sumos (palikta kaip buvo, tik po kortelėmis) -->
   <div class="p-5 border border-brand-beige grid gap-y-4 md:gap-y-8 bg-brand-beige md:bg-white">
