@@ -2,18 +2,12 @@
 from django.urls import path
 from . import views
 
+app_name = "checkout"
+
 urlpatterns = [
-    # pagrindinis checkout puslapis
     path("", views.checkout_view, name="checkout"),
-    # (nebūtina, bet galima palikti alias’ą, jei kur nors buvai panaudojęs 'checkout_view')
-    path("", views.checkout_view, name="checkout_view"),
-
+    path("dpd/points/", views.dpd_points, name="dpd_points"),
     path("success/<int:order_id>/", views.checkout_success, name="checkout_success"),
-
     path("success-preview/", views.success_preview, name="checkout_success_preview"),
-
-    # API kelias naujam 1-žingsnio Stripe flow’ui
-    # galutinis URL bus /checkout/api/create/
     path("api/create/", views.checkout_create_order_api, name="checkout_create_order_api"),
 ]
-

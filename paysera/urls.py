@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import paysera_redirect, paysera_callback, paysera_cancel
 
+app_name = "paysera"
+
 urlpatterns = [
     path("redirect/<int:order_id>/", paysera_redirect, name="paysera_redirect"),
     path("callback/", paysera_callback, name="paysera_callback"),

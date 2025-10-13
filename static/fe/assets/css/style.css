@@ -124,5 +124,66 @@
     line-height: 1;
     font-weight: 600;  /* optional */
   }
+/* HTMX loading overlay */
+#catalog-loading {
+  display: none !important;           /* slepiam by default */
 }
+
+/* Rodom, kai vyksta HTMX request */
+#catalog-loading.htmx-request {
+  display: flex !important;
+}
+
+/* (Papildoma, saugiklis) – kai bet koks HTMX request aktyvus,
+   htmx uždeda .htmx-request ant <body>; tada irgi rodom */
+.htmx-request #catalog-loading {
+  display: flex !important;
+}
+
+/* --- Maintenance cover loader --- */
+.maintenance-loader {
+  position: relative;
+  width: 94px;
+  height: 94px;
+  display: inline-block;
+}
+.maintenance-loader div {
+  transform-origin: 47px 47px;
+  animation: maintenance-spin 1.8s linear infinite;
+}
+.maintenance-loader div:after {
+  content: " ";
+  position: absolute;
+  top: 3px;
+  left: 45px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #000;
+  display: block;
+}
+.maintenance-loader div:nth-child(1)  { transform: rotate(0deg);   animation-delay: -1.65s; }
+.maintenance-loader div:nth-child(2)  { transform: rotate(30deg);  animation-delay: -1.50s; }
+.maintenance-loader div:nth-child(3)  { transform: rotate(60deg);  animation-delay: -1.35s; }
+.maintenance-loader div:nth-child(4)  { transform: rotate(90deg);  animation-delay: -1.20s; }
+.maintenance-loader div:nth-child(5)  { transform: rotate(120deg); animation-delay: -1.05s; }
+.maintenance-loader div:nth-child(6)  { transform: rotate(150deg); animation-delay: -0.90s; }
+.maintenance-loader div:nth-child(7)  { transform: rotate(180deg); animation-delay: -0.75s; }
+.maintenance-loader div:nth-child(8)  { transform: rotate(210deg); animation-delay: -0.60s; }
+.maintenance-loader div:nth-child(9)  { transform: rotate(240deg); animation-delay: -0.45s; }
+.maintenance-loader div:nth-child(10) { transform: rotate(270deg); animation-delay: -0.30s; }
+.maintenance-loader div:nth-child(11) { transform: rotate(300deg); animation-delay: -0.15s; }
+.maintenance-loader div:nth-child(12) { transform: rotate(330deg); animation-delay: 0s; }
+
+@keyframes maintenance-spin {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media (max-width: 768px) {
+  .maintenance-loader { width: 57px; height: 57px; }
+  .maintenance-loader div { transform-origin: 28.5px 28.5px; }
+  .maintenance-loader div:after { left: 25.5px; width: 6px; height: 6px; }
+}
+
 

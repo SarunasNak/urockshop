@@ -110,7 +110,7 @@ class Product(models.Model):
 
     # ---- URL į detalės puslapį (SU namespace)
     def get_absolute_url(self):
-        return reverse("shop:product_detail", kwargs={"slug": self.slug})
+        return reverse("catalog:product_detail", kwargs={"slug": self.slug})
 
     # ---- Patogus tekstas „Dydis …“ vietoj None
     @property

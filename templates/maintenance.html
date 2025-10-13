@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block messages %}{% endblock %}
+{% load static %}
+
+{% block head_extra %}
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preload"
+        href="{% static 'fe/assets/fonts/playfair-display/playfair-display-v40-latin-regular.woff2' %}"
+        as="font" type="font/woff2" crossorigin>
+{% endblock %}
+
+{% block content %}
+<section class="flex items-center justify-center md:min-h-[52vh] py-12 px-5 text-center">
+  <div class="max-w-3xl">
+    <div class="h-[52px] max-w-[125px] md:h-[120px] md:max-w-[340px] inline-block mb-4 md:mb-8">
+      <img
+        class="aspect-[79.00/29.87] md:aspect-[220.00/83.19] object-cover w-full h-full opacity-50"
+        src="{% static 'fe/assets/img/logo-urock.svg' %}"
+        alt="UROCK" width="110" height="42" fetchpriority="high" loading="eager">
+    </div>
+
+    <h1 class="text-[24px] md:max-w-full text-[#6d1F36] opacity-20 md:text-[40px] font-serif font-normal md:font-bold mb-8">
+      VYRIŠKŲ DRABUŽIŲ IR ĮVAIZDŽIO PARTNERIS
+    </h1>
+
+    <h2 class="text-[24px] md:max-w-full text-brand-maroon md:text-[38px] font-serif font-normal md:font-bold mb-6 md:mb-12">
+      Pokyčiai jau greitai!
+    </h2>
+
+    <div class="maintenance-loader">
+      <div></div><div></div><div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div><div></div><div></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

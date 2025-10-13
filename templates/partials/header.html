@@ -10,7 +10,7 @@
       {# Saugiai „reverse“: jei nepavyktų, kintamasis bus tuščias – href'ui duodam fallback per |default #}
       {% url 'about' as about_url %}
       {% url 'blog_list' as blog_url %}
-      {% url 'product_list' as product_list_url %}
+      {% url 'catalog:list' as product_list_url %}
       {% url 'cart_view' as cart_url %}
 
       <nav class="hidden md:flex space-x-2 lg:space-x-5 text-[13px]">

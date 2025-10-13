@@ -52,7 +52,7 @@ class Cart:
         "<variant_id>": {"qty": 1, "intent": "purchase"|"try_on", "ts": <unix>},
         ...
     }
-    Senas formatas (tik int qty) automatiškai migruojamas į naują su intent='purchase'.
+    Senas formatas (tik int qty) migruojamas į naują su intent='purchase'.
     """
     def __init__(self, request):
         self.request = request
@@ -65,7 +65,6 @@ class Cart:
         for k, v in raw.items():
             key = str(k)
             if isinstance(v, int):
-                # senasis formatas: tik qty
                 if v > 0:
                     self._data[key] = {"qty": int(v), "intent": "purchase", "ts": now}
             elif isinstance(v, dict):
@@ -79,6 +78,8 @@ class Cart:
 
         # auto išvalymas pagal TTL
         self._purge_expired(now)
+
+    # ----------------- vidinės -----------------
 
     def _save(self):
         self.session[CART_SESSION_KEY] = self._data
@@ -99,15 +100,9 @@ class Cart:
         if changed:
             self._save()
 
-    # --------- API, kviečiamas iš view'ų ---------
+    # ----------------- API (view'ams) -----------------
 
     def add(self, variant_id: int, qty: int = 1, intent: str = "purchase"):
-        """
-        PASKUTINIS PASPAUDIMAS LAIMI:
-        - prekę identifikuojam pagal variant_id (viena eilutė per variantą)
-        - qty nustatom (pas jus 1), o NE sumuojam
-        - intent perrašom pagal paskutinį paspaudimą
-        """
         key = str(variant_id)
         now = int(time())
         self._data[key] = {
@@ -139,10 +134,12 @@ class Cart:
         self._data.pop(str(variant_id), None)
         self._save()
 
-    # --------- Naudinga šablonams / procesoriui ---------
+    # ----------------- Naudinga šablonams / procesoriui -----------------
 
     def items(self) -> List[CartLine]:
         ids = [int(k) for k in self._data.keys()]
+        if not ids:
+            return []
         variants = Variant.objects.select_related("product").in_bulk(ids)
         lines: List[CartLine] = []
         for k, row in self._data.items():
@@ -158,13 +155,99 @@ class Cart:
             )
         return lines
 
+    # --- Filtravimas pagal intent ---
+
+    def try_on_items(self) -> List[CartLine]:
+        return [line for line in self.items() if line.intent == "try_on"]
+
+    def purchase_items(self) -> List[CartLine]:
+        return [line for line in self.items() if line.intent == "purchase"]
+
+    @property
+    def try_on_empty(self) -> bool:
+        return not any(row.get("intent") == "try_on" for row in self._data.values())
+
+    @property
+    def purchase_empty(self) -> bool:
+        return not any(row.get("intent") == "purchase" for row in self._data.values())
+
+    # --- Išvalymas pagal intent ---
+
+    def clear_try_on(self):
+        keys = [k for k, r in self._data.items() if r.get("intent") == "try_on"]
+        for k in keys:
+            self._data.pop(k, None)
+        self._save()
+
+    def clear_purchase(self):
+        keys = [k for k, r in self._data.items() if r.get("intent") == "purchase"]
+        for k in keys:
+            self._data.pop(k, None)
+        self._save()
+
+    def clear_all(self):
+        self._data = {}
+        self._save()
+
+    # --- Momentinė „snapshot“ – saugojimui į DB / laiškams ---
+
+    def snapshot(self, intent: str = "try_on") -> list[dict]:
+        """
+        Momentinė krepšelio kopija DB/laiškams.
+        Grąžina: variant_id, product_id, sku, name, brand, size, price, image_url, qty.
+        - name parenkamas saugiai: title -> name -> slug -> "Prekė"
+        - brand bandom paimti tiek iš FK su .name, tiek iš tekstinio p.brand
+        """
+        lines = self.try_on_items() if intent == "try_on" else self.purchase_items()
+        out: list[dict] = []
+
+        for ln in lines:
+            v = ln.variant
+            p = v.product
+
+            # Produkto pavadinimas – atspari seka
+            product_title = (
+                getattr(p, "title", None)
+                or getattr(p, "name", None)
+                or getattr(p, "slug", None)
+                or "Prekė"
+            )
+
+            # Brand (toleruojam abi schemas: FK su .name arba paprastas char field)
+            brand = ""
+            try:
+                if hasattr(p, "brand") and getattr(p, "brand"):
+                    brand = getattr(p.brand, "name", None) or ""
+                    if not brand:
+                        brand = getattr(p, "brand", "") or ""
+            except Exception:
+                brand = ""
+
+            size = getattr(v, "size_display", None) or getattr(v, "size", "") or ""
+            sku  = getattr(v, "sku", "") or ""
+
+            out.append({
+                "variant_id": v.id,
+                "product_id": p.id,
+                "sku": sku,
+                "name": product_title,
+                "brand": brand,                       # <- nauja
+                "size": size,
+                "price": str(ln.price or Decimal("0")),
+                "image_url": ln.image_url,
+                "qty": ln.qty,
+            })
+
+        return out
+
+    # --- Suvestinės / badge’ams ---
+
     @property
     def total(self) -> Decimal:
         return sum((line.line_total for line in self.items()), Decimal("0"))
 
     @property
     def count_unique(self) -> int:
-        """Kiek unikalių variantų krepšelyje (badge’ui)."""
         return len(self._data)
 
     @property
@@ -177,8 +260,4 @@ class Cart:
 
     @property
     def count(self) -> int:
-        """
-        Anksčiau grąžinai sum(qty). Kadangi pas tave vienetai – badge'ui patogiau unikalūs.
-        Jei norėsi seno elgesio, pakeisk į: sum(row["qty"] for row in self._data.values()).
-        """
         return self.count_unique

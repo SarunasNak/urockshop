@@ -6,8 +6,8 @@ from decimal import Decimal, ROUND_HALF_UP
 
 class Order(models.Model):
     STATUS_CHOICES = [
-        ("pending", "Laukiama apmokėjimo"),   # naudosi internetiniams mokėjimams
-        ("cod_placed", "Pateiktas (COD)"),    # nauja: pateiktas su „mokėjimas kurjeriui“
+        ("pending", "Laukiama apmokėjimo"),
+        ("cod_placed", "Pateiktas (COD)"),
         ("paid", "Apmokėta"),
         ("failed", "Nepavyko"),
         ("canceled", "Atšaukta"),
@@ -18,6 +18,12 @@ class Order(models.Model):
         ("paysera", "Paysera"),
         ("stripe", "Stripe"),
     ]
+
+    # --- NAUJA: pristatymo būdas (kurjeris ar paštomatas)
+    SHIPPING_CHOICES = (
+        ("dpd_courier", "DPD kurjeris"),
+        ("dpd_pickup",  "DPD paštomatas"),
+    )
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -32,7 +38,22 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES, default="cod")
 
+    # --- NAUJA: pasirinktas pristatymo būdas
+    shipping_method = models.CharField(
+        max_length=30, choices=SHIPPING_CHOICES, default="dpd_courier"
+    )
+    # --- NAUJA: paštomato informacija (pildoma tik jei shipping_method == 'dpd_pickup')
+    dpd_pickup_id   = models.CharField(max_length=64, null=True, blank=True)
+    dpd_pickup_name = models.CharField(max_length=128, null=True, blank=True)
+    dpd_pickup_addr = models.CharField(max_length=256, null=True, blank=True)
+
     stripe_pi_id = models.CharField(max_length=64, blank=True, null=True)
+
+    coupon_code = models.CharField(max_length=50, blank=True, default="")
+
+    discount_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, default=Decimal("0.00")
+    )
 
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
     total = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
@@ -48,6 +69,11 @@ class Order(models.Model):
     @property
     def is_paid(self):
         return self.status == "paid"
+
+    # (nebūtina) patogūs „helperiai“
+    @property
+    def is_dpd_pickup(self) -> bool:
+        return self.shipping_method == "dpd_pickup"
 
 
 class OrderItem(models.Model):

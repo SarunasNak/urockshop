@@ -1,7 +1,6 @@
 # stripe_payments/views.py
 from decimal import Decimal, ROUND_HALF_UP
 import logging
-import json
 
 import stripe
 from django.conf import settings
@@ -11,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from checkout.models import Order
-from paysera.views import _mark_paid_and_decrease_stock
+from checkout.utils import mark_paid_and_decrease_stock  # ← bendras helperis
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__name__)
@@ -100,11 +99,9 @@ def stripe_webhook(request):
             secret=settings.STRIPE_WEBHOOK_SECRET,
         )
     except ValueError:
-        # Netinkamas JSON/payload (labai retai)
         logger.exception("Stripe webhook: invalid payload")
         return HttpResponse("invalid payload", status=400)
     except stripe.error.SignatureVerificationError:
-        # Dažniausia priežastis – NETEISINGAS WHSEC secret
         logger.exception(
             "Stripe webhook: signature verification FAILED. "
             "Check STRIPE_WEBHOOK_SECRET and that it matches the Workbench endpoint secret."
@@ -132,7 +129,7 @@ def stripe_webhook(request):
 
     if etype == "payment_intent.succeeded" and order:
         if order.status != "paid":
-            _mark_paid_and_decrease_stock(order)
+            mark_paid_and_decrease_stock(order)  # ← bendras helperis
         return HttpResponse(status=200)
 
     if etype == "payment_intent.payment_failed" and order:
