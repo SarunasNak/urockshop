@@ -133,6 +133,17 @@ STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 STRIPE_CURRENCY = os.getenv("STRIPE_CURRENCY", "eur")
 
+# --- DPD bendri ---
+ENABLE_DPD = os.getenv("ENABLE_DPD", "true").lower() == "true"
+
+# Kur laikom lokaliai (tas pats visiems env’ams)
+DPD_CACHE_FILE = os.path.join(BASE_DIR, "checkout", "data", "dpd_lt_pickup_points.json")
+
+# URL ir AUTH skaitom iš env; čia tik default’ai (tušti),
+# realias reikšmes paduosi STAGING/PROD override’uose arba per procesų env.
+DPD_POINTS_URL  = os.getenv("DPD_POINTS_URL", "")
+DPD_POINTS_AUTH = os.getenv("DPD_POINTS_AUTH", "")
+DPD_COUNTRY     = os.getenv("DPD_COUNTRY", "LT")
 
 # --- CART / krepšelio nustatymai ---
 CART_ITEM_TTL_HOURS = 48  # kiek valandų laikom prekę krepšelyje (sesijoje)
@@ -147,5 +158,4 @@ CKEDITOR_5_CONFIGS = {
         ],
     }
 }
-
 

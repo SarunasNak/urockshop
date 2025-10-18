@@ -1,10 +1,10 @@
 # shop/settings/staging.py
 import os
-from .base import *  # noqa: F401,F403  # (nutildo perspėjimą apie import *)
-from .base import BASE_DIR  # noqa: F401  # kad linteris „matytų“ BASE_DIR
+from .base import *  # noqa: F401,F403
+from .base import BASE_DIR  # noqa: F401
 from dotenv import load_dotenv
 
-# užkrauk .env iš projekto šaknies
+# Užkrauk .env iš projekto šaknies
 load_dotenv(BASE_DIR / ".env")
 
 # ========= Bendri =========
@@ -12,13 +12,12 @@ DEBUG = False
 
 ALLOWED_HOSTS = [h.strip() for h in os.getenv(
     "ALLOWED_HOSTS",
-    # tavo staging domenas + pythonanywhere subdomenas
     "staging.urock.lt,.pythonanywhere.com"
 ).split(",") if h.strip()]
 
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.getenv(
     "CSRF_TRUSTED_ORIGINS",
-    # CSRF čia reikia pilnų originų su schema
+    # PASTABA: pakeisk <tavo-vardas> į realų PA subdomeną
     "https://staging.urock.lt,https://<tavo-vardas>.pythonanywhere.com"
 ).split(",") if o.strip()]
 
@@ -31,30 +30,39 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PASSWORD"),
         "HOST": os.getenv("DB_HOST"),
         "PORT": os.getenv("DB_PORT", "5432"),
-        # "OPTIONS": {"sslmode": os.getenv("DB_SSLMODE", "require")},
         "CONN_MAX_AGE": 60,
     }
 }
+
+# ========= El. paštas (staging per Brevo SMTP – reikšmės ateina iš .env) =========
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp-relay.brevo.com")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() == "true"
+EMAIL_USE_SSL = False
+EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "20"))
+
+# Brevo SMTP username (pvz.: 92xxxxxxx@smtp-brevo.com) ir slaptažodis iš .env
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+
+# Iš ko siųsti (turi būti autentifikuotas @urock.lt domenas Brevo)
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "UROCK <info@urock.lt>")
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
 
 # ========= Failai =========
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# ========= Saugos skirtumai staging'e =========
-# HSTS staginge NENAUDOJAM, kad neužraktintum naršyklių
+# ========= Saugumas =========
 SECURE_HSTS_SECONDS = 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = False
 SECURE_HSTS_PRELOAD = False
 
-# HTTPS redirect'ą įjunk tik jei staging domenas turi SSL
 SECURE_SSL_REDIRECT = True
-
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-
-# ========= El. paštas (nestipriai – į konsolę) =========
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "Urock Staging <no-reply@staging.urock.lt>"
 
 # (nebūtina, bet gali ir čia pakartoti — nepakenks)
 if "django_ckeditor_5" not in INSTALLED_APPS:

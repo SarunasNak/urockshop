@@ -1,8 +1,6 @@
 from django.db import models
-from django.conf import settings
-from catalog.models import Variant, Product
+from catalog.models import Variant
 from decimal import Decimal, ROUND_HALF_UP
-
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -19,18 +17,24 @@ class Order(models.Model):
         ("stripe", "Stripe"),
     ]
 
-    # --- NAUJA: pristatymo būdas (kurjeris ar paštomatas)
     SHIPPING_CHOICES = (
         ("dpd_courier", "DPD kurjeris"),
         ("dpd_pickup",  "DPD paštomatas"),
     )
 
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    email = models.EmailField()
-    address = models.CharField(max_length=250)
-    city = models.CharField(max_length=100)
-    postal_code = models.CharField(max_length=20)
+    # Pirkėjas
+    first_name   = models.CharField(max_length=100)
+    last_name    = models.CharField(max_length=100)
+    email        = models.EmailField()
+    phone = models.CharField(max_length=30, blank=True, default="")
+    address      = models.CharField(max_length=250)
+    city         = models.CharField(max_length=100)
+    postal_code  = models.CharField(max_length=20)
+
+    # SF (invoice) — tik du laukai + flagas
+    needs_invoice = models.BooleanField(default=False)       # ← PRIDĖTA
+    company_name  = models.CharField(max_length=255, blank=True, default="")  # ← PRIDĖTA
+    company_code  = models.CharField(max_length=64,  blank=True, default="")  # ← PRIDĖTA
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -38,23 +42,14 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES, default="cod")
 
-    # --- NAUJA: pasirinktas pristatymo būdas
-    shipping_method = models.CharField(
-        max_length=30, choices=SHIPPING_CHOICES, default="dpd_courier"
-    )
-    # --- NAUJA: paštomato informacija (pildoma tik jei shipping_method == 'dpd_pickup')
-    dpd_pickup_id   = models.CharField(max_length=64, null=True, blank=True)
+    shipping_method = models.CharField(max_length=30, choices=SHIPPING_CHOICES, default="dpd_courier")
+    dpd_pickup_id   = models.CharField(max_length=64,  null=True, blank=True)
     dpd_pickup_name = models.CharField(max_length=128, null=True, blank=True)
     dpd_pickup_addr = models.CharField(max_length=256, null=True, blank=True)
 
     stripe_pi_id = models.CharField(max_length=64, blank=True, null=True)
-
     coupon_code = models.CharField(max_length=50, blank=True, default="")
-
-    discount_amount = models.DecimalField(
-        max_digits=10, decimal_places=2, default=Decimal("0.00")
-    )
-
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
     total = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
 
@@ -70,7 +65,6 @@ class Order(models.Model):
     def is_paid(self):
         return self.status == "paid"
 
-    # (nebūtina) patogūs „helperiai“
     @property
     def is_dpd_pickup(self) -> bool:
         return self.shipping_method == "dpd_pickup"

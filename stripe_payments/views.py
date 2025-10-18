@@ -140,3 +140,19 @@ def stripe_webhook(request):
 
     # kitus eventus laikom OK, kad Stripe jų nebebandytų resend'inti
     return HttpResponse(status=200)
+
+def finalize_if_paid(order):
+    """
+    Patikrina PaymentIntent būseną ir, jei apmokėta, pažymi užsakymą 'paid'.
+    Naudojama success puslapyje kaip „fallback“, jei webhookas vėluoja.
+    """
+    try:
+        pi_id = getattr(order, "stripe_pi_id", None)
+        if not pi_id:
+            return
+
+        pi = stripe.PaymentIntent.retrieve(pi_id)
+        if (pi.status or "").lower() == "succeeded" and order.status != "paid":
+            mark_paid_and_decrease_stock(order)
+    except Exception:
+        logger.exception("finalize_if_paid failed for order %s", getattr(order, "id", "?"))

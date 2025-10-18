@@ -25,7 +25,7 @@
       </li>
     </ul>
 
-<section class="grid md:grid-cols-2 items-center relative">
+<section class="grid md:grid-cols-2 items-start relative gap-6">
   {# LEFT: Swiper galerija #}
   <div class="swiper product-slider w-full">
     <div class="swiper-wrapper relative">
@@ -77,8 +77,9 @@
       </div>
 
       {# RIGHT: informacija #}
-    <div class="px-3 pt-1 md:p-[68px]">
-        <div class="border-t border-brand-beige w-[calc(50%-138px)] absolute top-0 hidden md:block"></div>
+    <div class="px-3 pt-4 md:px-12 md:py-10 self-start relative">
+  <div class="border-t border-brand-beige w-[calc(50%-138px)] absolute top-0 hidden md:block"></div>
+  <div class="relative md:top-12">
 
         {# Desktop breadcrumbai #}
         <ul class="hidden md:flex space-x-2 lg:space-x-5 text-[10px] mb-[50px]">
@@ -238,6 +239,7 @@
             </div>
           </div>
         </div>
+          </div> <!-- čia uždarai vidinį wrapperį -->
       </div>
     </section>
 

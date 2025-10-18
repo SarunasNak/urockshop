@@ -1,6 +1,7 @@
 # cart/views.py
 from time import time
 import json
+import logging
 
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
@@ -12,11 +13,15 @@ from catalog.models import Variant
 from .services import Cart
 from .models import TryOnRequest
 
-# bandome importuoti Subscriber iš newsletter app'o
-try:
-    from newsletter.models import Subscriber
-except Exception:
-    Subscriber = None
+from django.core.mail import send_mail
+from django.conf import settings
+
+from checkout.services import get_all_dpd_points
+
+# <<< PAKAITALAS: griežtas importas (jei kas blogai – pamatysit klaidą loguose ir konsolėje)
+from newsletter.models import Subscriber
+
+logger = logging.getLogger(__name__)
 
 
 # ───────────────────────── helpers ───────────────────────── #
@@ -66,6 +71,11 @@ def cart_view(request):
         "order_items": order_items,
         "order_items_len": len(order_items),
     }
+
+     # 🟢 DPD taškai JSON formatu (frontendui)
+    points = get_all_dpd_points()
+    ctx["dpd_points_json"] = json.dumps(points, ensure_ascii=False)
+
     return render(request, "cart/view.html", ctx)
 
 
@@ -189,10 +199,14 @@ def tryon_submit(request):
 
     # paprastas „required“ tikrinimas (be regex)
     missing = {}
-    if not email:  missing["email"] = ["Privalomas laukas."]
-    if not phone:  missing["phone"] = ["Privalomas laukas."]
-    if height is None: missing["height_cm"] = ["Privalomas laukas."]
-    if weight is None: missing["weight_kg"] = ["Privalomas laukas."]
+    if not email:
+        missing["email"] = ["Privalomas laukas."]
+    if not phone:
+        missing["phone"] = ["Privalomas laukas."]
+    if height is None:
+        missing["height_cm"] = ["Privalomas laukas."]
+    if weight is None:
+        missing["weight_kg"] = ["Privalomas laukas."]
     if missing:
         return JsonResponse({"ok": False, "errors": missing}, status=400)
 
@@ -203,7 +217,7 @@ def tryon_submit(request):
 
     # 5) snapshot -> DB
     snapshot = cart.snapshot("try_on")
-    TryOnRequest.objects.create(
+    tor = TryOnRequest.objects.create(
         email=email,
         phone=phone,
         height_cm=height,
@@ -226,10 +240,77 @@ def tryon_submit(request):
             },
         )
 
-    # 7) išvalom tik try_on
+    # 7) el. laiškai (KLIENTUI + ADMINUI) — nepriklausomai nuo marketingo
+    try:
+        # Prekių sąrašas paprastame tekste
+        items_text = "\n".join(
+            f"- {it.get('name','Prekė')} (dydis {it.get('size','–')})"
+            for it in (snapshot or [])
+        ) or "- (be įrašų)"
+
+        # ✅ „Atsisakyti prenumeratos“ – tik jei pažymėtas marketingo sutikimas
+        if marketing:
+            # paprasta versija be specialaus tokeno / backend’o
+            host = getattr(settings, "SITE_HOST", "urock.lt")
+            scheme = getattr(settings, "SITE_SCHEME", "https")
+            unsub_url = f"{scheme}://{host}/unsubscribe?email={email}"
+            unsubscribe_line = (
+                "\n—\n"
+                "Jei nebenorite gauti naujienų, atsakykite į šį laišką su „NE“ "
+                f"arba spustelėkite: {unsub_url}\n"
+            )
+        else:
+            unsubscribe_line = ""
+
+        # Klientui
+        customer_subject = "Jūsų pasimatavimo užklausa gauta – UROCK"
+        customer_body = (
+            "Sveiki,\n\n"
+            "Ačiū! Gavome Jūsų užklausą pasimatuoti pasirinktus drabužius.\n"
+            "Mūsų komanda artimiausiu metu su Jumis susisieks ir suderins vizito laiką.\n\n"
+            "Jūsų pasirinktos prekės:\n"
+            f"{items_text}\n\n"
+            "Jei turite klausimų, atsakykite į šį laišką.\n\n"
+            "Su pagarba,\nUROCK komanda\n"
+            "www.urock.lt\n"
+            f"{unsubscribe_line}"
+        )
+        send_mail(
+            subject=customer_subject,
+            message=customer_body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+        # Administratoriui
+        admin_subject = "Nauja TRY-ON užklausa – UROCK"
+        admin_body = (
+            "Yra nauja try-on užklausa TVS sistemoje.\n\n"
+            f"El. paštas: {email}\n"
+            f"Tel.: {phone}\n"
+            f"Ūgis: {height or ''} cm\n"
+            f"Svoris: {weight or ''} kg\n"
+            f"Rinkodara: {'Taip' if marketing else 'Ne'}\n\n"
+            "Prekės:\n"
+            f"{items_text}\n"
+        )
+        admin_to = [getattr(settings, "ORDER_ADMIN_EMAIL", "info@urock.lt")]
+        send_mail(
+            subject=admin_subject,
+            message=admin_body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=admin_to,
+            fail_silently=False,
+        )
+    except Exception:
+        # nenumušam srauto, jei laiškas nepavyko – UI vis tiek rodo „išsiųsta“
+        pass
+
+    # 8) išvalom tik try_on
     cart.clear_try_on()
 
-    # 8) grąžinam mygtuko tekstą ir event'ą (AFTER-SETTLE!)
+    # 9) grąžinam mygtuko tekstą ir event'ą (AFTER-SETTLE!)
     resp = HttpResponse("Užklausa išsiųsta ✓")
     resp["HX-Trigger-After-Settle"] = json.dumps({"cart-updated": _cart_counts_payload(cart)})
     return resp

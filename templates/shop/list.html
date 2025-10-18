@@ -42,121 +42,141 @@
   <input type="hidden" name="size" value="{{ sizes_selected.0|default:'' }}">
   <input type="hidden" name="category" value="{{ current_category|default:'' }}">
 
-        {# Filtras: dydis #}
-        <div
-          x-data="{
-            open:false,
-            active: {% if sizes_selected %}true{% else %}false{% endif %},
-            selected: '{% if sizes_selected %}{% for s in sizes %}{% if s.slug|lower == sizes_selected.0 %}{{ s.label|escapejs }}{% endif %}{% endfor %}{% else %}Dydis{% endif %}'
-          }"
-          class="relative w-[120px] md:w-[180px]"
-        >
-          <button type="button"
-            @click="open = !open; active = true"
-            @mouseenter="active = true"
-            @mouseleave="if (!open && (selected === 'Dydis')) active = false"
-            class="w-full flex items-center justify-center border-b border-brand-beige px-3 py-2 bg-white pb-2 md:pb-6 transition-border transition-text duration-300"
-            :class="{ 'text-black border-black': active, 'text-brand-beige': !active }"
-          >
-            <div class="flex items-center space-x-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
-                <path class="transition-fill duration-300"
-                      d="M24.356 25.1927L16.5285 17.3652C15.9035 17.8977 15.1848 18.3098 14.3723 18.6014C13.5598 18.8931 12.7431 19.0389 11.9223 19.0389C9.9206 19.0389 8.22643 18.346 6.83977 16.9602C5.4531 15.5743 4.75977 13.8806 4.75977 11.8789C4.75977 9.87726 5.45227 8.18268 6.83727 6.79518C8.22227 5.40768 9.9156 4.7131 11.9173 4.71143C13.9189 4.70976 15.6139 5.4031 17.0023 6.79143C18.3906 8.17976 19.0848 9.87435 19.0848 11.8752C19.0848 12.7435 18.931 13.5839 18.6235 14.3964C18.316 15.2089 17.9118 15.9039 17.411 16.4814L25.2385 24.3077L24.356 25.1927ZM11.9235 17.7877C13.5818 17.7877 14.9818 17.2168 16.1235 16.0752C17.2652 14.9335 17.836 13.5331 17.836 11.8739C17.836 10.2148 17.2652 8.81476 16.1235 7.67393C14.9818 6.5331 13.5818 5.96226 11.9235 5.96143C10.2652 5.9606 8.86477 6.53143 7.72227 7.67393C6.57977 8.81643 6.00893 10.2164 6.00977 11.8739C6.0106 13.5314 6.58143 14.9314 7.72227 16.0739C8.8631 17.2164 10.2631 17.7873 11.9223 17.7864"
-                      :class="{ 'fill-black': active, 'fill-[#9E9288]': !active }"/>
-              </svg>
-              <span x-text="selected"></span>
-            </div>
-          </button>
-          <div x-show="open" @click.away="open = false" class="absolute w-full bg-white shadow-lg z-10">
-            <ul class="max-h-[400px] overflow-y-auto mt-4">
-              {% for s in sizes %}
-                <li>
-                  <button type="button"
-                    @click="
-                      selected='{{ s.label|escapejs }}';
-                      open=false; active=true;
-                      // įrašom reikšmę ir HTMX submitinam formą
-                      $el.closest('form').querySelector('[name=size]').value='{{ s.slug }}';
-                      $event.target.closest('form').requestSubmit();
-                    "
-                    class="block w-full text-center px-2 py-2 hover:text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300">
-                    {{ s.label }}
-                  </button>
-                </li>
-              {% endfor %}
-              <li>
-                <button type="button"
-                  @click="
-                    selected='Dydis';
-                    open=false; active=false;
-                    $el.closest('form').querySelector('[name=size]').value='';
-                    $event.target.closest('form').requestSubmit();
-                  "
-                  class="block w-full text-center px-2 py-2 text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300">
-                  Visi
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <form
+  method="get"
+  action="{{ catalog_url }}"
+  class="flex justify-center items-center px-4 text-[14px] md:text-[20px] space-x-4"
+  hx-get="{{ catalog_url }}"
+  hx-target="#catalog-results"
+  hx-push-url="true"
+  hx-indicator="#catalog-loading"
+>
+  {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
 
-        {# Filtras: kategorija #}
-        <div
-          x-data="{
-            open:false,
-            active: {% if current_category %}true{% else %}false{% endif %},
-            selected: '{% if current_category %}{% for c in categories %}{% if c.slug == current_category %}{{ c.name|escapejs }}{% endif %}{% endfor %}{% else %}Visi{% endif %}'
-          }"
-          class="relative w-[120px] md:w-[180px]"
-        >
+  <!-- jei tuščia – disable, kad nesiųstų ?param= -->
+  <input type="hidden" name="size" value="{{ sizes_selected.0|default:'' }}"
+         {% if not sizes_selected %}disabled{% endif %}>
+  <input type="hidden" name="category" value="{{ current_category|default:'' }}"
+         {% if not current_category %}disabled{% endif %}>
+
+  <!-- DYDIS -->
+  <div
+    x-data="{
+      open:false,
+      active: {% if sizes_selected %}true{% else %}false{% endif %},
+      selected: '{% if sizes_selected %}{% for s in sizes %}{% if s.slug|lower == sizes_selected.0 %}{{ s.label|escapejs }}{% endif %}{% endfor %}{% else %}Dydis{% endif %}'
+    }"
+    class="relative w-[120px] md:w-[180px]"
+  >
+    <button type="button"
+      @click="open = !open; active = true"
+      @mouseenter="active = true"
+      @mouseleave="if (!open && (selected === 'Dydis')) active = false"
+      class="w-full flex items-center justify-center border-b border-brand-beige px-3 py-2 bg-white pb-2 md:pb-6 transition-border transition-text duration-300"
+      :class="{ 'text-black border-black': active, 'text-brand-beige': !active }"
+    >
+      <div class="flex items-center space-x-2">
+        <span x-text="selected"></span>
+      </div>
+    </button>
+
+    <div x-show="open" @click.away="open = false" class="absolute w-full bg-white shadow-lg z-10">
+      <ul class="max-h-[400px] overflow-y-auto mt-4">
+        {% for s in sizes %}
+          <li>
+            <button type="button"
+              @click="
+                selected='{{ s.label|escapejs }}';
+                open=false; active=true;
+                const f = $el.closest('form');
+                const inp = f.querySelector('[name=size]');
+                inp.disabled = false;
+                inp.value='{{ s.slug }}';
+                f.requestSubmit();
+              "
+              class="block w-full text-center px-2 py-2 hover:text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300">
+              {{ s.label }}
+            </button>
+          </li>
+        {% endfor %}
+        <li>
           <button type="button"
-            @click="open = !open; active = true"
-            @mouseenter="active = true"
-            @mouseleave="if (!open && (selected === 'Visi')) active = false"
-            class="w-full flex items-center justify-center border-b border-brand-beige px-3 py-2 bg-white pb-2 md:pb-6 transition-border transition-text duration-300"
-            :class="{ 'text-black border-black': active, 'text-brand-beige': !active }"
-          >
-            <div class="flex items-center space-x-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
-                <path class="transition-fill duration-300"
-                      d="M24.356 25.1927L16.5285 17.3652C15.9035 17.8977 15.1848 18.3098 14.3723 18.6014C13.5598 18.8931 12.7431 19.0389 11.9223 19.0389C9.9206 19.0389 8.22643 18.346 6.83977 16.9602C5.4531 15.5743 4.75977 13.8806 4.75977 11.8789C4.75977 9.87726 5.45227 8.18268 6.83727 6.79518C8.22227 5.40768 9.9156 4.7131 11.9173 4.71143C13.9189 4.70976 15.6139 5.4031 17.0023 6.79143C18.3906 8.17976 19.0848 9.87435 19.0848 11.8752C19.0848 12.7435 18.931 13.5839 18.6235 14.3964C18.316 15.2089 17.9118 15.9039 17.411 16.4814L25.2385 24.3077L24.356 25.1927ZM11.9235 17.7877C13.5818 17.7877 14.9818 17.2168 16.1235 16.0752C17.2652 14.9335 17.836 13.5331 17.836 11.8739C17.836 10.2148 17.2652 8.81476 16.1235 7.67393C14.9818 6.5331 13.5818 5.96226 11.9235 5.96143C10.2652 5.9606 8.86477 6.53143 7.72227 7.67393C6.57977 8.81643 6.00893 10.2164 6.00977 11.8739C6.0106 13.5314 6.58143 14.9314 7.72227 16.0739C8.8631 17.2164 10.2631 17.7873 11.9223 17.7864"
-                      :class="{ 'fill-black': active, 'fill-[#9E9288]': !active }"/>
-              </svg>
-              <span x-text="selected"></span>
-            </div>
+            @click="
+              selected='Dydis';
+              open=false; active=false;
+              const f = $el.closest('form');
+              const inp = f.querySelector('[name=size]');
+              inp.value='';
+              inp.disabled = true;
+              f.requestSubmit();
+            "
+            class="block w-full text-center px-2 py-2 text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300">
+            Visi
           </button>
-          <div x-show="open" @click.away="open = false" class="absolute w-full bg-white shadow-lg z-10">
-            <ul class="max-h-[400px] overflow-y-auto mt-4">
-              {% for c in categories %}
-                <li>
-                  <button type="button"
-                    @click="
-                      selected='{{ c.name|escapejs }}';
-                      open=false; active=true;
-                      $el.closest('form').querySelector('[name=category]').value='{{ c.slug }}';
-                      $event.target.closest('form').requestSubmit();
-                    "
-                    class="block w-full text-center px-2 py-2 hover:text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300">
-                    {{ c.name }}
-                  </button>
-                </li>
-              {% endfor %}
-              <li>
-                <button type="button"
-                  @click="
-                    selected='Visi';
-                    open=false; active=false;
-                    $el.closest('form').querySelector('[name=category]').value='';
-                    $event.target.closest('form').requestSubmit();
-                  "
-                  class="block w-full text-center px-2 py-2 text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300">
-                  Visi
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- KATEGORIJA -->
+  <div
+    x-data="{
+      open:false,
+      active: {% if current_category %}true{% else %}false{% endif %},
+      selected: '{% if current_category %}{% for c in categories %}{% if c.slug == current_category %}{{ c.name|escapejs }}{% endif %}{% endfor %}{% else %}Visi{% endif %}'
+    }"
+    class="relative w-[120px] md:w-[180px]"
+  >
+    <button type="button"
+      @click="open = !open; active = true"
+      @mouseenter="active = true"
+      @mouseleave="if (!open && (selected === 'Visi')) active = false"
+      class="w-full flex items-center justify-center border-b border-brand-beige px-3 py-2 bg-white pb-2 md:pb-6 transition-border transition-text duration-300"
+      :class="{ 'text-black border-black': active, 'text-brand-beige': !active }"
+    >
+      <div class="flex items-center space-x-2">
+        <span x-text="selected"></span>
+      </div>
+    </button>
+
+    <div x-show="open" @click.away="open = false" class="absolute w-full bg-white shadow-lg z-10">
+      <ul class="max-h-[400px] overflow-y-auto mt-4">
+        {% for c in categories %}
+          <li>
+            <button type="button"
+              @click="
+                selected='{{ c.name|escapejs }}';
+                open=false; active=true;
+                const f = $el.closest('form');
+                const inp = f.querySelector('[name=category]');
+                inp.disabled = false;
+                inp.value='{{ c.slug }}';
+                f.requestSubmit();
+              "
+              class="block w-full text-center px-2 py-2 hover:text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300">
+              {{ c.name }}
+            </button>
+          </li>
+        {% endfor %}
+        <li>
+          <button type="button"
+            @click="
+              selected='Visi';
+              open=false; active=false;
+              const f = $el.closest('form');
+              const inp = f.querySelector('[name=category]');
+              inp.value='';
+              inp.disabled = true;
+              f.requestSubmit();
+            "
+            class="block w-full text-center px-2 py-2 text-brand-beige uppercase mb-2 md:mb-[17px] transition-text duration-300">
+            Visi
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</form>
     </div>
 
        {# GRID iš DB: kortelės #}

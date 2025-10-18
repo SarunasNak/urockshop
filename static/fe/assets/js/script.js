@@ -120,3 +120,86 @@ document.body.addEventListener('cart-updated', function (e) {
     badge.textContent = `(${d.cart_count ?? 0})`;
   }
 });
+
+// Maža util funkcija: sutvarko disabled pagal reikšmes
+function syncDisabledFields(form) {
+  ['size', 'category', 'q'].forEach(function (name) {
+    var el = form.querySelector('[name="'+name+'"]');
+    if (!el) return;
+    var v = (el.value || '').trim();
+    el.disabled = (v === '');
+  });
+}
+
+// 1) Prieš kiekvieną HTMX submit – sutvarkom disabled,
+// kad į URL nepatektų tušti parametrai (size=&category=)
+document.addEventListener('submit', function (e) {
+  var f = e.target;
+  if (!f.matches('form[hx-get]')) return;
+  // jei Alpine mygtukai pakeitė hidden inputų value – atsinaujins disabled
+  syncDisabledFields(f);
+});
+
+// 2) Po bet kurio HTMX atnaujinimo (grid’o perload) – vėl
+// persinchronizuojam disabled būsenas naujai įkeltame fragmente
+document.addEventListener('htmx:afterSwap', function (e) {
+  if (e.target && e.target.id === 'catalog-results') {
+    var f = document.querySelector('form[hx-get]');
+    if (f) syncDisabledFields(f);
+  }
+});
+
+// 3) Atsarginis variantas: kai keičiasi URL (htmx pushState),
+// dar kartą sulyginam disabled (neprivaloma, bet naudinga)
+window.addEventListener('popstate', function () {
+  var f = document.querySelector('form[hx-get]');
+  if (f) syncDisabledFields(f);
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  var f = document.querySelector('form[hx-get]');
+  if (f) syncDisabledFields(f);
+});
+
+document.body.addEventListener('htmx:configRequest', function (e) {
+  var f = document.querySelector('form[hx-get]');
+  if (f) syncDisabledFields(f);
+});
+
+// ─────────────────────────────────────────────
+// Checkout validacija prieš submit
+// ─────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  const checkoutBtn = document.querySelector("#place-order-btn"); // tavo mygtukas „Užsakyti“
+  const checkoutForm = document.querySelector("#checkout-post-form");
+
+  if (!checkoutBtn || !checkoutForm) return;
+
+  console.log("Checkout script attached");
+checkoutBtn.addEventListener("click", () => {
+  console.log("Our checkout click fired");
+});
+
+  checkoutBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopImmediatePropagation(); // ← pridėk šitą eilutę, kad blokuotų kitus click handlerius
+
+    // 1. Tikrinam sąlygas
+    const terms = document.querySelector('input[name="terms_agreed"]');
+    if (!terms || !terms.checked) {
+      alert("Turite sutikti su sąlygomis ir taisyklėmis.");
+      return;
+    }
+
+    // 2. Tikrinam apmokėjimo būdą
+    const payment = document.querySelector("#payment_method_hidden")?.value?.trim();
+console.log("DEBUG payment_method_hidden value:", payment);
+if (!payment) {
+  alert("Pasirinkite apmokėjimo būdą.");
+  return;
+}
+
+    // 3. Viskas gerai → siunčiam formą
+    checkoutForm.submit();
+  });
+});

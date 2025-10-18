@@ -43,3 +43,6 @@ htmlcov/
 
 # local backups
 catalog/*.my-fe-backup.py
+
+#dpd
+checkout/data/dpd_lt_pickup_points.json
