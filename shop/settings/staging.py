@@ -5,7 +5,7 @@ from .base import BASE_DIR  # noqa: F401
 from dotenv import load_dotenv
 
 # Užkrauk .env iš projekto šaknies
-load_dotenv(BASE_DIR / ".env")
+load_dotenv(BASE_DIR / ".env.staging")
 
 # ========= Bendri =========
 DEBUG = False

@@ -5,11 +5,16 @@ from dotenv import load_dotenv, find_dotenv
 # rodo į projekto šaknį (šalia manage.py)
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Užkrauk .env PRIEŠ bet kokius os.getenv()
-# Variantas A: aiškus kelias
-load_dotenv(BASE_DIR / ".env")
-# arba Variantas B: automatiškai susiras .env aukštyn
-# load_dotenv(find_dotenv())
+# 🟢 Automatinis .env failo pasirinkimas pagal aplinką
+settings_module = os.getenv("DJANGO_SETTINGS_MODULE", "")
+env_file = ".env"  # default (development)
+
+if "staging" in settings_module:
+    env_file = ".env.staging"
+elif "prod" in settings_module or "production" in settings_module:
+    env_file = ".env.production"
+
+load_dotenv(BASE_DIR / env_file)
 
 # --- Core ---
 DEBUG = os.getenv("DEBUG", "false").strip().lower() == "true"
@@ -144,6 +149,8 @@ DPD_CACHE_FILE = os.path.join(BASE_DIR, "checkout", "data", "dpd_lt_pickup_point
 DPD_POINTS_URL  = os.getenv("DPD_POINTS_URL", "")
 DPD_POINTS_AUTH = os.getenv("DPD_POINTS_AUTH", "")
 DPD_COUNTRY     = os.getenv("DPD_COUNTRY", "LT")
+DPD_USERNAME = os.getenv("DPD_USERNAME", "")
+DPD_PASSWORD = os.getenv("DPD_PASSWORD", "")
 
 # --- CART / krepšelio nustatymai ---
 CART_ITEM_TTL_HOURS = 48  # kiek valandų laikom prekę krepšelyje (sesijoje)
