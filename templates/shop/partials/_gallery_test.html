@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_extra %}
+  <link rel="stylesheet" href="{% static 'fe/vendor/photoswipe/photoswipe.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="grid md:grid-cols-2 items-start relative gap-6">
+  {# LEFT: Swiper galerija #}
+  <div class="swiper product-slider w-full">
+    <div class="swiper-wrapper relative">
+
+      {% if product.images.exists %}
+        {% for pi in product.images.all %}
+          {% if pi.image %}
+            <div class="swiper-slide overflow-hidden">
+              <a href="{{ pi.image.url }}" data-pswp-width="800" data-pswp-height="1200">
+                <img
+                  class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
+                  src="{{ pi.image.url }}"
+                  alt="{% firstof pi.alt product.title product.name product.slug %}">
+              </a>
+            </div>
+          {% endif %}
+        {% endfor %}
+
+      {% elif product.main_image %}
+        <div class="swiper-slide overflow-hidden">
+          <a href="{{ product.main_image.url }}" data-pswp-width="800" data-pswp-height="1200">
+            <img
+              class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
+              src="{{ product.main_image.url }}"
+              alt="{% firstof product.title product.name product.slug %}">
+          </a>
+        </div>
+
+      {% else %}
+        <div class="swiper-slide overflow-hidden">
+          <div class="w-full aspect-[203/305] md:aspect-[640/964] bg-brand-gray-light grid place-items-center text-xs">
+            Nėra nuotraukos
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    {# Swiper controls (desktop) #}
+    <div class="mt-6 md:mt-8 justify-center absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-full z-10 hidden md:flex">
+      <div class="flex justify-between items-center relative swiper-controls w-full px-[60px]">
+        <button aria-label="Previous slide"
+                class="p-2 hover:bg-[#D8D9D8CC] transition-colors duration-300 swiper-button-prev !static !w-[32px] !h-[32px] rounded-[4px] flex items-center justify-center bg-[#D8D9D833]">
+          ‹
+        </button>
+        <div class="swiper-pagination !static inline-flex justify-center items-center !w-auto mx-6"></div>
+        <button aria-label="Next slide"
+                class="p-2 hover:bg-[#D8D9D8CC] transition-colors duration-300 swiper-button-next !static !w-[32px] !h-[32px] rounded-[4px] flex items-center justify-center bg-[#D8D9D833]">
+          ›
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {# RIGHT: informacija #}
+  <div class="px-3 pt-4 md:px-12 md:py-10 self-start relative">
+    ... čia palieki visą savo produkto info kaip buvo ...
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts_extra %}
+  {# PhotoSwipe #}
+  <script src="{% static 'fe/vendor/photoswipe/photoswipe-lightbox.umd.min.js' %}"></script>
+  <script src="{% static 'fe/vendor/photoswipe/photoswipe.umd.min.js' %}"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // aktyvuojam PhotoSwipe ant Swiper nuotraukų
+    const enableLightbox = () => {
+      const lightbox = new PhotoSwipeLightbox({
+        gallery: '.product-slider .swiper-wrapper',
+        children: '.swiper-slide a',
+        wheelToZoom: true,
+        pswpModule: PhotoSwipe
+      });
+      lightbox.init();
+    };
+
+    // Jei nori, kad veiktų tik mobiliuose — atkomentuok:
+    // if (window.innerWidth < 1024) {
+    //   enableLightbox();
+    // } else {
+    //   console.log("PhotoSwipe tik mobiliems įrenginiams");
+    // }
+
+    // O jei nori visur — tiesiog paleidžiam visiems:
+    enableLightbox();
+  });
+  </script>
+{% endblock %}

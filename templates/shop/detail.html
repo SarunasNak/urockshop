@@ -36,7 +36,7 @@
           {% if pi.image %}
             <div class="swiper-slide overflow-hidden">
               <img
-                class="aspect-[203/305] md:aspect-[640/964] object-cover w-full"
+                class="w-full h-auto object-contain"
                 src="{{ pi.image.url }}"
                 alt="{% firstof pi.alt product.title product.name product.slug %}">
             </div>
@@ -77,9 +77,9 @@
       </div>
 
       {# RIGHT: informacija #}
-    <div class="px-3 pt-4 md:px-12 md:py-10 self-start relative">
-  <div class="border-t border-brand-beige w-[calc(50%-138px)] absolute top-0 hidden md:block"></div>
-  <div class="relative md:top-12">
+    <div class="px-3 md:px-12 md:py-10 self-start relative">
+    <div class="border-t border-brand-beige w-[calc(50%-138px)] absolute top-0 hidden md:block"></div>
+    <div class="relative" style="margin-top:100px !important;">
 
         {# Desktop breadcrumbai #}
         <ul class="hidden md:flex space-x-2 lg:space-x-5 text-[10px] mb-[50px]">
@@ -385,4 +385,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 </script>
+
+
 {% endblock %}

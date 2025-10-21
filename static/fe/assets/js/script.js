@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Product slider
-  if (productSliderElement.length && window.Swiper) {
+if (productSliderElement.length && window.Swiper) {
     new Swiper(".product-slider", {
       slidesPerView: 1,
       spaceBetween: 0,
@@ -66,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     });
   }
-
   // ─────────────────────────────────────────────────────────────
   // Cart: remove line via AJAX (delegation on document)
   // ─────────────────────────────────────────────────────────────
