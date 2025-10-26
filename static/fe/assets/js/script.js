@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Product slider
-if (productSliderElement.length && window.Swiper) {
+  if (productSliderElement.length && window.Swiper) {
     new Swiper(".product-slider", {
       slidesPerView: 1,
       spaceBetween: 0,
@@ -66,6 +66,7 @@ if (productSliderElement.length && window.Swiper) {
       },
     });
   }
+
   // ─────────────────────────────────────────────────────────────
   // Cart: remove line via AJAX (delegation on document)
   // ─────────────────────────────────────────────────────────────
@@ -201,4 +202,80 @@ if (!payment) {
     // 3. Viskas gerai → siunčiam formą
     checkoutForm.submit();
   });
+});
+// ─────────────────────────────────────────────
+// HTMX Loading Overlay Fix (su fade efektu)
+(function() {
+  const loader = document.getElementById("catalog-loading");
+  if (!loader) return;
+
+  function showLoader() {
+    loader.style.display = "flex";
+    requestAnimationFrame(() => loader.style.opacity = "1");
+  }
+
+  function hideLoader() {
+    loader.style.opacity = "0";
+    setTimeout(() => loader.style.display = "none", 300);
+  }
+
+  document.body.addEventListener("htmx:beforeRequest", showLoader);
+  document.body.addEventListener("htmx:afterOnLoad", hideLoader);
+})();
+
+// ==========================================================
+//  Galutinė versija — URL nebeauga, filtrai lieka švarūs
+// ==========================================================
+window.submitCatalogFilter = function (form) {
+  // ✅ visada imam bazinį URL (be senų parametrų)
+  const base = new URL(form.getAttribute("hx-get") || form.action, window.location.origin);
+  const basePath = base.pathname; // pvz. /shop/
+
+  const params = new URLSearchParams();
+
+  // Surenkam reikšmes iš laukų
+  const q = form.querySelector('[name=q]')?.value?.trim();
+  const size = form.querySelector('[name=size]')?.value?.trim();
+  const category = form.querySelector('[name=category]')?.value?.trim();
+
+  if (q) params.set("q", q);
+  if (size) params.set("size", size);
+  if (category) params.set("category", category);
+
+  // Sukuriam švarų URL be pasikartojimų
+  const cleanUrl = params.toString()
+    ? `${basePath}?${params.toString()}`
+    : basePath;
+
+  // 🔧 Atnaujinam tik hx-get (action nebeliečiam!)
+  form.setAttribute("hx-get", cleanUrl);
+  form.setAttribute("hx-push-url", "false");
+
+  // Paleidžiam HTMX užklausą
+  form.requestSubmit();
+
+  // 🔗 Atnaujinam naršyklės URL — gražus, švarus
+  history.replaceState({}, "", cleanUrl);
+
+  console.log("✅ Filtras išsiųstas į:", cleanUrl);
+};
+
+// 🧹 Papildoma apsauga — išvalom dublikatus prieš kiekvieną HTMX užklausą
+document.body.addEventListener("htmx:configRequest", function (evt) {
+  const [path, query] = evt.detail.path.split("?");
+  if (!query) return;
+
+  const params = new URLSearchParams(query);
+  const cleaned = new URLSearchParams();
+  const seen = new Set();
+
+  for (const [key, val] of params.entries()) {
+    const combo = `${key}:${val}`;
+    if (seen.has(combo)) continue;
+    seen.add(combo);
+    cleaned.append(key, val);
+  }
+
+  evt.detail.path = path + "?" + cleaned.toString();
+  console.log("🧹 Išvalytas HTMX path prieš užklausą:", evt.detail.path);
 });

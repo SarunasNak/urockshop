@@ -1,0 +1,67 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+
+<form method="get" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;">
+  <label>Nuo:</label>
+  <input type="date" name="start" value="{{ start_date }}" style="padding: 5px;">
+  <label>Iki:</label>
+  <input type="date" name="end" value="{{ end_date }}" style="padding: 5px;">
+  <button type="submit" class="button" style="padding: 6px 12px;">Filtruoti</button>
+  <a href="{% url 'events_overview' %}" class="button" style="padding: 6px 12px; background: #444;">Išvalyti</a>
+
+</form>
+
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+  <!-- 📏 DYDŽIAI -->
+  <div style="background:#1a1a1a; color:white; padding:20px; border-radius:8px;">
+    <h3>📏 Pasirinkti dydžiai</h3>
+    <table style="width:100%; margin-top:10px;">
+      <tr><th>Dydis</th><th>Kartų</th></tr>
+      {% for row in size_summary %}
+        <tr><td>{{ row.size|default:"(nenurodyta)" }}</td><td>{{ row.total }}</td></tr>
+      {% empty %}
+        <tr><td colspan="2">Nėra duomenų</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <!-- 👕 KATEGORIJOS -->
+  <div style="background:#1a1a1a; color:white; padding:20px; border-radius:8px;">
+    <h3>👕 Pasirinktos kategorijos</h3>
+    <table style="width:100%; margin-top:10px;">
+      <tr><th>Kategorija</th><th>Kartų</th></tr>
+      {% for row in category_summary %}
+        <tr><td>{{ row.category|default:"(nenurodyta)" }}</td><td>{{ row.total }}</td></tr>
+      {% empty %}
+        <tr><td colspan="2">Nėra duomenų</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <!-- 🛒 VEIKSMAI -->
+  <div style="background:#1a1a1a; color:white; padding:20px; border-radius:8px;">
+    <h3>🛒 Veiksmai</h3>
+    <table style="width:100%; margin-top:10px;">
+      <tr><th>Veiksmas</th><th>Kartų</th></tr>
+      {% for row in action_summary %}
+        <tr>
+          <td>
+            {% if row.name == "add_to_cart" %}
+              Pirkti
+            {% elif row.name == "try_on_click" %}
+              Pasimatuoti
+            {% else %}
+              {{ row.name }}
+            {% endif %}
+          </td>
+          <td>{{ row.total }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="2">Nėra duomenų</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+
+</div>
+{% endblock %}

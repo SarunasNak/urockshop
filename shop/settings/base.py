@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'analytics',
     "django.contrib.humanize",   # ↰ prie kitų contrib
      "adminsortable2",
 
@@ -156,13 +157,42 @@ DPD_PASSWORD = os.getenv("DPD_PASSWORD", "")
 CART_ITEM_TTL_HOURS = 48  # kiek valandų laikom prekę krepšelyje (sesijoje)
 
 INSTALLED_APPS += ["django_ckeditor_5"]
+
 CKEDITOR_5_CONFIGS = {
     "default": {
+        "language": "lt",
         "toolbar": [
-            "heading", "|", "bold", "italic", "link", "blockQuote",
-            "bulletedList", "numberedList", "insertTable", "mediaEmbed",
-            "imageUpload", "undo", "redo",
+            "heading", "|",
+            "bold", "italic", "link", "|",
+            "fontColor",                 # <- pridėta
+            "bulletedList", "numberedList", "|",
+            "undo", "redo", "removeFormat",
         ],
-    }
+        "fontColor": {
+            "colors": [
+                {"color": "#800020", "label": "Bordó"},
+                {"color": "#000000", "label": "Juoda"},
+            ],
+            "columns": 5,
+        },
+    },
+    "products": {  # palik kaip yra
+        "language": "lt",
+        "toolbar": [
+            "heading", "|",
+            "bold", "italic", "link", "|",
+            "fontColor", "|",
+            "bulletedList", "numberedList", "|",
+            "undo", "redo", "removeFormat",
+        ],
+        "fontColor": {
+            "colors": [
+                {"color": "#800020", "label": "Bordó"},
+                {"color": "#000000", "label": "Juoda"},
+            ],
+            "columns": 5,
+        },
+    },
 }
+
 

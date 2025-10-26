@@ -1,0 +1,7 @@
+{% extends "admin/change_list.html" %}
+{% block object-tools-items %}
+  {% if custom_button %}
+    <li>{{ custom_button|safe }}</li>
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

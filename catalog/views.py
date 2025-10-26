@@ -104,14 +104,19 @@ class ProductListView(View):
                 if next_slug:
                     whens.append(When(size__slug=next_slug, then=2))
 
+                # ⚠️ TIK annotate čia, be order_by()
                 qs = qs.annotate(
                     size_priority=Case(*whens, default=9, output_field=IntegerField())
-                ).order_by("size_priority", "-id")
+                )
+        else:
+            # jei dydis nepasirinktas – vis tiek duokim numatytą prioritetą
+            qs = qs.annotate(
+                size_priority=Case(default=9, output_field=IntegerField())
+            )
 
         # Puslapiavimas
-        paginator = Paginator(qs, self.paginate_by)
+        paginator = Paginator(qs.order_by("size_priority", "-id"), self.paginate_by)
         page_obj = paginator.get_page(request.GET.get("page") or 1)
-        # NEW: gražus „elided“ range (1 … 4 5 [6] 7 8 … 20)
         page_range = paginator.get_elided_page_range(
             number=page_obj.number, on_each_side=1, on_ends=1
         )

@@ -31,6 +31,7 @@ urlpatterns = [
     path("paysera/", include(("paysera.urls", "paysera"), namespace="paysera")),
     path("blog/", include(("blog.urls", "blog"), namespace="blog")),
     path("newsletter/", include(("newsletter.urls", "newsletter"), namespace="newsletter")),
+    path("analytics/", include("analytics.urls")),
 
     # API
     path("api/v1/", include("catalog.urls_api")),

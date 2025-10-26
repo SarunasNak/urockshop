@@ -46,6 +46,16 @@ def _lines_from_order(order):
         })
     return lines
 
+def _status_label(status: str) -> str:
+    mapping = {
+        "paid": "Apmokėta",
+        "cod_placed": "Pateiktas",
+        "pending": "Laukiama",
+        "paysera_pending": "Laukiama apmokėjimo",
+        "failed": "Nepavyko",
+    }
+    return mapping.get((status or "").lower(), status or "")
+
 
 def send_order_emails(order, *, customer_email=None):
     """
@@ -77,6 +87,7 @@ def send_order_emails(order, *, customer_email=None):
         "email": customer_email or "",
         "SITE_HOST": getattr(settings, "SITE_HOST", "urock.lt"),
         "ORDER_ADMIN_EMAIL": getattr(settings, "ORDER_ADMIN_EMAIL", "info@urock.lt"),
+        "status_label": _status_label(getattr(order, "status", "")),
     }
 
     # ---------- Klientui ----------

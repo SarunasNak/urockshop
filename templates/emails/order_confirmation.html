@@ -2,7 +2,8 @@
 <html>
   <body style="font-family:Arial,Helvetica,sans-serif;line-height:1.45">
     <h2 style="margin:0 0 12px">Ačiū už užsakymą #{{ order.id }}{% if SITE and SITE.title %} – {{ SITE.title }}{% endif %}!</h2>
-    <p style="margin:0 0 16px">Data: {{ order.created_at|date:"Y-m-d H:i" }} • Būsena: {{ order.status }}</p>
+    <p style="margin:0 0 16px">Data: {{ order.created_at|date:"Y-m-d H:i" }} • Būsena: {{ status_label }}</p>
+    <p style="margin:0 0 16px">Apie išsiuntimą informuosime atskiru laišku.</p>
 
     <h3 style="margin:16px 0 8px">Prekės</h3>
     <table width="100%" cellpadding="6" cellspacing="0" style="border-collapse:collapse;border:1px solid #eee">

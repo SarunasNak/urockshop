@@ -3,7 +3,9 @@ Ačiū už užsakymą #{{ order.id }}{% if SITE and SITE.title %} – {{ SITE.ti
 Užsakymo santrauka
 -------------------
 Data: {{ order.created_at|date:"Y-m-d H:i" }}
-Būsena: {{ order.status }}
+Būsena: {{ status_label }}
+Apie išsiuntimą informuosime atskiru laišku.
+
 Suma: {{ order.total }} {{ order.currency }}
 
 Prekės:

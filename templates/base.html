@@ -96,10 +96,13 @@
   <script src="{% static 'fe/vendor/htmx.min.js' %}" defer></script>
 
   <!-- Projektinis JS (po vendor) -->
-  <script defer src="{% static 'fe/assets/js/script.js' %}?v=13"></script>
+  <script defer src="{% static 'fe/assets/js/script.js' %}?v=15"></script>
 
   <!-- Newsletter scroll + focus -->
   <script defer src="{% static 'fe/assets/js/newsletter.js' %}?v=1"></script>
+
+  <!-- Analytics -->
+  <script src="{% static 'fe/assets/js/analytics.js' %}?v=3"></script>
 
   {# ČIA naujas blokas per-puslapių skriptams #}
   {% block scripts_extra %}{% endblock %}

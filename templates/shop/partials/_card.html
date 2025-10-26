@@ -1,28 +1,48 @@
-{% load static %}
-{# Input: product #}
+{% load static thumbnail %}
+
 <div>
   <a href="{{ product.get_absolute_url }}" class="relative block w-full group" aria-label="{{ product.name }}">
-    {# PAGRINDINIS PAVEIKSLAS: main_image -> galerijos pirmas -> placeholder #}
     {% with cover=product.primary_image_url %}
       {% if cover %}
-        <img
-          class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-          src="{{ cover }}" alt="{{ product.name }}" loading="lazy">
+        <picture>
+          {# WEBP variantai (modernioms naršyklėms) #}
+          <source
+            srcset="{% thumbnail cover 'product_card_sm' format='WEBP' %} 400w,
+                    {% thumbnail cover 'product_card_lg' format='WEBP' %} 800w"
+            type="image/webp">
+          {# JPEG fallback (jei naršyklė nepalaiko WebP) #}
+          <source
+            srcset="{% thumbnail cover 'product_card_sm' format='JPEG' %} 400w,
+                    {% thumbnail cover 'product_card_lg' format='JPEG' %} 800w"
+            type="image/jpeg">
+
+          <img
+            class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
+            src="{% thumbnail cover 'product_card_sm' format='JPEG' %}"
+            alt="{{ product.name }}"
+            width="308" height="460"
+            loading="lazy"
+            sizes="(max-width: 768px) 50vw, 33vw">
+        </picture>
       {% else %}
         <img
           class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-          src="{% static 'fe/assets/img/etro-svarkas-aa.jpg' %}" alt="{{ product.name }}" loading="lazy">
+          src="{% static 'fe/assets/img/etro-svarkas-aa.jpg' %}"
+          alt="{{ product.name }}"
+          width="308" height="460"
+          loading="lazy">
       {% endif %}
     {% endwith %}
 
-    {# HOVER paveikslas, jei yra #}
     {% if product.hover_image %}
       <img
         class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-        src="{{ product.hover_image.url }}" alt="{{ product.name }} hover" loading="lazy">
+        src="{% thumbnail product.hover_image 'product_card_sm' format='WEBP' %}"
+        alt="{{ product.name }} hover"
+        width="308" height="460"
+        loading="lazy">
     {% endif %}
 
-    {# Jei turi original_price – rodys badge; jei ne, tyliai praleis #}
     {% include "shop/partials/_discount_badge.html" with price=product.price original_price=product.original_price only %}
   </a>
 
@@ -46,4 +66,3 @@
     </div>
   </div>
 </div>
-

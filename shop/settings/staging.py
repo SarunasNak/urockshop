@@ -64,16 +64,4 @@ SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
-# (nebūtina, bet gali ir čia pakartoti — nepakenks)
-if "django_ckeditor_5" not in INSTALLED_APPS:
-    INSTALLED_APPS += ["django_ckeditor_5"]
 
-CKEDITOR_5_CONFIGS = {
-    "default": {
-        "toolbar": [
-            "heading", "|", "bold", "italic", "link", "blockQuote",
-            "bulletedList", "numberedList", "insertTable", "mediaEmbed",
-            "imageUpload", "undo", "redo",
-        ],
-    }
-}
