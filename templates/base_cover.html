@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="lt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UROCK — Atsinaujiname</title>
+
+    <!-- Šriftas -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+          href="{% static 'fe/assets/fonts/playfair-display/playfair-display-v40-latin-regular.woff2' %}">
+
+    <!-- 🔹 Tie patys CSS kaip base.html -->
+    <link rel="stylesheet" href="{% static 'fe/assets/css/app.css' %}?v=11">
+    <link rel="stylesheet" href="{% static 'fe/assets/css/style.css' %}?v=11">
+    <link rel="stylesheet" href="{% static 'fe/vendor/swiper/swiper-bundle.min.css' %}?v=11">
+    <link rel="stylesheet" href="{% static 'fe/assets/css/maintenance.css' %}?v=1">
+
+    <!-- Jei loader’io stiliai atskirame faile, pridėk ir jį -->
+    {# <link rel="stylesheet" href="{% static 'fe/assets/css/maintenance.css' %}"> #}
+  </head>
+  <body class="font-mont">
+    <main>{% block content %}{% endblock %}</main>
+
+    {# JS paprastai nebūtina maintenance puslapiui, bet jei reikia – gali pridėti: #}
+    {# <script defer src="{% static 'fe/vendor/alpinejs/alpinejs.min.js' %}"></script> #}
+    {# <script defer src="{% static 'fe/assets/js/script.js' %}"></script> #}
+  </body>
+</html>

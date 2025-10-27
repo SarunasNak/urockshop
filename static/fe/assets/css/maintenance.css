@@ -1,0 +1,65 @@
+/* === UROCK maintenance papildymai === */
+
+/* 1) Lokalus fixas tarpui: nuimam default H1/H2 top-margin tik šitam puslapiui */
+section.maintenance h1,
+section.maintenance h2 {
+  margin-top: 0;
+}
+
+/* 2) Tekstui: brand spalva pilnai ir su 20% intensyvumu (NE opacity ant viso elemento) */
+.text-brand-maroon    { color:#6D1F36 !important; }
+.text-brand-maroon-20 { color:rgba(109,31,54,.2) !important; }
+
+/* 3) Spineris („burbuliukai“) */
+.maintenance-loader{position:relative;width:94px;height:94px;display:inline-block}
+.maintenance-loader div{transform-origin:47px 47px;animation:maintenance-spin 1.8s linear infinite}
+.maintenance-loader div:after{content:"";position:absolute;top:3px;left:45px;width:8px;height:8px;border-radius:50%;background:#6D1F36}
+.maintenance-loader div:nth-child(1){transform:rotate(0deg);animation-delay:-1.65s}
+.maintenance-loader div:nth-child(2){transform:rotate(30deg);animation-delay:-1.5s}
+.maintenance-loader div:nth-child(3){transform:rotate(60deg);animation-delay:-1.35s}
+.maintenance-loader div:nth-child(4){transform:rotate(90deg);animation-delay:-1.2s}
+.maintenance-loader div:nth-child(5){transform:rotate(120deg);animation-delay:-1.05s}
+.maintenance-loader div:nth-child(6){transform:rotate(150deg);animation-delay:-0.9s}
+.maintenance-loader div:nth-child(7){transform:rotate(180deg);animation-delay:-0.75s}
+.maintenance-loader div:nth-child(8){transform:rotate(210deg);animation-delay:-0.6s}
+.maintenance-loader div:nth-child(9){transform:rotate(240deg);animation-delay:-0.45s}
+.maintenance-loader div:nth-child(10){transform:rotate(270deg);animation-delay:-0.3s}
+.maintenance-loader div:nth-child(11){transform:rotate(300deg);animation-delay:-0.15s}
+.maintenance-loader div:nth-child(12){transform:rotate(330deg);animation-delay:0s}
+@keyframes maintenance-spin{0%{opacity:1}100%{opacity:0}}
+
+@media (max-width: 768px){
+  .maintenance-loader{width:57px;height:57px}
+  .maintenance-loader div{transform-origin:28.5px 28.5px}
+  .maintenance-loader div:after{left:25.5px;width:6px;height:6px}
+}
+/* H1 priartinti prie logo, H2 palikti vietoje */
+section.maintenance .title {         /* H1 */
+  margin-top: -16px;                 /* artinam prie logo (mobilui) */
+}
+
+section.maintenance .subtitle {      /* H2 */
+  margin-top: 16px;                  /* kompensacija – H2 lieka vietoje */
+}
+
+@media (min-width: 768px){
+  section.maintenance .title  { margin-top: -28px; }  /* desktop’ui keliam dar truputį */
+  section.maintenance .subtitle { margin-top: 28px; } /* ir kompensuojam H2 */
+}
+/* 1) Panaikinam „sticky header“ tarpą tik šiame puslapyje */
+body { padding-top: 0 !important; }
+@media (min-width: 768px){ body { padding-top: 0 !important; } }
+
+/* 2) Nekcentruojam vertikaliai – turinys pradeda nuo viršaus */
+section.maintenance { align-items: flex-start; }           /* vietoj items-center */
+@media (min-width: 768px){ section.maintenance { min-height: auto; } }
+
+/* 3) LOGO ↔ H1: sumažinam tarpą – nekeisdami dydžių */
+section.maintenance .logo-wrap { margin-bottom: 12px !important; } /* buvo mb-4/md:mb-8 */
+@media (min-width: 768px){
+  section.maintenance .logo-wrap { margin-bottom: 12px !important; } /* desktop taip pat */
+}
+
+/* Jei naršyklė dar prideda default top margin antraštėms: */
+section.maintenance h1, section.maintenance h2 { margin-top: 0; }
+}

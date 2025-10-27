@@ -1,0 +1,32 @@
+{% extends "base_cover.html" %}
+{% load static %}
+
+{% block content %}
+<section class="maintenance px-5 pt-8 pb-12">
+  <div class="max-w-3xl mx-auto text-center">
+
+    <div class="mb-2 md:mb-3">
+      <img src="{% static 'fe/assets/img/logo-urock.svg' %}"
+           alt="UROCK"
+           class="block mx-auto"
+           style="width:220px;height:auto;opacity:.5"
+           loading="eager">
+    </div>
+
+    <h1 class="title font-serif font-bold text-[24px] md:text-[40px] text-brand-maroon-20 mb-2">
+      VYRIŠKŲ DRABUŽIŲ IR ĮVAIZDŽIO PARTNERIS
+    </h1>
+
+    <h2 class="subtitle text-[24px] md:text-[38px] font-serif font-bold text-brand-maroon mb-6 md:mb-12">
+      Atsinaujiname!
+    </h2>
+
+    <div class="maintenance-loader mx-auto" role="status" aria-label="Kraunama">
+      <div></div><div></div><div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div><div></div><div></div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
