@@ -5,11 +5,16 @@ from dotenv import load_dotenv, find_dotenv
 # rodo į projekto šaknį (šalia manage.py)
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Užkrauk .env PRIEŠ bet kokius os.getenv()
-# Variantas A: aiškus kelias
-load_dotenv(BASE_DIR / ".env")
-# arba Variantas B: automatiškai susiras .env aukštyn
-# load_dotenv(find_dotenv())
+# 🟢 Automatinis .env failo pasirinkimas pagal aplinką
+settings_module = os.getenv("DJANGO_SETTINGS_MODULE", "")
+env_file = ".env"  # default (development)
+
+if "staging" in settings_module:
+    env_file = ".env.staging"
+elif "prod" in settings_module or "production" in settings_module:
+    env_file = ".env.production"
+
+load_dotenv(BASE_DIR / env_file)
 
 MAINTENANCE_COVER = os.getenv("MAINTENANCE_COVER", "false").lower() == "true"
 
@@ -35,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'analytics',
     "django.contrib.humanize",   # ↰ prie kitų contrib
      "adminsortable2",
 
@@ -142,18 +148,59 @@ STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 STRIPE_CURRENCY = os.getenv("STRIPE_CURRENCY", "eur")
 
+# --- DPD bendri ---
+ENABLE_DPD = os.getenv("ENABLE_DPD", "true").lower() == "true"
+
+# Kur laikom lokaliai (tas pats visiems env’ams)
+DPD_CACHE_FILE = os.path.join(BASE_DIR, "checkout", "data", "dpd_lt_pickup_points.json")
+
+# URL ir AUTH skaitom iš env; čia tik default’ai (tušti),
+# realias reikšmes paduosi STAGING/PROD override’uose arba per procesų env.
+DPD_POINTS_URL  = os.getenv("DPD_POINTS_URL", "")
+DPD_POINTS_AUTH = os.getenv("DPD_POINTS_AUTH", "")
+DPD_COUNTRY     = os.getenv("DPD_COUNTRY", "LT")
+DPD_USERNAME = os.getenv("DPD_USERNAME", "")
+DPD_PASSWORD = os.getenv("DPD_PASSWORD", "")
 
 # --- CART / krepšelio nustatymai ---
 CART_ITEM_TTL_HOURS = 48  # kiek valandų laikom prekę krepšelyje (sesijoje)
 
 INSTALLED_APPS += ["django_ckeditor_5"]
+
 CKEDITOR_5_CONFIGS = {
     "default": {
+        "language": "lt",
         "toolbar": [
-            "heading", "|", "bold", "italic", "link", "blockQuote",
-            "bulletedList", "numberedList", "insertTable", "mediaEmbed",
-            "imageUpload", "undo", "redo",
+            "heading", "|",
+            "bold", "italic", "link", "|",
+            "fontColor",                 # <- pridėta
+            "bulletedList", "numberedList", "|",
+            "undo", "redo", "removeFormat",
         ],
-    }
+        "fontColor": {
+            "colors": [
+                {"color": "#800020", "label": "Bordó"},
+                {"color": "#000000", "label": "Juoda"},
+            ],
+            "columns": 5,
+        },
+    },
+    "products": {  # palik kaip yra
+        "language": "lt",
+        "toolbar": [
+            "heading", "|",
+            "bold", "italic", "link", "|",
+            "fontColor", "|",
+            "bulletedList", "numberedList", "|",
+            "undo", "redo", "removeFormat",
+        ],
+        "fontColor": {
+            "colors": [
+                {"color": "#800020", "label": "Bordó"},
+                {"color": "#000000", "label": "Juoda"},
+            ],
+            "columns": 5,
+        },
+    },
 }
 

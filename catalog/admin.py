@@ -262,10 +262,10 @@ class ProductAdmin(_BaseProductAdmin):
         }),
         ("Katalogo nuotraukos", {
             "fields": (
-                ("main_image", "main_image_preview"),
-                ("hover_image", "hover_image_preview"),
+                ("main_image", "main_image_preview", "main_image_alt"),
+                ("hover_image", "hover_image_preview", "hover_image_alt"),
             ),
-            "description": "Šios dvi nuotraukos rodomos produktų sąraše (/shop/): pagrindinė ir „hover“."
+            "description": "Šios dvi nuotraukos rodomos produktų sąraše (/shop/): pagrindinė ir „hover“. Galima nurodyti ALT tekstus SEO tikslams."
         }),
         ("Drabužio nuotraukų įkėlimas", {
             "fields": ("bulk_images",),

@@ -6,6 +6,7 @@ from django.utils.html import format_html
 from django.apps import apps
 from django.urls import reverse
 import os
+from django_ckeditor_5.fields import CKEditor5Field
 
 # ---- helper upload kelias: products/<SKU>/filename ----
 def product_upload_to(instance, filename):
@@ -83,11 +84,25 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     stock = models.PositiveIntegerField(default=1, help_text="Pradinė atsarga")
 
-    description = models.TextField(blank=True)
+    description = CKEditor5Field('Aprašymas', config_name='products', blank=True)
 
     # --- 2 kortelės nuotraukos (listingo) ---
     main_image = models.ImageField(upload_to=product_upload_to, blank=True, null=True)
     hover_image = models.ImageField(upload_to=product_upload_to, blank=True, null=True)
+
+    # --- ALT tekstai SEO tikslams ---
+    main_image_alt = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="Main image ALT",
+        help_text="ALT tekstas pagrindinei produkto nuotraukai (SEO aprašymas)"
+    )
+    hover_image_alt = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="Hover image ALT",
+        help_text="ALT tekstas antroje produkto nuotraukai (rodoma ant hover)"
+    )
 
     # --- galerija detalei tvarkoma ProductImage modelyje ---
 
@@ -110,7 +125,7 @@ class Product(models.Model):
 
     # ---- URL į detalės puslapį (SU namespace)
     def get_absolute_url(self):
-        return reverse("shop:product_detail", kwargs={"slug": self.slug})
+        return reverse("catalog:product_detail", kwargs={"slug": self.slug})
 
     # ---- Patogus tekstas „Dydis …“ vietoj None
     @property

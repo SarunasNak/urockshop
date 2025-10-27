@@ -2,9 +2,10 @@
 {% block messages %}{% endblock %}
 {% load static %}
 
-{% url 'catalog:list' as catalog_url %}
-
 {% block extra_head %}
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
 <style>
   /* --- Urock custom form controls (be Tailwind checked:/peer-checked:) --- */
   .tw-radio,
@@ -41,280 +42,357 @@
 {% endblock %}
 
 {% block content %}
-  <section>
-    <div class="container py-[50px]">
 
-      <!-- Breadcrumbs (mobile) -->
-      <ul class="flex md:hidden space-x-2 lg:space-x-5 text-[10px] justify-center mb-[50px]">
-  <li><a href="{{ about_url|default:'/about/' }}" class="transition-text duration-300 text-brand-beige hover:text-black p-[10px]">APIE MUS</a> /</li>
-  <li><a href="{{ blog_url|default:'/blog/' }}" class="transition-text duration-300 text-brand-beige hover:text-black p-[10px]">BLOGAS</a> /</li>
-  <li><a href="{{ product_list_url|default:'/shop/' }}" class="transition-text duration-300 text-brand-beige hover:text-black p-[10px]">KATALOGAS</a></li>
-</ul>
+ <section>
+  <div class="container py-[50px]">
 
-      <div class="flex flex-col md:flex-row md:space-x-4 justify-between md:max-w-[1016px] mx-auto">
+    <!-- Breadcrumbs (mobile) -->
+    <ul class="flex md:hidden space-x-2 lg:space-x-5 text-[10px] justify-center mb-[50px]">
+      <li><a href="{{ about_url|default:'/about/' }}" class="transition-text duration-300 text-brand-beige hover:text-black p-[10px]">APIE MUS</a> /</li>
+      <li><a href="{{ blog_url|default:'/blog/' }}" class="transition-text duration-300 text-brand-beige hover:text-black p-[10px]">BLOGAS</a> /</li>
+      <li><a href="{{ product_list_url|default:'/shop/' }}" class="transition-text duration-300 text-brand-beige hover:text-black p-[10px]">KATALOGAS</a></li>
+    </ul>
 
-        <!-- LEFT -->
-        <div class="md:max-w-[504px] md:w-1/2 order-2 md:order-1">
+    <!-- Flex wrap: LEFT + RIGHT -->
+    <div class="flex flex-col md:flex-row md:space-x-4 justify-between md:max-w-[1016px] mx-auto">
 
-          <div class="pb-[6px] mb-[10px] text-[10px] md:text-sm font-bold uppercase pt-[10px]">
-            Kontaktinė informacija Norintiems pasimatuoti
+     <!-- LEFT -->
+<div class="md:w-1/2 order-2 md:order-1 md:max-w-[504px]">
+
+  <div class="pb-[6px] mb-[10px] text-[10px] md:text-sm font-bold uppercase pt-[10px]">
+    Kontaktinė informacija Norintiems pasimatuoti
+  </div>
+
+  <form id="tryon-form"
+        method="post"
+        hx-post="{% url 'cart:tryon_submit' %}"
+        hx-trigger="submit"
+        hx-target="#tryon-submit"
+        hx-swap="innerHTML"
+        class="grid grid-cols-2 gap-x-1 md:grid-cols-1">
+    {% csrf_token %}
+
+    <!-- Honeypot (botams) -->
+    <input type="text"
+           name="company"
+           autocomplete="off"
+           tabindex="-1"
+           aria-hidden="true"
+           style="position:absolute; left:-9999px; opacity:0; height:0; width:0;">
+
+    <!-- Formos pradžios timestamp (anti-bot min. pildymo laikas) -->
+    <input type="hidden" name="form_started" id="tryon-started">
+
+    <!-- toliau – tavo laukai be pakeitimų -->
+    <input type="email"  name="email"     placeholder="El. paštas" required
+           class="mb-5 px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
+
+    <input type="tel"    name="phone"     placeholder="Tel." required
+           class="mb-5 px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
+
+    <input type="number" name="height_cm" placeholder="Ūgis" required
+           class="mb-5 px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
+
+    <input type="number" name="weight_kg" placeholder="Svoris" required
+           class="mb-5 px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
+
+    <div class="text-center md:text-start col-span-2 md:col-span-1">
+      <button id="tryon-submit" type="submit"
+              class="w-full tw-button-bg-mrm inline-block max-w-[230px] p-[12px] text-xs transition-background duration-300 mb-3">
+        Siųsti
+      </button>
+    </div>
+
+    <div class="px-6 md:px-0 mb-[50px] col-span-2 md:col-span-1">
+      <label class="flex items-center tw-ctrl-gap mb-4 cursor-pointer">
+        <input type="checkbox" name="terms_accepted" required class="tw-checkbox">
+        <span class="text-[9px] md:text-xs">
+          Perskaičiau ir sutinku su
+          <a class="font-bold hover:underline" href="/terms/" target="_blank">sąlygomis ir taisyklėmis.</a>
+        </span>
+      </label>
+
+      <label class="flex items-center tw-ctrl-gap cursor-pointer">
+        <input type="checkbox" name="marketing_consent" class="tw-checkbox">
+        <span class="text-[9px] md:text-xs">
+          Sutinku gauti prestižinių drabužių naujienas ir pasiūlymus, tik atitinkančius mano dydį.
+        </span>
+      </label>
+    </div>
+  </form>
+
+  <!-- APMOKĖJIMAS -->
+  <form id="checkout-form"
+        method="post"
+        action="{% url 'checkout:checkout_create_order_api' %}"
+        hx-ignore="true">
+    {% csrf_token %}
+    <div class="mb-[50px]">
+      <div class="text-center md:text-start mb-5">
+        <h2 class="text-2xl md:text-[32px] font-serif font-bold text-brand-maroon uppercase mb-5">APMOKĖJIMAS</h2>
+        <div class="pb-[6px] text-[10px] md:text-sm font-bold uppercase">PRISTATYMO ADRESAS</div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-x-2 md:gap-x-10 mb-2 md:mb-5">
+        <input id="co-first_name" type="text" name="first_name" placeholder="Vardas" required class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
+        <input id="co-last_name"  type="text" name="last_name"  placeholder="Pavardė" required class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 md:gap-y-5 md:grid-cols-1">
+        <input id="co-email"       type="email" name="email"        placeholder="El. paštas" required  class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
+        <input id="co-phone"       type="tel"   name="phone"        placeholder="Tel."   required      class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
+        <input id="co-address"     type="text"  name="address"      placeholder="Adresas"   required   class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
+        <input id="co-city"        type="text"  name="city"         placeholder="Miestas"  required    class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
+        <input id="co-postal_code" type="text"  name="postal_code"  placeholder="Pašto kodas" required class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
+        <input id="co-country"     type="text"  name="country"      placeholder="Šalis"        class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
+      </div>
+
+      <div class="mt-8 md:mt-10 mb-[50px]" x-data="{ delivery:'' }">
+        <h2 class="text-center md:text-start text-2xl md:text-[32px] font-serif font-bold text-brand-maroon mb-5 uppercase">
+          PRISTATYMO BŪDAS
+        </h2>
+
+        <div class="px-8 md:px-0">
+          <!-- KURIERIS -->
+          <label
+            class="flex items-center tw-ctrl-gap px-2 md:px-8 py-2 border border-brand-beige w-full text-xs h-[40px] cursor-pointer mb-2"
+            :class="delivery==='kurjeris' ? 'text-black' : 'text-brand-beige'">
+            <input type="radio" name="shipping_method" value="kurjeris" x-model="delivery" required class="tw-radio">
+            <span class="text-[11px] md:text-xs">Pristatyti DPD kurjeriu į nurodytą namų adresą</span>
+          </label>
+
+          <!-- 🟢 DPD paštomato pasirinkimas -->
+                <div class="border w-full text-xs mb-2 px-2 md:px-8 py-2" :class="delivery==='pastomatas' ? 'text-black border-black' : 'text-brand-beige border-brand-beige'">
+
+                  <!-- Pirmoji eilutė: pasirinkimas + mygtukas -->
+                  <div class="flex items-center justify-between">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" name="shipping_method" value="pastomatas" x-model="delivery" class="tw-radio">
+                      <span class="text-xs">DPD paštomatas</span>
+                    </label>
+
+                    <button
+                      type="button"
+                      class="text-[10px] underline text-brand-maroon"
+                      x-show="delivery === 'pastomatas'"
+                      x-cloak
+                      onclick="openDpdModal()">
+                      Rinktis paštomatą
+                    </button>
+                  </div>
+
+                  <!-- Antroji eilutė: rodoma, ką pasirinko (ar „Nepasirinkta“) -->
+                  <div id="dpd-selected-box"
+                       x-show="delivery === 'pastomatas'"
+                       x-cloak
+                       class="text-[10px] text-brand-beige mt-1 ml-6">
+                    <span id="dpd-selected-name">Nepasirinkta</span>
+                  </div>
+
+                  <!-- Paslėpti laukai, kad patektų į formą -->
+                  <input type="hidden" id="dpd_pickup_id" name="dpd_pickup_id">
+                  <input type="hidden" id="dpd_pickup_name" name="dpd_pickup_name">
+                  <input type="hidden" id="dpd_pickup_addr" name="dpd_pickup_addr">
+                </div>
+
+                <!-- 🚚 Nemokamas pristatymas -->
+                <div class="flex items-center gap-2 py-2 w-full text-xs h-[40px] text-black">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       class="w-[25px] h-[24px] text-brand-beige"
+                       viewBox="0 0 25 24" fill="none" stroke="currentColor">
+                    <path d="M21.5 4H10.5C10.2348 4 9.98043 4.10536 9.79289 4.29289C9.60536 4.48043 9.5 4.73478 9.5 5V16C9.5 16.2652 9.60536 16.5196 9.79289 16.7071C9.98043 16.8946 10.2348 17 10.5 17H21.5C21.7652 17 22.0196 16.8946 22.2071 16.7071C22.3946 16.5196 22.5 16.2652 22.5 16V5C22.5 4.73478 22.3946 4.48043 22.2071 4.29289C22.0196 4.10536 21.7652 4 21.5 4ZM2.5 17H9.5V10H6L2.5 13.231V17Z" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M9.5 18C9.5 18.5304 9.28929 19.0391 8.91421 19.4142C8.53914 19.7893 8.03043 20 7.5 20C6.96957 20 6.46086 19.7893 6.08579 19.4142C5.71071 19.0391 5.5 18.5304 5.5 18M20.5 18C20.5 18.5304 20.2893 19.0391 19.9142 19.4142C19.5391 19.7893 19.0304 20 18.5 20C17.9696 20 17.4609 19.7893 17.0858 19.4142C16.7107 19.0391 16.5 18.5304 16.5 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="text-[10px]">Nemokamas pristatymas</span>
+                </div>
+            </div>
+            </div>
+
+      <!-- ATSISKAITYMO BŪDAI -->
+      <div x-data="{ pay: '' }">
+        <h2 class="text-center md:text-start text-2xl md:text-[32px] font-serif font-bold text-brand-maroon mb-5 uppercase">Atsiskaitymo Būdai</h2>
+
+        <div class="px-8 md:px-0">
+          <!-- Kreditinė kortelė -->
+          <div class="mb-5">
+            <label
+              class="flex items-center justify-between px-2 md:px-8 py-2 border border-brand-beige w-full text-xs h-[40px] cursor-pointer"
+              :class="pay==='stripe' ? 'text-black' : 'text-brand-beige'">
+              <span class="flex items-center tw-ctrl-gap">
+                <input type="radio" name="payment_method" value="stripe" x-model="pay" required class="tw-radio">
+                <span class="text-xs">Kreditinė kortelė</span>
+              </span>
+              <span class="flex items-center h-[30px] mr-0 pr-2 md:pr-4 ml-1">
+                <img class="max-h-full" src="{% static 'fe/assets/img/visa_wordmark_placeholder.svg' %}" alt="VISA" width="50" height="30" loading="lazy">
+                <img class="max-h-full" src="{% static 'fe/assets/img/mastercard_symbol_placeholder.svg' %}" alt="Mastercard" width="50" height="30" loading="lazy">
+              </span>
+            </label>
+
+            <div x-show="pay === 'stripe'" x-cloak class="text-[10px] md:text-xs px-2 md:px-8 py-2 text-black">
+              Būsite nukreipti į saugų Stripe apmokėjimo puslapį.
+            </div>
           </div>
 
-          <form action="#" method="post" class="grid grid-cols-2 gap-x-1 md:grid-cols-1">
-            <input type="email" placeholder="El. paštas" class="mb-5 px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
-            <input type="tel"   placeholder="Tel."       class="mb-5 px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
-            <input type="text"  placeholder="Ūgis"       class="mb-5 px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
-            <input type="text"  placeholder="Svoris"     class="mb-5 px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
-          </form>
+          <!-- Elektroninė bankininkystė -->
+          <div class="mb-5">
+            <label
+              class="flex items-center tw-ctrl-gap px-2 md:px-8 py-2 border border-brand-beige w-full text-xs h-[40px] cursor-pointer"
+              :class="pay==='paysera' ? 'text-black' : 'text-brand-beige'">
+              <input type="radio" name="payment_method" value="paysera" x-model="pay" class="tw-radio">
+              <span class="text-xs">Elektroninė bankininkystė</span>
+            </label>
 
-          <div class="text-center md:text-start">
-            <button type="button" class="w-full tw-button-bg-mrm inline-block max-w-[230px] p-[12px] text-xs transition-background duration-300 mb-3">
-              Siųsti
+            <div x-show="pay === 'paysera'" x-cloak class="w-full">
+              <div class="flex items-center justify-center lg:w-[75%] mx-auto py-5 md:py-8">
+                <div class="w-[40px] md:w-[95px]">
+                  <img class="object-cover w-full" src="{% static 'fe/assets/img/pinigine.png' %}" alt="" width="95" height="95" loading="lazy">
+                </div>
+                <div class="text-[10px] md:text-xs w-[80%] md:w-[60%] pl-3 md:pl-16">
+                  Paspaudus „Apmokėti“, būsite nukreipti į populiarius mokėjimo būdus.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mokėti atsiimant -->
+          <label
+            class="flex items-center tw-ctrl-gap px-2 md:px-8 py-2 border border-brand-beige w-full text-xs h-[40px] cursor-pointer mb-5"
+            :class="pay==='cod' ? 'text-black' : 'text-brand-beige'">
+            <input type="radio" name="payment_method" value="cod" x-model="pay" class="tw-radio">
+            <span class="text-xs">Mokėti atsiimant</span>
+          </label>
+
+          <div class="text-center md:text-start col-span-2 md:col-span-1">
+            <button id="place-order-btn" type="submit" class="w-full tw-button-bg-mrm max-w-[230px] p-[12px] text-xs transition-background duration-300 mb-3 uppercase">
+              Užsakyti
             </button>
           </div>
-
-          <div class="px-6 md:px-0 mb-[50px]">
-            <label class="flex items-center tw-ctrl-gap mb-4 cursor-pointer">
-              <input type="checkbox" class="tw-checkbox">
-              <span class="text-[9px] md:text-xs">Perskaičiau ir sutinku su <a class="font-bold hover:underline" href="#">sąlygomis ir taisyklėmis.</a></span>
-            </label>
-            <label class="flex items-center tw-ctrl-gap cursor-pointer">
-              <input type="checkbox" class="tw-checkbox">
-              <span class="text-[9px] md:text-xs">Sutinku, kad mano duomenys būtų naudojami rinkodaros tikslais.</span>
-            </label>
-          </div>
-
-          <!-- APMOKĖJIMAS -->
-          <div class="mb-[50px]">
-            <div class="text-center md:text-start mb-5">
-              <h2 class="text-2xl md:text-[32px] font-serif font-bold text-brand-maroon uppercase mb-5">APMOKĖJIMAS</h2>
-              <div class="pb-[6px] text-[10px] md:text-sm font-bold uppercase">PRISTATYMO ADRESAS</div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-x-2 md:gap-x-10 mb-2 md:mb-5">
-              <input type="text" placeholder="Vardas"   class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
-              <input type="text" placeholder="Pavardė"  class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
-            </div>
-
-            <div class="grid grid-cols-2 gap-2 md:gap-y-5 md:grid-cols-1">
-              <input type="email" placeholder="El. paštas" class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
-              <input type="tel"   placeholder="Tel."       class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
-              <input type="text"  placeholder="Adresas"    class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
-              <input type="text"  placeholder="Miestas"    class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
-              <input type="text"  placeholder="Pašto kodas" class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
-              <input type="text"  placeholder="Šalis"      class="px-8 py-2 border border-brand-beige w-full text-center text-xs h-[40px]">
-            </div>
-          </div>
-
-          <!-- PRISTATYMO BŪDAS -->
-          <div class="mb-[50px]" x-data="{ delivery:'' }">
-            <h2 class="text-center md:text-start text-2xl md:text-[32px] font-serif font-bold text-brand-maroon mb-5 uppercase">PRISTATYMO BŪDAS</h2>
-            <div class="px-8 md:px-0">
-              <label class="flex items-center tw-ctrl-gap px-2 md:px-8 py-2 border border-brand-beige w-full text-xs h-[40px] cursor-pointer mb-2">
-                <input type="radio" name="delivery" value="kurjeris" x-model="delivery" class="tw-radio">
-                <span class="text-[11px] md:text-xs" :class="delivery==='kurjeris' ? 'text-black' : 'text-brand-beige'">Pristatyti DPD kurjeriu į nurodytą namų adresą</span>
-              </label>
-
-              <label class="flex items-center tw-ctrl-gap px-2 md:px-8 py-2 border border-brand-beige w-full text-xs h-[40px] cursor-pointer">
-                <input type="radio" name="delivery" value="pastomatas" x-model="delivery" class="tw-radio">
-                <span class="text-xs" :class="delivery==='pastomatas' ? 'text-black' : 'text-brand-beige'">DPD paštomatas</span>
-              </label>
-
-              <div class="flex items-center gap-2 py-2 w-full text-xs h-[40px] text-black">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none" class="stroke-brand-beige">
-                  <path d="M21.5 4H10.5C10.2348 4 9.98043 4.10536 9.79289 4.29289C9.60536 4.48043 9.5 4.73478 9.5 5V16C9.5 16.2652 9.60536 16.5196 9.79289 16.7071C9.98043 16.8946 10.2348 17 10.5 17H21.5C21.7652 17 22.0196 16.8946 22.2071 16.7071C22.3946 16.5196 22.5 16.2652 22.5 16V5C22.5 4.73478 22.3946 4.48043 22.2071 4.29289C22.0196 4.10536 21.7652 4 21.5 4ZM2.5 17H9.5V10H6L2.5 13.231V17Z" stroke-width="2" stroke-linejoin="round"/>
-                  <path d="M9.5 18C9.5 18.5304 9.28929 19.0391 8.91421 19.4142C8.53914 19.7893 8.03043 20 7.5 20C6.96957 20 6.46086 19.7893 6.08579 19.4142C5.71071 19.0391 5.5 18.5304 5.5 18M20.5 18C20.5 18.5304 20.2893 19.0391 19.9142 19.4142C19.5391 19.7893 19.0304 20 18.5 20C17.9696 20 17.4609 19.7893 17.0858 19.4142C16.7107 19.0391 16.5 18.5304 16.5 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span class="text-[10px]">Nemokamas pristatymas</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- ATSISKAITYMO BŪDAI -->
-          <div x-data="{ pay: '' }">
-            <h2 class="text-center md:text-start text-2xl md:text-[32px] font-serif font-bold text-brand-maroon mb-5 uppercase">Atsiskaitymo Būdai</h2>
-
-            <div class="px-8 md:px-0">
-              <!-- Kreditinė kortelė -->
-              <div class="mb-5">
-                <label class="flex items-center justify-between px-2 md:px-8 py-2 border border-brand-beige w-full text-xs h-[40px] cursor-pointer">
-                  <span class="flex items-center tw-ctrl-gap">
-                    <input type="radio" name="pay" value="kreditine" x-model="pay" class="tw-radio">
-                    <span class="text-xs" :class="pay==='kreditine' ? 'text-black' : 'text-brand-beige'">Kreditinė kortelė</span>
-                  </span>
-                  <span class="flex items-center h-[30px] mr-0 pr-2 md:pr-4 ml-1">
-                    <img class="max-h-full" src="{% static 'fe/assets/img/visa_wordmark_placeholder.svg' %}" alt="VISA" width="50" height="30" loading="lazy">
-                    <img class="max-h-full" src="{% static 'fe/assets/img/mastercard_symbol_placeholder.svg' %}" alt="Mastercard" width="50" height="30" loading="lazy">
-                  </span>
-                </label>
-
-                <div x-show="pay === 'kreditine'" x-cloak class="w-full">
-                  <div class="flex flex-col border-brand-beige">
-                    <input type="text" placeholder="Kortelės numeris" class="border-b border-x border-brand-beige text-xs py-3 p-3 md:px-8 w-full">
-                    <div class="md:flex gap-2">
-                      <input type="text" placeholder="Išdavimo data" class="md:flex-1 border-b border-x border-brand-beige text-xs py-3 p-3 md:px-8 w-full">
-                      <input type="text" placeholder="Saugos kodas" class="md:flex-1 border-b border-x border-brand-beige text-xs py-3 p-3 md:px-8 w-full">
-                    </div>
-                    <input type="text" placeholder="Kreditinės kortelės pavadinimas" class="border-b border-x border-brand-beige text-xs py-3 p-3 md:px-8 w-full">
-                  </div>
-                </div>
-              </div>
-
-              <!-- Elektroninė bankininkystė -->
-              <div class="mb-5">
-                <label class="flex items-center tw-ctrl-gap px-2 md:px-8 py-2 border border-brand-beige w-full text-xs h-[40px] cursor-pointer">
-                  <input type="radio" name="pay" value="elektronine" x-model="pay" class="tw-radio">
-                  <span class="text-xs" :class="pay==='elektronine' ? 'text-black' : 'text-brand-beige'">Elektroninė bankininkystė</span>
-                </label>
-
-                <div x-show="pay === 'elektronine'" x-cloak class="w-full">
-                  <div class="flex items-center justify-center lg:w-[75%] mx-auto py-5 md:py-8">
-                    <div class="w-[40px] md:w-[95px]">
-                      <img class="object-cover w-full" src="{% static 'fe/assets/img/pinigine.png' %}" alt="" width="95" height="95" loading="lazy">
-                    </div>
-                    <div class="text-[10px] md:text-xs w-[80%] md:w-[60%] pl-3 md:pl-16">
-                      Paspaudus „Apmokėti“, būsite nukreipti į visus populiarius mokėjimo būdus, kad galėtumėte saugiai užbaigti pirkimą.
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Mokėti atsiimant -->
-              <label class="flex items-center tw-ctrl-gap px-2 md:px-8 py-2 border border-brand-beige w-full text-xs h-[40px] cursor-pointer mb-5">
-                <input type="radio" name="pay" value="atsiimant" x-model="pay" class="tw-radio">
-                <span class="text-xs" :class="pay==='atsiimant' ? 'text-black' : 'text-brand-beige'">Mokėti atsiimant</span>
-              </label>
-            </div>
-
-            <!-- Kuponas (mobile) -->
-            <div class="flex md:hidden items-center justify-between space-x-1 mt-10 mb-5 px-10">
-              <div class="uppercase text-xs text-center">NUOLAIDŲ KODAS</div>
-              <input type="text" placeholder="Nuolaidų kodas" class="px-5 py-2 border border-brand-beige max-w-[231px] w-[80%] text-center text-[10px] h-[40px] uppercase">
-            </div>
-
-            <div class="text-center md:text-start">
-              <button type="button" class="w-full tw-button-bg-mrm inline-block max-w-[230px] p-[12px] text-xs transition-background duration-300 mb-3 uppercase">
-                Užsakyti
-              </button>
-            </div>
-
-            <!-- Sutikimai + SF -->
-            <div class="px-6 md:px-0" x-data="{ invoice:false }">
-              <label class="flex items-center tw-ctrl-gap mb-4 cursor-pointer">
-                <input type="checkbox" class="tw-checkbox">
-                <span class="text-[9px] md:text-xs">Perskaičiau ir sutinku su <a class="font-bold hover:underline" href="#">sąlygomis ir taisyklėmis.</a></span>
-              </label>
-              <label class="flex items-center tw-ctrl-gap mb-4 cursor-pointer">
-                <input type="checkbox" class="tw-checkbox">
-                <span class="text-[9px] md:text-xs">Sutinku, kad mano duomenys būtų naudojami rinkodaros tikslais.</span>
-              </label>
-
-              <label class="flex items-center tw-ctrl-gap cursor-pointer">
-                <input type="checkbox" x-model="invoice" class="tw-checkbox">
-                <span class="text-[9px] md:text-xs">Reikalinga sąskaita faktūra</span>
-              </label>
-
-              <div x-show="invoice" x-cloak class="flex flex-col gap-2 mt-2">
-                <input type="text" placeholder="Įmonės pavadinimas" class="border border-brand-beige p-2 text-xs">
-                <input type="text" placeholder="Įmonės kodas" class="border border-brand-beige p-2 text-xs">
-              </div>
-            </div>
-          </div>
         </div>
+      </div> <!-- 🔸 TRŪKUSIO x-data (pay) UŽDARYMAS -->
 
-        <!-- RIGHT -->
-        <div class="md:max-w-[412px] md:w-1/2 order-1 md:order-2 px-3 md:px-0">
+      <!-- Sutikimai + sąskaita faktūra (atskiras konteineris) -->
+      <div class="px-6 md:px-0" x-data="{ invoice: false }">
+        <!-- 1) Taisyklės (required) -->
+        <label class="flex items-center tw-ctrl-gap mb-4 cursor-pointer">
+          <input type="checkbox" name="terms_agreed" class="tw-checkbox" required>
+          <span class="text-[9px] md:text-xs">
+            Perskaičiau ir sutinku su
+            <a class="font-bold hover:underline" href="/pirkimo-salygos/" target="_blank" rel="noopener">
+              sąlygomis ir taisyklėmis.
+            </a>
+          </span>
+        </label>
 
-<!-- Noriu pasimatuoti -->
-<div class="mb-5">
-  <div class="relative text-xs md:text-xl md:mb-5 p-[10px] text-brand-maroon md:text-black border border-brand-beige md:border-none flex justify-center items-center md:block">
-    Noriu pasimatuoti <span class="md:hidden inline-block ml-1">({{ items|length }})</span>
-  </div>
+        <!-- 2) Marketingo sutikimas (neprivalomas) -->
+        <label class="flex items-center tw-ctrl-gap mb-4 cursor-pointer">
+          <input type="checkbox" name="marketing_consent" class="tw-checkbox">
+          <span class="text-[9px] md:text-xs">
+            Sutinku gauti naujienas ir pasiūlymus.
+          </span>
+        </label>
 
-  <div class="p-5 border border-brand-beige md:h-[345px] md:overflow-y-auto grid gap-y-4 md:gap-y-8 bg-brand-beige md:bg-white">
-    {% if items %}
-      {% for it in items %}
-        {% with v=it.variant p=it.variant.product %}
-        <div class="flex items-start justify-between">
-          <!-- Miniatiūra -->
-          <picture class="shrink-0">
-            {% if it.image_url %}
-              <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
-                   src="{{ it.image_url }}"
-                   alt="{{ p.title|default:p.name|default:'Prekė' }}">
-            {% elif p.main_image %}
-              <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
-                   src="{{ p.main_image.url }}"
-                   alt="{{ p.title|default:p.name|default:'Prekė' }}">
+        <!-- 3) Sąskaita faktūra (toggle) -->
+        <label class="flex items-center tw-ctrl-gap cursor-pointer">
+          <input type="checkbox" name="needs_invoice" x-model="invoice" class="tw-checkbox">
+          <span class="text-[9px] md:text-xs">Reikalinga sąskaita faktūra</span>
+        </label>
+
+        <!-- Rodomi tik kai pažymėta; tuo pačiu tampa required -->
+        <div x-show="invoice" x-cloak class="flex flex-col gap-2 mt-2">
+          <input type="text" name="company_name" placeholder="Įmonės pavadinimas"
+                 class="border border-brand-beige p-2 text-xs" :required="invoice">
+          <input type="text" name="company_code" placeholder="Įmonės kodas"
+                 class="border border-brand-beige p-2 text-xs" :required="invoice">
+        </div>  <!-- /px-6 md:px-0 konteineris -->
+      </div>    <!-- /.px-6 md:px-0 blokas -->
+    </div>      <!-- /.mb-[50px] checkout blokas -->
+  </form>       <!-- /#checkout-form -->
+</div>          <!-- /LEFT kolona -->
+
+
+      <!-- RIGHT -->
+      <div class="md:max-w-[412px] md:w-1/2 order-1 md:order-2 px-3 md:px-0">
+
+        <!-- Noriu pasimatuoti -->
+        <div class="mb-5">
+          <div class="relative text-xs md:text-xl md:mb-5 p-[10px] text-brand-maroon md:text-black border border-brand-beige md:border-none flex justify-center items-center md:block">
+            Noriu pasimatuoti <span class="md:hidden inline-block ml-1">({{ items|length }})</span>
+          </div>
+
+          <div id="tryon-list"
+               class="p-5 border border-brand-beige md:h-[345px] md:overflow-y-auto grid gap-y-4 md:gap-y-8 bg-brand-beige md:bg-white">
+            {% if items %}
+              {% for it in items %}
+                {% with v=it.variant p=it.variant.product %}
+                <div class="flex items-start justify-between" data-variant-id="{{ v.id }}">
+                  <picture class="shrink-0">
+                    {% if it.image_url %}
+                      <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
+                           src="{{ it.image_url }}"
+                           alt="{{ p.title|default:p.name|default:'Prekė' }}">
+                    {% elif p.main_image %}
+                      <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
+                           src="{{ p.main_image.url }}"
+                           alt="{{ p.title|default:p.name|default:'Prekė' }}">
+                    {% else %}
+                      <div class="inline-block w-[113px] h-[134px] aspect-[113/134] max-w-[113px] bg-brand-gray-light grid place-items-center text-[10px]">
+                        Nėra nuotraukos
+                      </div>
+                    {% endif %}
+                  </picture>
+
+                  <div class="pl-5 md:px-5 w-full flex flex-col">
+                    <div class="flex space-x-1 justify-between items-start md:items-center">
+                      <p class="text-[11px] leading-4 truncate">{{ p.title|default:p.name|default:"Prekė" }}</p>
+                      <div class="hidden md:flex items-center gap-6">
+                        <a href="{% url 'catalog:list' %}"
+                           class="text-xs font-bold underline hover:text-[#AE9F9F]">
+                          Keisti
+                        </a>
+                        <form method="post" action="{% url 'cart:cart_remove' %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="variant_id" value="{{ v.id }}">
+                          <button aria-label="Pašalinti" title="Pašalinti">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                              <path d="M6 6L18 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M18 6L6 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+
+                    <div class="md:flex justify-between md:space-x-2 items-center">
+                      <div class="text-[10px] md:text-[11px]">
+                        Dydis {{ v.size_display|default:v.size|default:"–" }}
+                      </div>
+                      <div class="text-[16px] flex items-center">
+                        {{ it.line_total|default:it.total|default:it.price }}<span class="ml-1">€</span>
+                      </div>
+                    </div>
+
+                    <div class="md:hidden flex justify-between items-center mt-auto">
+                      <a href="{% url 'catalog:list' %}" class="text-xs font-bold underline">Keisti</a>
+                      <form method="post" action="{% url 'cart:cart_remove' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="variant_id" value="{{ v.id }}">
+                        <button aria-label="Pašalinti" title="Pašalinti">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                            <path d="M6 6L18 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M18 6L6 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </button>
+                      </form>
+                    </div>
+                  </div><!-- /Turinys -->
+                </div>
+                {% endwith %}
+              {% endfor %}
             {% else %}
-              <div class="inline-block w-[113px] h-[134px] aspect-[113/134] max-w-[113px] bg-brand-gray-light grid place-items-center text-[10px]">
-                Nėra nuotraukos
-              </div>
+              <div class="text-xs">Krepšelis tuščias.</div>
             {% endif %}
-          </picture>
-
-          <!-- Turinys -->
-          <div class="pl-5 md:px-5 w-full flex flex-col">
-
-            <!-- Viršus: pavadinimas + (Keisti, X) -->
-            <div class="flex space-x-1 justify-between items-start md:items-center">
-              <p class="text-[11px] leading-4 truncate">{{ p.title|default:p.name|default:"Prekė" }}</p>
-
-              <!-- DESKTOP: Keisti ir X su didesniu tarpu -->
-              <div class="hidden md:flex items-center gap-6">
-                <a href="{{ catalog_url }}"
-                   class="text-xs font-bold underline hover:text-[#AE9F9F]">
-                  Keisti
-                </a>
-
-                <form method="post" action="{% url 'cart:cart_remove' %}">
-                  {% csrf_token %}
-                  <input type="hidden" name="variant_id" value="{{ v.id }}">
-                  <button aria-label="Pašalinti" title="Pašalinti">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
-                      <path d="M6 6L18 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M18 6L6 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                </form>
-              </div>
-            </div>
-
-            <!-- Dydis (kairė) + Kaina (dešinė) kaip FE -->
-            <div class="md:flex justify-between md:space-x-2 items-center">
-              <div class="text-[10px] md:text-[11px]">
-                Dydis {{ v.size_display|default:v.size|default:"–" }}
-              </div>
-              <div class="text-[16px] flex items-center">
-                {{ it.line_total|default:it.total|default:it.price }}<span class="ml-1">€</span>
-              </div>
-            </div>
-
-            <!-- MOBILE: Keisti kairėje, X – dešinėje -->
-            <div class="md:hidden flex justify-between items-center mt-auto">
-              <a href="{{ catalog_url }}" class="text-xs font-bold underline">Keisti</a>
-              <form method="post" action="{% url 'cart:cart_remove' %}">
-                {% csrf_token %}
-                <input type="hidden" name="variant_id" value="{{ v.id }}">
-                <button aria-label="Pašalinti" title="Pašalinti">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M6 6L18 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M18 6L6 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
-              </form>
-            </div>
-
-          </div><!-- /Turinys -->
+          </div>
         </div>
-        {% endwith %}
-      {% endfor %}
-    {% else %}
-      <div class="text-xs">Krepšelis tuščias.</div>
-    {% endif %}
-  </div>
-</div>
-
 
 {# --- JŪSŲ UŽSAKYMAS --- #}
 <div class="mb-5">
@@ -323,37 +401,59 @@
     <span class="md:hidden inline-block ml-2">({{ order_items|length }})</span>
   </div>
 
-  <div class="p-5 border border-brand-beige md:h-[345px] md:overflow-y-auto grid gap-y-4 md:gap-y-8 bg-brand-beige md:bg-white">
-    {% if order_items %}
-      {% for it in order_items %}
-        {% with v=it.variant p=it.variant.product %}
-        <div class="flex items-start justify-between">
-          <!-- Miniatiūra (113×134) -->
-          <picture class="shrink-0">
-            {% if it.image_url %}
-              <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
-                   src="{{ it.image_url }}"
-                   alt="{{ p.title|default:p.name|default:'Prekė' }}">
-            {% elif p.main_image %}
-              <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
-                   src="{{ p.main_image.url }}"
-                   alt="{{ p.title|default:p.name|default:'Prekė' }}">
-            {% else %}
-              <div class="inline-block w-[113px] h-[134px] aspect-[113/134] max-w-[113px] bg-brand-gray-light grid place-items-center text-[10px]">
-                Nėra nuotraukos
+  {# VIENAS bendras rėmelis viskam #}
+  <div class="border border-brand-beige bg-brand-beige md:bg-white">
+
+    {# 1) Prekių sąrašas #}
+    <div class="p-5 md:h-[345px] md:overflow-y-auto grid gap-y-4 md:gap-y-8">
+      {% if order_items %}
+        {% for it in order_items %}
+          {% with v=it.variant p=it.variant.product %}
+          <div class="flex items-start justify-between" data-variant-id="{{ v.id }}">
+            <picture class="shrink-0">
+              {% if it.image_url %}
+                <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
+                     src="{{ it.image_url }}" alt="{{ p.title|default:p.name|default:'Prekė' }}">
+              {% elif p.main_image %}
+                <img class="inline-block object-cover w-[113px] h-[134px] aspect-[113/134] max-w-[113px]"
+                     src="{{ p.main_image.url }}" alt="{{ p.title|default:p.name|default:'Prekė' }}">
+              {% else %}
+                <div class="inline-block w-[113px] h-[134px] aspect-[113/134] max-w-[113px] bg-brand-gray-light grid place-items-center text-[10px]">
+                  Nėra nuotraukos
+                </div>
+              {% endif %}
+            </picture>
+
+            <div class="pl-5 md:px-5 w-full flex flex-col">
+              <div class="flex space-x-1 justify-between items-start md:items-center">
+                <p class="text-[11px] leading-4 truncate">{{ p.title|default:p.name|default:"Prekė" }}</p>
+                <div class="hidden md:flex items-center gap-6">
+                  <a href="{% url 'catalog:list' %}" class="text-xs font-bold underline hover:text-[#AE9F9F]">Keisti</a>
+                  <form method="post" action="{% url 'cart:cart_remove' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="variant_id" value="{{ v.id }}">
+                    <button aria-label="Pašalinti" title="Pašalinti">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                        <path d="M6 6L18 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18 6L6 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </form>
+                </div>
               </div>
-            {% endif %}
-          </picture>
 
-          <!-- Turinys -->
-          <div class="pl-5 md:px-5 w-full flex flex-col">
-            <!-- Viršus: pavadinimas + (Keisti, X) -->
-            <div class="flex space-x-1 justify-between items-start md:items-center">
-              <p class="text-[11px] leading-4 truncate">{{ p.title|default:p.name|default:"Prekė" }}</p>
+              <div class="md:flex justify-between md:space-x-2 items-center">
+                <div class="text-[10px] md:text-[11px]">
+                  Dydis {{ v.size_display|default:v.size|default:"–" }}
+                  {% if it.qty %}<span class="hidden md:inline"> • Kiekis {{ it.qty }}</span>{% endif %}
+                </div>
+                <div class="text-[16px] flex items-center">
+                  {{ it.line_total|default:it.total|default:it.price }}<span class="ml-1">€</span>
+                </div>
+              </div>
 
-              <!-- DESKTOP: Keisti (kairiau) ir X su didesniu tarpu -->
-              <div class="hidden md:flex items-center gap-6">
-                <a href="{{ catalog_url }}" class="text-xs font-bold underline hover:text-[#AE9F9F]">Keisti</a>
+              <div class="md:hidden flex justify-between items-center mt-3">
+                <a href="{% url 'catalog:list' %}" class="text-xs font-bold underline">Keisti</a>
                 <form method="post" action="{% url 'cart:cart_remove' %}">
                   {% csrf_token %}
                   <input type="hidden" name="variant_id" value="{{ v.id }}">
@@ -365,81 +465,223 @@
                   </button>
                 </form>
               </div>
-            </div>
-
-            <!-- Dydis (kairė) + Kaina (dešinė) – kaip FE -->
-            <div class="md:flex justify-between md:space-x-2 items-center">
-              <div class="text-[10px] md:text-[11px]">
-                Dydis {{ v.size_display|default:v.size|default:"–" }}
-                {% if it.qty %}<span class="hidden md:inline"> • Kiekis {{ it.qty }}</span>{% endif %}
-              </div>
-              <div class="text-[16px] flex items-center">
-                {{ it.line_total|default:it.total|default:it.price }}<span class="ml-1">€</span>
-              </div>
-            </div>
-
-            <!-- MOBILE: Keisti kairėje, X – dešinėje -->
-            <div class="md:hidden flex justify-between items-center mt-3">
-              <a href="{{ catalog_url }}" class="text-xs font-bold underline">Keisti</a>
-              <form method="post" action="{% url 'cart:cart_remove' %}">
-                {% csrf_token %}
-                <input type="hidden" name="variant_id" value="{{ v.id }}">
-                <button aria-label="Pašalinti" title="Pašalinti">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M6 6L18 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M18 6L6 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
-              </form>
-            </div>
-          </div><!-- /Turinys -->
-        </div>
-        {% endwith %}
-      {% endfor %}
-    {% else %}
-      <div class="text-xs">Užsakymo krepšelis tuščias.</div>
-    {% endif %}
-  </div>
-
-
-  <!-- Sumos (palikta kaip buvo, tik po kortelėmis) -->
-  <div class="p-5 border border-brand-beige grid gap-y-4 md:gap-y-8 bg-brand-beige md:bg-white">
-    <!-- Kuponas desktop -->
-    <div class="mt-2">
-      <div class="md:flex items-center justify-between space-x-2 hidden mb-1">
-        <div class="uppercase text-xs">NUOLAIDŲ KODAS</div>
-        <input type="text" placeholder="Nuolaidų kodas" class="px-8 py-2 border border-brand-beige max-w-[231px] w-[60%] text-center text-xs h-[40px]">
-      </div>
+            </div><!-- /Turinys -->
+          </div>
+          {% endwith %}
+        {% endfor %}
+      {% else %}
+        <div class="text-xs">Užsakymo krepšelis tuščias.</div>
+      {% endif %}
     </div>
 
-    <div>
-      <div class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]">
-        <div class="text-[11px] md:text-sm mb-1">Jūsų užsakymas</div>
-        <div class="text-[16px] flex items-center">
-          {{ total }}
-          <svg class="ml-1" xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none"><path d="M2.1665 9.16683L2.58317 8.3335H4.97484C5.8665 5.44183 8.5665 3.3335 11.7498 3.3335C13.5248 3.3335 15.1498 3.9835 16.3915 5.06683L16.0582 5.89183C15.303 5.17325 14.3801 4.65496 13.3735 4.38415C12.3669 4.11333 11.3085 4.09859 10.2948 4.34126C9.28099 4.58394 8.34402 5.07632 7.56914 5.77359C6.79426 6.47086 6.20609 7.35086 5.85817 8.3335H15.0832L14.7498 9.16683H5.62484C5.45873 9.99189 5.45873 10.8418 5.62484 11.6668H13.7498L13.4165 12.5002H5.85817C6.7165 14.9252 9.02484 16.6668 11.7498 16.6668C13.5582 16.6668 15.1915 15.9002 16.3332 14.6668V15.8335C15.0832 16.8668 13.4998 17.5002 11.7498 17.5002C8.5665 17.5002 5.8665 15.3918 4.97484 12.5002H2.1665L2.58317 11.6668H4.77484C4.70817 11.2502 4.6665 10.8335 4.6665 10.4168C4.6665 10.0002 4.70817 9.5835 4.77484 9.16683H2.1665Z" fill="black"/></svg>
+    <!-- Sumos -->
+<div class="mb-6 md:mb-1 p-5">
+  <div class="flex items-start md:items-center md:gap-6">
+        <div class="uppercase text-xs hidden md:block md:self-start" style="margin-top:12px;">
+          NUOLAIDŲ KODAS
         </div>
-      </div>
 
-      <div class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]">
-        <div class="text-[11px] md:text-sm mb-1">Siuntimas</div>
-        <div class="text-[16px] flex items-center">
-          0
-          <svg class="ml-1" xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none"><path d="M2.1665 9.16683L2.58317 8.3335H4.97484C5.8665 5.44183 8.5665 3.3335 11.7498 3.3335C13.5248 3.3335 15.1498 3.9835 16.3915 5.06683L16.0582 5.89183C15.303 5.17325 14.3801 4.65496 13.3735 4.38415C12.3669 4.11333 11.3085 4.09859 10.2948 4.34126C9.28099 4.58394 8.34402 5.07632 7.56914 5.77359C6.79426 6.47086 6.20609 7.35086 5.85817 8.3335H15.0832L14.7498 9.16683H5.62484C5.45873 9.99189 5.45873 10.8418 5.62484 11.6668H13.7498L13.4165 12.5002H5.85817C6.7165 14.9252 9.02484 16.6668 11.7498 16.6668C13.5582 16.6668 15.1915 15.9002 16.3332 14.6668V15.8335C15.0832 16.8668 13.4998 17.5002 11.7498 17.5002C8.5665 17.5002 5.8665 15.3918 4.97484 12.5002H2.1665L2.58317 11.6668H4.77484C4.70817 11.2502 4.6665 10.8335 4.6665 10.4168C4.6665 10.0002 4.70817 9.5835 4.77484 9.16683H2.1665Z" fill="black"/></svg>
-        </div>
-      </div>
+    <div class="mb-2 w-full max-w-[231px] md:w-[231px] mx-auto md:ml-auto">
+      <input
+  type="text"
+  placeholder="Nuolaidų kodas"
+  required
+  class="px-8 py-2 border border-brand-gray-light md:border-brand-beige w-full text-center text-xs h-[40px] md:mb-[2px] bg-transparent
+         placeholder:text-white md:placeholder:text-brand-beige placeholder:opacity-100"
+/>
 
-      <div class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]">
-        <div class="text-[11px] md:text-sm mb-1 font-bold">SUMA</div>
-        <div class="text-[16px] flex items-center">
-          {{ total }}
-          <svg class="ml-1" xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none"><path d="M2.1665 9.16683L2.58317 8.3335H4.97484C5.8665 5.44183 8.5665 3.3335 11.7498 3.3335C13.5248 3.3335 15.1498 3.9835 16.3915 5.06683L16.0582 5.89183C15.303 5.17325 14.3801 4.65496 13.3735 4.38415C12.3669 4.11333 11.3085 4.09859 10.2948 4.34126C9.28099 4.58394 8.34402 5.07632 7.56914 5.77359C6.79426 6.47086 6.20609 7.35086 5.85817 8.3335H15.0832L14.7498 9.16683H5.62484C5.45873 9.99189 5.45873 10.8418 5.62484 11.6668H13.7498L13.4165 12.5002H5.85817C6.7165 14.9252 9.02484 16.6668 11.7498 16.6668C13.5582 16.6668 15.1915 15.9002 16.3332 14.6668V15.8335C15.0832 16.8668 13.4998 17.5002 11.7498 17.5002C8.5665 17.5002 5.8665 15.3918 4.97484 12.5002H2.1665L2.58317 11.6668H4.77484C4.70817 11.2502 4.6665 10.8335 4.6665 10.4168C4.6665 10.0002 4.70817 9.5835 4.77484 9.16683H2.1665Z" fill="black"/></svg>
-        </div>
-      </div>
+      <button
+        type="submit"
+        class="tw-button-bg-mrm w-full p-[12px] text-xs transition-background duration-300 h-[40px] mt-2"
+      >
+        Taikyti
+      </button>
     </div>
   </div>
 </div>
 
-  </section>
-</main>
+  <!-- Sumos (to paties rėmelio viduje) -->
+<div class="px-5 pb-5 mt-5 relative" style="top:-20px;">
+  <div class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]">
+    <div class="text-[11px] md:text-sm mb-1">Jūsų užsakymas</div>
+    <div class="text-[16px] flex items-center">
+      {{ total }}<span class="ml-1">€</span>
+    </div>
+  </div>
+
+  <div class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]">
+    <div class="text-[11px] md:text-sm mb-1">Siuntimas</div>
+    <div class="text-[16px] flex items-center">
+      0<span class="ml-1">€</span>
+    </div>
+  </div>
+
+  <div class="flex justify-between items-center space-x-2 mb-2 h-[24px]">
+    <div class="text-[11px] md:text-sm mb-1 font-bold">SUMA</div>
+    <div class="text-[16px] flex items-center">
+      {{ total }}<span class="ml-1">€</span>
+    </div>
+  </div>
+</div>
+
+  </div> {# /bendras rėmelis #}
+</div>
+<!-- /JŪSŲ UŽSAKYMAS -->
+      </div>
+
+      <!-- /RIGHT -->
+
+    </div><!-- /flex wrap -->
+  </div><!-- /container -->
+</section>
+
+<!-- 🟢 DPD Paštomatų modalas -->
+<div id="dpd-modal" class="dpd-modal">
+  <div class="dpd-modal__content">
+    <div class="dpd-modal__header">
+      <h3 class="dpd-modal__title">PASIRINKITE DPD PAŠTOMATĄ</h3>
+      <button type="button" class="dpd-modal__close" aria-label="Uždaryti">✕</button>
+    </div>
+
+    <div class="dpd-search">
+      <input id="dpdSearch" type="search" placeholder="Miestas, pavadinimas ar adresas">
+    </div>
+
+    <ul id="dpdList" class="dpd-modal__list">Kraunama...</ul>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts_extra %}
+<script>
+// ─────────────────────────────────────────────
+// HTMX: CSRF antraštė (užtenka vieno karto)
+// ─────────────────────────────────────────────
+document.body.addEventListener('htmx:configRequest', function (e) {
+  e.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+});
+
+// Po sėkmingo „try-on“ submit'o – ištuštinti sąrašą ir reset'inti formą
+document.body.addEventListener('cart-updated', function () {
+  const box = document.querySelector('#tryon-list');
+  if (box) box.innerHTML = '<div class="text-xs">Krepšelis tuščias.</div>';
+  const form = document.querySelector('#tryon-form');
+  if (form) form.reset();
+});
+
+// „try-on“ formos starto timestamp
+document.addEventListener('DOMContentLoaded', function () {
+  const f = document.getElementById('tryon-started');
+  if (f) f.value = Math.floor(Date.now() / 1000);
+});
+
+// ─────────────────────────────────────────────
+// CHECKOUT formos validacija + anti-double-submit
+// ─────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("checkout-form");
+  const btn  = document.getElementById("place-order-btn");
+  if (!form) return;
+
+  form.addEventListener("submit", function (e) {
+    // HTML5 validacija (įskaitant required radio grupes)
+    if (!form.checkValidity()) {
+      e.preventDefault();
+      form.reportValidity();
+      return;
+    }
+    // apsauga nuo pakartotinio submit
+    if (btn) {
+      btn.disabled = true;
+      btn.setAttribute('aria-busy', 'true');
+    }
+  });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const modal  = document.getElementById("dpd-modal");
+  const list   = document.getElementById("dpdList");
+  const search = document.getElementById("dpdSearch");
+  const selectedName = document.getElementById("dpd-selected-name");
+
+  let DPD_POINTS = [];
+  try {
+    const tag = document.getElementById("dpd-points");
+    if (tag) DPD_POINTS = JSON.parse(tag.textContent);
+  } catch {}
+
+  function renderList(q=""){
+    const query = q.trim().toLowerCase();
+    const items = DPD_POINTS.filter(p=>{
+      const s = `${p.name} ${p.address} ${p.city}`.toLowerCase();
+      return !query || s.includes(query);
+    });
+    list.innerHTML = items.length ? "" : '<li style="padding:12px;color:#a00;">Nieko nerasta</li>';
+    for (const p of items){
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <button type="button" class="dpd-item__btn" data-id="${p.id}">
+          <div class="dpd-item__name">${p.name}</div>
+          <div class="dpd-item__addr">${p.address}, ${p.city}</div>
+        </button>`;
+      list.appendChild(li);
+    }
+  }
+
+  let _prevOverflow = "";
+  function openDpdModal(){
+    _prevOverflow = document.body.style.overflow || "";
+    document.body.style.overflow = "hidden";
+    modal.classList.add("is-open");
+    renderList("");
+    if (search){ search.value = ""; setTimeout(()=>search.focus(), 50); }
+  }
+  function closeDpdModal(){
+    modal.classList.remove("is-open");
+    document.body.style.overflow = _prevOverflow;
+  }
+
+  // ✖ X mygtukas
+  modal.querySelector(".dpd-modal__close")?.addEventListener("click", closeDpdModal);
+  // click ant fono (už content)
+  modal.addEventListener("click", e => { if (e.target === modal) closeDpdModal(); });
+  // Esc
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeDpdModal(); });
+  // Paieška
+  search?.addEventListener("input", e => renderList(e.target.value));
+
+  // ✅ Pasirinkimas (event delegation, veikia mobiliai)
+  list.addEventListener("click", e => {
+    const btn = e.target.closest(".dpd-item__btn");
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const p = DPD_POINTS.find(x => String(x.id) === String(id));
+    if (!p) return;
+
+    // į laukus
+    document.getElementById("dpd_pickup_id").value   = p.id;
+    document.getElementById("dpd_pickup_name").value = p.name;
+    document.getElementById("dpd_pickup_addr").value = `${p.address}, ${p.city}`;
+
+    // į UI
+    if (selectedName){
+      selectedName.textContent = `${p.name}, ${p.city}`;
+      selectedName.classList.remove("text-brand-beige");
+      selectedName.classList.add("text-black");
+    }
+
+    closeDpdModal();
+  });
+
+  // globalus atidarymas mygtukui HTML’e
+  window.openDpdModal = openDpdModal;
+});
+</script>
+
+<script id="dpd-points" type="application/json">
+  {{ dpd_points_json|safe }}
+</script>
+
 {% endblock %}

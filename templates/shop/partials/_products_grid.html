@@ -1,7 +1,10 @@
+{% load qparams %}
+
+{# GRID: naudoja page_obj.object_list #}
 <div class="mx-auto lg:max-w-[1080px] 2xl:max-w-[1440px]">
   <div class="grid grid-cols-2 md:grid-cols-3 gap-x-[5px] md:gap-x-20 gap-y-5 md:gap-y-[50px]">
-    {% for p in products %}
-      {% include "shop/partials/_card.html" with product=p %}
+    {% for product in page_obj.object_list %}
+      {% include "shop/partials/_card.html" with product=product %}
     {% empty %}
       <p class="col-span-full text-center text-sm text-brand-beige">
         Kataloge kol kas nėra prekių.
@@ -10,36 +13,59 @@
   </div>
 </div>
 
-{% if page_obj.has_other_pages %}
-  {% with qs=request.GET.urlencode %}
-    <nav class="flex items-center justify-center space-x-2 md:space-x-4 mt-2 md:mt-[50px] py-4">
-      {% if page_obj.has_previous %}
-        <a hx-get="?page={{ page_obj.previous_page_number }}{% if qs %}&{{ qs }}{% endif %}"
-           hx-target="#catalog-results" hx-push-url="true"
-           class="group text-black duration-300 px-2" aria-label="prev">‹</a>
-      {% endif %}
+{# Paginacija #}
+{% if page_obj.paginator.num_pages > 1 %}
+  <nav
+    class="flex items-center justify-center space-x-2 md:space-x-4 mt-2 md:mt-[50px] py-4"
+    aria-label="Pagination"
+    hx-indicator="#catalog-loading"     {# ← LABAI SVARBU: nurodom bendrą indikatorių #}
+  >
 
-      <div class="flex space-x-2 md:space-x-4 text-xs font-sans">
-        {% for i in page_obj.paginator.page_range %}
-          {% if i == page_obj.number %}
-            <span class="text-black px-2">{{ i }}</span>
-          {% elif i <= 2 or i > page_obj.paginator.num_pages|add:"-2"
-                 or i >= page_obj.number|add:"-1" and i <= page_obj.number|add:"1" %}
-            <a hx-get="?page={{ i }}{% if qs %}&{{ qs }}{% endif %}"
-               hx-target="#catalog-results" hx-push-url="true"
-               class="text-brand-beige hover:text-black transition-text duration-300 px-2">{{ i }}</a>
-          {% elif i == 3 and page_obj.number > 4 or
-                (i == page_obj.paginator.num_pages|add:"-2" and page_obj.number < page_obj.paginator.num_pages|add:"-3") %}
-            <span class="text-brand-beige">…</span>
-          {% endif %}
-        {% endfor %}
-      </div>
+    {# PREV #}
+    {% if page_obj.has_previous %}
+      <a
+        class="group text-black duration-300 px-2"
+        href="{% qurl page=page_obj.previous_page_number %}#catalog-results"
+        hx-get="{% qurl page=page_obj.previous_page_number %}"
+        hx-target="#catalog-results"
+        hx-push-url="true"
+        rel="prev"
+        aria-label="prev"
+      >‹</a>
+    {% endif %}
 
-      {% if page_obj.has_next %}
-        <a hx-get="?page={{ page_obj.next_page_number }}{% if qs %}&{{ qs }}{% endif %}"
-           hx-target="#catalog-results" hx-push-url="true"
-           class="group text-black duration-300 px-2" aria-label="next">›</a>
-      {% endif %}
-    </nav>
-  {% endwith %}
+    {# Numeriai su elide: page_range ateina iš view #}
+    <div class="flex space-x-2 md:space-x-4 text-xs font-sans">
+      {% for i in page_range %}
+        {% if i == '…' %}
+          <span class="text-brand-beige select-none">…</span>
+        {% elif i == page_obj.number %}
+          <span class="text-black px-2">{{ i }}</span>
+        {% else %}
+          <a
+            class="text-brand-beige hover:text-black transition-text duration-300 px-2"
+            href="{% qurl page=i %}#catalog-results"
+            hx-get="{% qurl page=i %}"
+            hx-target="#catalog-results"
+            hx-push-url="true"
+            hx-indicator="#catalog-loading"   {# ← PRIDĖTA: kiekvienas link'as taip pat žino indikatoriu #}
+          >{{ i }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {# NEXT #}
+    {% if page_obj.has_next %}
+      <a
+        class="group text-black duration-300 px-2"
+        href="{% qurl page=page_obj.next_page_number %}#catalog-results"
+        hx-get="{% qurl page=page_obj.next_page_number %}"
+        hx-target="#catalog-results"
+        hx-push-url="true"
+        hx-indicator="#catalog-loading"   {# ← PRIDĖTA čia taip pat #}
+        rel="next"
+        aria-label="next"
+      >›</a>
+    {% endif %}
+  </nav>
 {% endif %}

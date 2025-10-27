@@ -1,28 +1,38 @@
 {% load static %}
-{# Input: product #}
+
 <div>
   <a href="{{ product.get_absolute_url }}" class="relative block w-full group" aria-label="{{ product.name }}">
-    {# PAGRINDINIS PAVEIKSLAS: main_image -> galerijos pirmas -> placeholder #}
     {% with cover=product.primary_image_url %}
       {% if cover %}
         <img
+          src="{{ cover }}"
+          srcset="{{ cover }} 1x, {{ cover }} 2x"
           class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-          src="{{ cover }}" alt="{{ product.name }}" loading="lazy">
+          alt="{{ product.name }}"
+          width="308" height="460"
+          loading="lazy"
+        >
       {% else %}
         <img
+          src="{% static 'fe/assets/img/etro-svarkas-aa.jpg' %}"
           class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
-          src="{% static 'fe/assets/img/etro-svarkas-aa.jpg' %}" alt="{{ product.name }}" loading="lazy">
+          alt="{{ product.name }}"
+          width="308" height="460"
+          loading="lazy"
+        >
       {% endif %}
     {% endwith %}
 
-    {# HOVER paveikslas, jei yra #}
     {% if product.hover_image %}
       <img
         class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
-        src="{{ product.hover_image.url }}" alt="{{ product.name }} hover" loading="lazy">
+        src="{{ product.hover_image.url }}"
+        alt="{{ product.name }} hover"
+        width="308" height="460"
+        loading="lazy"
+      >
     {% endif %}
 
-    {# Jei turi original_price – rodys badge; jei ne, tyliai praleis #}
     {% include "shop/partials/_discount_badge.html" with price=product.price original_price=product.original_price only %}
   </a>
 
@@ -42,8 +52,6 @@
       <div class="text-[10px] h-[20px] md:text-xs">
         {% if product.size_display %}Dydis {{ product.size_display }}{% endif %}
       </div>
-      <div class="text-white bg-brand-maroon flex"></div>
     </div>
   </div>
 </div>
-

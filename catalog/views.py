@@ -69,30 +69,57 @@ class ProductListView(View):
         if current_category:
             qs = qs.filter(category__slug=current_category)
 
-        # DYDIS: pasirinktas + sekantis + ONE SIZE
+        # DYDIS: pasirinktas + sekantis + ONE SIZE  + custom rikiavimas
         if size_selected:
             all_sizes = list(Size.objects.filter(is_active=True).order_by("order", "label"))
             slugs_lower = [s.slug.lower() for s in all_sizes]
 
             expanded = []
+            selected_slug = None
+            next_slug = None
+
             if size_selected in slugs_lower:
                 idx = slugs_lower.index(size_selected)
-                expanded.append(all_sizes[idx].slug)              # originalus slug
-                if idx + 1 < len(all_sizes):                      # sekantis dydis
-                    expanded.append(all_sizes[idx + 1].slug)
+                selected_slug = all_sizes[idx].slug                    # pvz., "m"
+                expanded.append(selected_slug)
+                if idx + 1 < len(all_sizes):                           # sekantis dydis, pvz., "l"
+                    next_slug = all_sizes[idx + 1].slug
+                    expanded.append(next_slug)
 
-            # ONE SIZE variantai (paliekam originalius slug)
+            # ONE SIZE variantai
             onesize_slugs = list(
                 Size.objects.filter(slug__in=["one-size", "onesize"]).values_list("slug", flat=True)
             )
-            expanded.extend(list(onesize_slugs))
+            expanded.extend(onesize_slugs)
 
             if expanded:
                 qs = qs.filter(size__slug__in=expanded)
 
+                # rikiavimas: pirma selected + ONE SIZE, tada next (po to – kiti, jei būtų)
+                whens = []
+                if selected_slug:
+                    whens.append(When(size__slug=selected_slug, then=0))
+                if onesize_slugs:
+                    whens.append(When(size__slug__in=onesize_slugs, then=1))
+                if next_slug:
+                    whens.append(When(size__slug=next_slug, then=2))
+
+                # ⚠️ TIK annotate čia, be order_by()
+                qs = qs.annotate(
+                    size_priority=Case(*whens, default=9, output_field=IntegerField())
+                )
+        else:
+            # jei dydis nepasirinktas – vis tiek duokim numatytą prioritetą
+            qs = qs.annotate(
+                size_priority=Case(default=9, output_field=IntegerField())
+            )
+
         # Puslapiavimas
-        paginator = Paginator(qs, self.paginate_by)
+        paginator = Paginator(qs.order_by("size_priority", "-id"), self.paginate_by)
         page_obj = paginator.get_page(request.GET.get("page") or 1)
+        page_range = paginator.get_elided_page_range(
+            number=page_obj.number, on_each_side=1, on_ends=1
+        )
 
         # --- SEO ---
         base_title = "Parduotuvė – Urock"
@@ -118,9 +145,10 @@ class ProductListView(View):
             meta_robots = "index,follow"
             canonical_url = _build_canonical(request, allowed=("category", "page"))
 
-        # Kontekstas (UŽDAROM }!)
+        # Kontekstas
         ctx = {
             "page_obj": page_obj,
+            "page_range": page_range,  # NEW: perduodam į šabloną
             "products": page_obj.object_list,
 
             # filtrams
@@ -225,4 +253,3 @@ class ProductDetailView(View):
             "related_products": related_qs,
         }
         return render(request, self.template_name, ctx)
-

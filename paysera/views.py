@@ -3,14 +3,13 @@ from decimal import Decimal
 import logging
 
 from django.conf import settings
-from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from catalog.models import Variant
 from checkout.models import Order
+from checkout.utils import mark_paid_and_decrease_stock   # ← bendras helperis
 from .utils import make_payment_data, parse_callback, PAYMENT_URL
 
 logger = logging.getLogger(__name__)
@@ -24,9 +23,9 @@ def paysera_redirect(request, order_id: int):
     """
     order = get_object_or_404(Order, pk=order_id)
 
-    # Jei ne Paysera – nieko nebedarom, grąžinam į success
+    # Jei ne Paysera – nieko nedarom, grąžinam į success
     if order.payment_method != "paysera":
-        return redirect(reverse("checkout_success", kwargs={"order_id": order.id}))
+        return redirect(reverse("checkout:checkout_success", kwargs={"order_id": order.id}))
 
     # Jei buvo nepavykęs bandymas – leiskime bandyti iš naujo
     if order.status == "failed":
@@ -35,15 +34,15 @@ def paysera_redirect(request, order_id: int):
 
     # Jei jau apmokėtas ar kitoks statusas nei pending – grąžinam į success
     if order.status != "paysera_pending":
-        return redirect(reverse("checkout_success", kwargs={"order_id": order.id}))
+        return redirect(reverse("checkout:checkout_success", kwargs={"order_id": order.id}))
 
     # Suma centais (EUR -> ct)
     total_cents = int((order.total * Decimal("100")).quantize(Decimal("1")))
 
     # Absoliutūs URL'ai, kuriuos Paysera naudos grąžinimams
-    accept_url   = f"{settings.SITE_SCHEME}://{settings.SITE_HOST}{reverse('checkout_success', kwargs={'order_id': order.id})}"
-    cancel_url   = f"{settings.SITE_SCHEME}://{settings.SITE_HOST}{reverse('paysera_cancel',   kwargs={'order_id': order.id})}"
-    callback_url = f"{settings.SITE_SCHEME}://{settings.SITE_HOST}{reverse('paysera_callback')}"
+    accept_url   = f"{settings.SITE_SCHEME}://{settings.SITE_HOST}{reverse('checkout:checkout_success', kwargs={'order_id': order.id})}"
+    cancel_url   = f"{settings.SITE_SCHEME}://{settings.SITE_HOST}{reverse('paysera:paysera_cancel', kwargs={'order_id': order.id})}"
+    callback_url = f"{settings.SITE_SCHEME}://{settings.SITE_HOST}{reverse('paysera:paysera_callback')}"
 
     # Parametrai pagal Paysera specifikaciją
     params = {
@@ -54,10 +53,9 @@ def paysera_redirect(request, order_id: int):
         "accepturl": accept_url,
         "cancelurl": cancel_url,
         "callbackurl": callback_url,
-        "version": "1.6",               # ← PRIDĖTA (privaloma pagal spec)
+        "version": "1.6",
         "test": "1" if settings.PAYSERA_TEST_MODE else "0",
-        # nebūtina, bet gali būti patogu
-        "lang": "LIT",                  # ← pasirinktina (LIT/RUS/ENG...)
+        "lang": "LIT",
         "p_firstname": order.first_name,
         "p_lastname": order.last_name,
         "p_email": order.email,
@@ -79,7 +77,7 @@ def paysera_cancel(request, order_id: int):
     Leidžiam klientui bandyti apmokėti dar kartą iš success puslapio.
     """
     order = get_object_or_404(Order, pk=order_id)
-    return redirect(reverse("checkout_success", kwargs={"order_id": order.id}))
+    return redirect(reverse("checkout:checkout_success", kwargs={"order_id": order.id}))
 
 
 @csrf_exempt
@@ -89,6 +87,7 @@ def paysera_callback(request):
         return render(request, "paysera/plain.txt", {"text": "OK"}, content_type="text/plain")
     # ----------------------------------------------
 
+    # Paysera callback PRIVALO būti POST
     if request.method != "POST":
         return render(request, "paysera/plain.txt", {"text": "ERROR"}, content_type="text/plain")
 
@@ -98,7 +97,7 @@ def paysera_callback(request):
         logger.exception("Paysera callback: sign/parse error")
         return render(request, "paysera/plain.txt", {"text": "ERROR"}, content_type="text/plain")
 
-    order_id = int(parsed.get("orderid", "0") or "0")
+    order_id = int((parsed.get("orderid") or "0"))
     status   = (parsed.get("status", "") or "").lower()
     amount_ct = parsed.get("amount", "")
     currency  = (parsed.get("currency", "") or "").upper()
@@ -126,18 +125,8 @@ def paysera_callback(request):
         logger.warning("Paysera FAIL: order=%s status=%s", order.id, status)
         return render(request, "paysera/plain.txt", {"text": "OK"}, content_type="text/plain")
 
-    # Sekmes kelias – sutvarkom per helperį
-    _mark_paid_and_decrease_stock(order)
+    # Sėkmė – mažinam likučius, slėpiam variantą/produktą (jei taip sukonfigūravai utilyje) ir žymim apmokėta
+    mark_paid_and_decrease_stock(order)
 
     logger.info("Paysera OK: order=%s status=%s", order.id, status)
     return render(request, "paysera/plain.txt", {"text": "OK"}, content_type="text/plain")
-
-def _mark_paid_and_decrease_stock(order):
-    with transaction.atomic():
-        for item in order.items.select_related("variant").select_for_update():
-            v: Variant = item.variant
-            v.stock = max(0, v.stock - item.qty)
-            v.save(update_fields=["stock"])
-        order.status = "paid"
-        order.save(update_fields=["status"])
-
