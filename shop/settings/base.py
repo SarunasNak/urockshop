@@ -11,6 +11,8 @@ load_dotenv(BASE_DIR / ".env")
 # arba Variantas B: automatiškai susiras .env aukštyn
 # load_dotenv(find_dotenv())
 
+MAINTENANCE_COVER = os.getenv("MAINTENANCE_COVER", "false").lower() == "true"
+
 # --- Core ---
 DEBUG = os.getenv("DEBUG", "false").strip().lower() == "true"
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-change-me")
@@ -56,6 +58,8 @@ INSTALLED_APPS += ["django.contrib.sitemaps"]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "shop.middleware.MaintenanceCoverMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -100,6 +104,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -120,6 +125,10 @@ ORDER_ADMIN_EMAIL = os.getenv("ORDER_ADMIN_EMAIL", "info@urock.lt")
 PAYSERA_PROJECT_ID = int(os.getenv("PAYSERA_PROJECT_ID", "0"))
 PAYSERA_SIGN_PASSWORD = os.getenv("PAYSERA_SIGN_PASSWORD", "")
 PAYSERA_TEST_MODE = os.getenv("PAYSERA_TEST_MODE", "true").lower() == "true"
+
+# Cloudflare proxy – kad Django suprastų, jog užklausa yra HTTPS
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
 
 # --- Saugos vėliavos prod'ui (pasirinktinai) ---
 if not DEBUG:
@@ -147,5 +156,4 @@ CKEDITOR_5_CONFIGS = {
         ],
     }
 }
-
 
