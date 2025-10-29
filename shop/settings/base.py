@@ -1,21 +1,28 @@
 from pathlib import Path
 import os
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 
-# rodo į projekto šaknį (šalia manage.py)
+# Rodo į projekto šaknį (šalia manage.py)
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# 🟢 Automatinis .env failo pasirinkimas pagal aplinką
+ENVIRONMENT = os.getenv("DJANGO_ENV", "staging")
+
+# Automatinis .env failo pasirinkimas pagal aplinką
 settings_module = os.getenv("DJANGO_SETTINGS_MODULE", "")
 env_file = ".env"  # default (development)
 
-if "staging" in settings_module:
-    env_file = ".env.staging"
-elif "prod" in settings_module or "production" in settings_module:
-    env_file = ".env.production"
+# 💡 Visada naudok .env.production prod aplinkoje
+env_path = BASE_DIR / ".env.production"
+if env_path.exists():
+    load_dotenv(env_path)
+    print(f"✅ Loaded {env_path}")
+else:
+    load_dotenv(BASE_DIR / ".env")
+    print("⚠️ Loaded fallback .env")
 
 load_dotenv(BASE_DIR / env_file)
 
+# Maintenance flag (skaitymas iš .env)
 MAINTENANCE_COVER = os.getenv("MAINTENANCE_COVER", "false").lower() == "true"
 
 # --- Core ---

@@ -256,8 +256,8 @@ def tryon_submit(request):
             unsub_url = f"{scheme}://{host}/unsubscribe?email={email}"
             unsubscribe_line = (
                 "\n—\n"
-                "Jei nebenorite gauti naujienų, atsakykite į šį laišką su „NE“ "
-                f"arba spustelėkite: {unsub_url}\n"
+                "Jei nebenorite gauti naujienų, "
+                f"atsisakykite prenumeratos čia: {unsub_url}\n"
             )
         else:
             unsubscribe_line = ""

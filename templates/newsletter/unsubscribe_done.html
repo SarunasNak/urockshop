@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block messages %}{% endblock %}
+{% block title %}Prenumerata atšaukta{% endblock %}
+
+{% block content %}
+<div class="container py-16 text-center">
+    {% if success %}
+        <h1 class="text-2xl font-bold text-green-600 mb-4">Prenumerata sėkmingai atšaukta</h1>
+        <p>{{ email }} pašalintas iš mūsų naujienlaiškio sąrašo.</p>
+        <p class="mt-4">Ačiū, kad buvote su mumis.</p>
+    {% else %}
+        <h1 class="text-2xl font-bold text-red-600 mb-4">⚠️ Nepavyko atšaukti prenumeratos</h1>
+        <p>Patikrinkite, ar nuoroda teisinga.</p>
+    {% endif %}
+
+<a href="/"
+   class="inline-block mt-6 px-6 py-3 bg-brand-maroon text-white rounded-full hover:opacity-90 transition">
+    Grįžti į pradžią
+</a>
+</div>
+{% endblock %}
+

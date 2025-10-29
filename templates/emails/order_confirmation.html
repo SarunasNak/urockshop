@@ -19,7 +19,13 @@
           {% for it in order.items.all %}
           <tr>
             <td style="border-bottom:1px solid #f5f5f5">
-              {{ it.product_name }} <small style="color:#666">[{{ it.variant_sku }}]</small>
+              {% if it.variant and it.variant.product %}
+                {% if it.variant.product.brand %}
+                  {{ it.variant.product.brand }}
+                {% endif %}
+                {{ it.variant.product.name }}, {{ it.variant.size }}
+                <small style="color:#666">({{ it.variant.sku }})</small>
+              {% endif %}
             </td>
             <td align="right" style="border-bottom:1px solid #f5f5f5">{{ it.qty }}</td>
             <td align="right" style="border-bottom:1px solid #f5f5f5">{{ it.line_total }}</td>

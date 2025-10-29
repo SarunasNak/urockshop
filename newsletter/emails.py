@@ -8,7 +8,10 @@ from datetime import timedelta
 def send_welcome_email(email):
     """Pirmas, trumpas pasveikinimo laiškas iškart po prenumeratos"""
     subject = "Sveiki! Ačiū, kad prisijungėte prie UROCK naujienų"
-    context = {}
+
+    # 🧩 Sukuriam dinaminę „atsisakymo“ nuorodą su teisingu domenu
+    unsubscribe_url = f"https://{settings.ALLOWED_HOSTS[0]}/unsubscribe?email={email}"
+    context = {"unsubscribe_url": unsubscribe_url}
 
     html_message = render_to_string("emails/subscription_welcome_simple.html", context)
     plain_message = render_to_string("emails/subscription_welcome_simple.txt", context)
@@ -25,7 +28,10 @@ def send_welcome_email(email):
 def send_personalized_email(email):
     """Antras, suasmenintas laiškas po 24 val."""
     subject = "Ačiū, kad prisijungėte prie UROCK prenumeratorių!"
-    context = {}
+
+    # 🧩 Tas pats – pridedam unsubscribe nuorodą
+    unsubscribe_url = f"https://{settings.ALLOWED_HOSTS[0]}/unsubscribe?email={email}"
+    context = {"unsubscribe_url": unsubscribe_url}
 
     html_message = render_to_string("emails/subscription_welcome.html", context)
     plain_message = render_to_string("emails/subscription_welcome.txt", context)
@@ -37,7 +43,6 @@ def send_personalized_email(email):
         recipient_list=[email],
         html_message=html_message,
     )
-
 
 #def schedule_personalized_email(email):
     """Suplanuoja antro laiško siuntimą po 24 val."""

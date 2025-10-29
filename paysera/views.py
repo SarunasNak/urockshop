@@ -54,7 +54,7 @@ def paysera_redirect(request, order_id: int):
         "cancelurl": cancel_url,
         "callbackurl": callback_url,
         "version": "1.6",
-        "test": "1" if settings.PAYSERA_TEST_MODE else "0",
+        "test": "1" if getattr(settings, "PAYSERA_TEST", False) else "0",
         "lang": "LIT",
         "p_firstname": order.first_name,
         "p_lastname": order.last_name,

@@ -6,6 +6,7 @@
 {# Jei base.html neturi Swiper ar papildomų stilių – įmesk per head_extra #}
 {% block head_extra %}
   {# Tavo papildomas FE CSS (kompiliuotas Tailwind + custom) #}
+  <link rel="preload" as="image" href="{{ product.main_image.url }}">
   <link rel="stylesheet" href="{% static 'fe/assets/css/style.css' %}">
   <link rel="stylesheet" href="{% static 'fe/vendor/photoswipe/photoswipe.css' %}">
 {% endblock %}

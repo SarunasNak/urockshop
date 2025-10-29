@@ -279,3 +279,34 @@ document.body.addEventListener("htmx:configRequest", function (evt) {
   evt.detail.path = path + "?" + cleaned.toString();
   console.log("🧹 Išvalytas HTMX path prieš užklausą:", evt.detail.path);
 });
+
+// ==========================================================
+// Filtrų reset į 1 puslapį (be papildomų funkcijų ar kvietimų)
+// ==========================================================
+let lastRequestPath = "";
+let lastQuery = "";
+
+// Kai HTMX ruošiasi siųsti užklausą
+document.body.addEventListener("htmx:configRequest", function (e) {
+  const [path, query] = e.detail.path.split("?");
+  const params = new URLSearchParams(query || "");
+
+  // 1️⃣ Jei yra "page" parametras ir pasikeitė filtrai — resetinam
+  const filterKeys = ["size", "category", "q"];
+  const currentFilters = filterKeys.map(k => params.get(k) || "").join("|");
+
+  const sameFilters = currentFilters === lastQuery;
+  const samePath = path === lastRequestPath;
+
+  if (params.has("page") && (!sameFilters || !samePath)) {
+    params.delete("page");
+    e.detail.path = path + (params.toString() ? "?" + params.toString() : "");
+    console.log("↩️ Grįžtam į pirmą puslapį dėl naujo filtro:", e.detail.path);
+  }
+
+  // 2️⃣ Išsaugom paskutinę būseną
+  lastRequestPath = path;
+  lastQuery = currentFilters;
+});
+
+

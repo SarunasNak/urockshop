@@ -7,3 +7,7 @@ Susisieksime su jumis artimiausiu metu.
 
 Su pagarba,
 UROCK komanda
+
+—
+Jei nebenorite gauti naujienų, atsisakykite prenumeratos čia:
+{{ unsubscribe_url }}

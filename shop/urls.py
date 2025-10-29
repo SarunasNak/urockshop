@@ -9,6 +9,7 @@ from pages.views_seo import robots_txt
 from django.contrib.sitemaps.views import sitemap
 from shop.sitemaps import ProductSitemap, CategorySitemap, StaticViewSitemap
 from django.views.generic import TemplateView, RedirectView
+from newsletter.views_unsubscribe import unsubscribe_view
 
 # APP views
 from checkout import views as checkout_views  # <-- naudokime šitą alias
@@ -32,6 +33,7 @@ urlpatterns = [
     path("blog/", include(("blog.urls", "blog"), namespace="blog")),
     path("newsletter/", include(("newsletter.urls", "newsletter"), namespace="newsletter")),
     path("analytics/", include("analytics.urls")),
+    path("unsubscribe/", unsubscribe_view, name="unsubscribe"),
 
     # API
     path("api/v1/", include("catalog.urls_api")),
