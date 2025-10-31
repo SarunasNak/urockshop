@@ -72,11 +72,12 @@ INSTALLED_APPS += ["django.contrib.sitemaps"]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "shop.middleware.MaintenanceCoverMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "shop.middleware.DisableAnalyticsForStaffMiddleware",  # 👈 pridėk šitą čia
+    "shop.middleware.MaintenanceCoverMiddleware",          # 👈 palik po to
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]

@@ -282,31 +282,90 @@ document.body.addEventListener("htmx:configRequest", function (evt) {
 
 // ==========================================================
 // Filtrų reset į 1 puslapį (be papildomų funkcijų ar kvietimų)
+// + apsauga nuo dvigubo "grįžimo į 1 puslapį"
 // ==========================================================
 let lastRequestPath = "";
 let lastQuery = "";
+let justChangedFilters = false; // 👈 naujas flag
 
 // Kai HTMX ruošiasi siųsti užklausą
 document.body.addEventListener("htmx:configRequest", function (e) {
   const [path, query] = e.detail.path.split("?");
   const params = new URLSearchParams(query || "");
 
-  // 1️⃣ Jei yra "page" parametras ir pasikeitė filtrai — resetinam
   const filterKeys = ["size", "category", "q"];
   const currentFilters = filterKeys.map(k => params.get(k) || "").join("|");
 
   const sameFilters = currentFilters === lastQuery;
   const samePath = path === lastRequestPath;
 
-  if (params.has("page") && (!sameFilters || !samePath)) {
-    params.delete("page");
-    e.detail.path = path + (params.toString() ? "?" + params.toString() : "");
-    console.log("↩️ Grįžtam į pirmą puslapį dėl naujo filtro:", e.detail.path);
+  // 1️⃣ Jei filtrai pasikeitė – pažymim, kad ką tik keitėsi
+  if (!sameFilters) {
+    justChangedFilters = true;
+    setTimeout(() => (justChangedFilters = false), 600); // 👈 0.6s "langas"
   }
 
-  // 2️⃣ Išsaugom paskutinę būseną
+  // 2️⃣ Jei yra "page" parametras ir tai naujas filtras — resetinam
+  if (params.has("page") && (!sameFilters || !samePath)) {
+    if (!justChangedFilters) {
+      // tik jei ne ką tik po filtro keitimo (kad pagination veiktų iškart)
+      params.delete("page");
+      e.detail.path = path + (params.toString() ? "?" + params.toString() : "");
+      console.log("↩️ Grįžtam į pirmą puslapį dėl naujo filtro:", e.detail.path);
+    } else {
+      console.log("⏸️ Praleidžiam pirmą pagination po filtro (apsauga)");
+    }
+  }
+
   lastRequestPath = path;
   lastQuery = currentFilters;
 });
 
+// ==========================================================
+// 500 klaidų gaudymas (HTMX + Fetch)
+// ==========================================================
+(function() {
+  // Gaudo HTMX klaidas
+  document.body.addEventListener("htmx:responseError", function (e) {
+    const status = e.detail.xhr.status;
+    if (status === 500) {
+      report500Error(e.detail.xhr.responseURL || window.location.href, "HTMX request failed with 500");
+    }
+  });
+
+  // Gaudo global fetch klaidas (jei naudoji fetch API)
+  const originalFetch = window.fetch;
+  window.fetch = async function(...args) {
+    const res = await originalFetch(...args);
+    if (res.status === 500) {
+      report500Error(res.url || window.location.href, "Fetch request failed with 500");
+    }
+    return res;
+  };
+
+  // Siunčia pranešimą į backendą
+  function report500Error(url, message) {
+    const payload = {
+      url: url,
+      message: message,
+      userAgent: navigator.userAgent,
+      time: new Date().toISOString()
+    };
+
+    // Bandome tyliai pranešti per Beacon (arba fallback į fetch)
+    const endpoint = "/report-error/";
+
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(endpoint, JSON.stringify(payload));
+    } else {
+      fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    }
+
+    console.warn("🚨 500 klaida aptikta, išsiųstas pranešimas:", payload);
+  }
+})();
 

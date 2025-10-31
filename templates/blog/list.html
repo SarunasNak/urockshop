@@ -40,7 +40,12 @@
     <div class="hidden md:block container">
       <div class="text-center">
         <span class="text-brand-maroon text-[24px]">
-          Mūsų <span class="text-[32px] text-brand-beige">kataloge</span> rasite prabangių mados namų drabužius, tokius kaip:
+          Mūsų
+          <a href="https://www.urock.lt/shop/"
+             class="text-[32px] text-brand-beige hover:text-black transition duration-300 underline-offset-4 hover:underline">
+            kataloge
+          </a>
+          rasite prabangių mados namų drabužius, tokius kaip:
         </span>
       </div>
     </div>
@@ -77,13 +82,48 @@
     </div>
   </section>
 
+  <!-- 🆕 Dinaminiai straipsniai iš TVS (be atskiro puslapio) -->
+<section class="container mb-10 md:mb-[80px]">
+  <div class="px-4 lg:px-[50px]">
+    <h1 class="text-[40px] md:text-[80px] font-serif text-brand-maroon mb-5 md:mb-[50px] text-center md:text-start">
+      MUST READ
+    </h1>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+      {% for post in posts %}
+        <a href="#{{ post.anchor_id }}"
+           class="{% if post.card_variant == 'large' %}clip-diagonal order-3 md:order-2{% elif forloop.counter == 1 %}col-span-2 md:col-span-1{% else %}order-2 md:order-3{% endif %}">
+          <picture>
+            {% if post.card_image %}
+              <img src="{{ post.card_image.url }}"
+                   alt="{{ post.title }}"
+                   class="{% if post.card_variant == 'large' %}aspect-[126/176] md:aspect-[346/437]{% else %}aspect-[268/126] md:aspect-[346/344]{% endif %} object-cover w-full mb-2 md:mb-5" />
+            {% elif post.cover %}
+              <img src="{{ post.cover.url }}"
+                   alt="{{ post.title }}"
+                   class="{% if post.card_variant == 'large' %}aspect-[126/176] md:aspect-[346/437]{% else %}aspect-[268/126] md:aspect-[346/344]{% endif %} object-cover w-full mb-2 md:mb-5" />
+            {% endif %}
+          </picture>
+
+          <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
+            {{ post.title }}
+          </h2>
+
+          <span class="text-brand-beige transition-text duration-300 md:hover:text-black">
+            Skaityti daugiau
+          </span>
+        </a>
+      {% empty %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
   <!-- MUST READ -->
   <section>
     <div class="container mb-5 md:mb-[50px]">
       <div class="px-4 lg:px-[50px]">
-        <h1 class="text-[40px] md:text-[80px] font-serif text-brand-maroon mb-5 md:mb-[50px] text-center md:text-start">
-          MUST READ
-        </h1>
 
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           <!-- 1 -->
@@ -107,7 +147,7 @@
               <source srcset="{% static 'fe/assets/img/blog-small-2.avif' %}" type="image/avif" />
               <source srcset="{% static 'fe/assets/img/blog-small-2.webp' %}" type="image/webp" />
               <img class="aspect-[126/176] md:aspect-[346/437] object-cover w-full mb-2 md:mb-5"
-                   src="{% static 'fe/assets/img/blog-small-2.jpg' %}" alt="Blog small preview 2"
+                   src="{% static 'fe/assets/img/Cucinelli_Shearlin.jpg?v=2' %}" alt="Blog small preview 2"
                    width="268" height="176" fetchpriority="high" loading="eager" />
             </picture>
             <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
@@ -134,6 +174,27 @@
       </div>
     </div>
   </section>
+
+  <!-- 🧩 Dinaminiai straipsniai iš TVS (pilnas turinys tame pačiame puslapyje) -->
+<section>
+  {% for post in posts %}
+    <picture class="relative block">
+      <div id="{{ post.anchor_id }}" class="anchor-hit"></div>
+      {% if post.cover %}
+        <img src="{{ post.cover.url }}"
+             alt="{{ post.title }}"
+             class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
+             width="320" height="402"
+             loading="lazy" decoding="async" />
+      {% endif %}
+    </picture>
+
+    <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
+      <h2 class="text-[24px] md:text-[32px] font-serif text-brand-maroon mb-3">{{ post.title }}</h2>
+      <p>{{ post.body|safe }}</p>
+    </div>
+  {% endfor %}
+</section>
 
   <!-- Pilni straipsniai (inkarai tame pačiame puslapyje) -->
   <section>
@@ -168,7 +229,7 @@
       <source srcset="{% static 'fe/assets/img/blog-2-min.avif' %}" type="image/avif" />
       <source srcset="{% static 'fe/assets/img/blog-2-min.webp' %}" type="image/webp" />
       <img class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
-           src="{% static 'fe/assets/img/blog-2-min.jpg' %}" alt="Blog main preview 2"
+           src="{% static 'fe/assets/img/Brunello_Cucinelli_store.jpg?v=2' %}" alt="Blog main preview 2"
            width="320" height="402" loading="lazy" decoding="async" />
     </picture>
     <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">

@@ -6,10 +6,8 @@
       {% if cover %}
         <img
           src="{{ cover }}"
-          srcset="{{ cover }} 1x, {{ cover }} 2x"
           class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
           alt="{{ product.name }}"
-          width="308" height="460"
           loading="lazy"
         >
       {% else %}
@@ -17,7 +15,6 @@
           src="{% static 'fe/assets/img/etro-svarkas-aa.jpg' %}"
           class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
           alt="{{ product.name }}"
-          width="308" height="460"
           loading="lazy"
         >
       {% endif %}
@@ -28,30 +25,47 @@
         class="md:block hidden aspect-[308/460] w-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 md:group-hover:opacity-100"
         src="{{ product.hover_image.url }}"
         alt="{{ product.name }} hover"
-        width="308" height="460"
         loading="lazy"
       >
     {% endif %}
-
-    {% include "shop/partials/_discount_badge.html" with price=product.price original_price=product.original_price only %}
   </a>
 
-  <div>
-    <div class="flex justify-between items-center space-x-2">
-      <div class="text-[13px] md:text-[16px] text-brand-maroon font-serif mb-1">
-        {{ product.brand|default:product.name }}
-      </div>
-      {% include "shop/partials/_price.html" with price=product.price original_price=product.original_price only %}
-    </div>
+  {% with variant=product.variants.first %}
+    {% if variant %}
+      <div class="flex justify-between items-start space-x-2">
+        <div class="text-[13px] md:text-[16px] text-brand-maroon font-serif mb-1">
+          {{ product.brand|default:product.name }}
+        </div>
 
-    <div class="text-[10px] md:text-xs mb-1">
-      {{ product.name }}
-    </div>
+        {# KAINOS BLOKAS: rodo kainą tiek desktop, tiek mobile #}
+        <div class="flex flex-col items-end">
+          {% if variant.compare_at_price and variant.compare_at_price > variant.price %}
+            <span class="hidden md:inline line-through text-gray-400 text-[13px] md:text-[14px]">
+              {{ variant.compare_at_price }} €
+            </span>
+          {% endif %}
+          <span class="text-brand-maroon font-semibold text-[13px] md:text-[14px]">
+            {{ variant.price }} €
+          </span>
+        </div>
+      </div>  {# ← čia uždarom viršutinį flex su brand ir kaina #}
 
-    <div class="flex justify-between items-center space-x-2">
-      <div class="text-[10px] h-[20px] md:text-xs">
-        {% if product.size_display %}Dydis {{ product.size_display }}{% endif %}
+      <div class="text-[10px] md:text-xs mb-1">
+        {{ product.name }}
       </div>
-    </div>
-  </div>
+
+      {# Eilutė: KAIRĖJE dydis, DEŠINĖJE visas badge (-% + kaina) #}
+      <div class="flex justify-between items-center space-x-2 mt-1">
+        <div class="text-[10px] h-[20px] md:text-xs">
+          {% if product.size_display %}Dydis {{ product.size_display }}{% endif %}
+        </div>
+
+        {% if variant.compare_at_price and variant.compare_at_price > variant.price %}
+          <div>
+            {% include "shop/partials/_discount_badge.html" with price=variant.price original_price=variant.compare_at_price only %}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endwith %}
 </div>

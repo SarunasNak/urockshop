@@ -1,7 +1,9 @@
 {% extends "admin/change_list.html" %}
 {% block object-tools-items %}
-  {% if custom_button %}
-    <li>{{ custom_button|safe }}</li>
-  {% endif %}
-  {{ block.super }}
+<li>
+  <a href="{% url 'admin:analytics_events_overview_admin' %}" class="historylink">
+    🛍️ Events Overview
+  </a>
+</li>
+{{ block.super }}
 {% endblock %}

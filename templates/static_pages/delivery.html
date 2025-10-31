@@ -3,8 +3,24 @@
 
 {% block title %}Siuntimo sąlygos{% endblock %}
 
-{# Jei šio puslapio nenori indeksuoti: atkomentuok #}
-{# {% block extra_head %}<meta name="robots" content="noindex,follow">{% endblock %} #}
+{% block extra_head %}
+<style>
+  .entry-content h1 {
+    margin: 0 0 24px !important;
+    font-weight: 700 !important; /* <-- Bold pavadinimas */
+  }
+  .entry-content p {
+    margin: 12px 0 !important;
+  }
+  .entry-content .sec {
+    margin: 48px 0 12px !important;
+    font-weight: 400 !important;
+  }
+  .entry-content .sec + p {
+    margin-top: 0 !important;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 <section class="pt-[50px]">
@@ -25,7 +41,6 @@
       <p>6. Pirkėjui priėmus siuntą ir pasirašius kurjerio pateiktame dokumente ar elektroniniame kaupiklyje be pastabų, laikoma, kad prekės pristatytos nepažeistoje pakuotėje.</p>
 
       <p>7. Prekių atsitiktinio sugadinimo ar praradimo rizika pereina Pirkėjui nuo to momento, kai prekės perduodamos Pirkėjui.</p>
-      {# <- jei turi tęsinį 7 punkto – įklijuok čia, palikau kaip tavo FE tekste #}
     </div>
   </div>
 </section>

@@ -2,6 +2,14 @@
 // Tikslus aktyvaus buvimo laiko matavimas (be cookies, be trečiųjų šalių)
 
 (function () {
+
+    // ✅ Jei admin ar staff – išjungiam analitiką
+    if (document.cookie.includes("no_analytics=1")) {
+        console.log("🔕 Analytics disabled for admin/staff user.");
+        window.sendEvent = function() {};
+        return; // ← dabar return yra funkcijos viduje, todėl klaidos nebus
+    }
+
     const endpoint = "/analytics/track/";
     const sessionKey = "urock_session_id";
 
@@ -53,10 +61,7 @@
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify(payload),
               });
-    }
-
-    // 🔹 Puslapio peržiūra
-    sendEvent("page_view", { title: document.title });
+    };
 
     // 🔹 Bendri mygtukų paspaudimai (pirkimas / pasimatuoti)
     document.addEventListener("click", (e) => {
@@ -71,20 +76,31 @@
         }
     });
 
-    // 🔹 Dydžio pasirinkimas (S, M, L, XL, XXL, XXXL, UNI)
-    document.addEventListener("click", (e) => {
-    const btn = e.target.closest('[data-size], .size-option, .product-size');
-    if (btn) {
-        const size =
-            btn.getAttribute("data-size") ||
-            btn.innerText.trim().toUpperCase();
+    // 🔹 Užsakymo mygtukas krepšelyje
+document.addEventListener("click", (e) => {
+    const orderBtn = e.target.closest("button, a, input[type='submit']");
+    if (!orderBtn) return;
 
-        // ❌ Neisiunčiam, jei "VISI"
-        if (size === "VISI") return;
+    const text = (orderBtn.innerText || orderBtn.value || "").toLowerCase();
 
-        sendEvent("size_selected", { size: size });
+    // aptinkam „užsakyti“, „patvirtinti užsakymą“ ir pan.
+    if (text.includes("užsakyti") || text.includes("užsakymą") || text.includes("patvirtinti")) {
+        sendEvent("order_click", { label: text });
     }
 });
+
+    // 🔹 Dydžio pasirinkimas (S, M, L, XL, XXL, XXXL, UNI)
+    document.addEventListener("click", (e) => {
+        const btn = e.target.closest('[data-size], .size-option, .product-size');
+        if (btn) {
+            const size =
+                btn.getAttribute("data-size") ||
+                btn.innerText.trim().toUpperCase();
+
+            if (size === "VISI") return;
+            sendEvent("size_selected", { size: size });
+        }
+    });
 
     // 🔹 Kategorijos filtravimas (pvz. "Marškiniai", "Kelnės", "Paltai")
     document.addEventListener("click", (e) => {
@@ -96,4 +112,44 @@
             sendEvent("category_selected", { category: category });
         }
     });
-})();
+
+    // --- 🔹 PAPILDOMA SOURCE ANALYTICS LOGIKA ---
+    (function () {
+        const sourceKey = "urock_source";
+        const urlParams = new URLSearchParams(window.location.search);
+        const srcParam = urlParams.get("src");
+
+        if (srcParam) sessionStorage.setItem(sourceKey, srcParam);
+
+        let source = sessionStorage.getItem(sourceKey);
+        if (!source) {
+            const ref = document.referrer || "";
+            if (!ref) source = "Direct";
+            else if (ref.includes("google")) source = "Google Organic";
+            else if (ref.includes("instagram")) source = "Instagram";
+            else if (ref.includes("facebook")) source = "Facebook";
+            else if (ref.includes("tiktok")) source = "TikTok";
+            else source = "Referral";
+            sessionStorage.setItem(sourceKey, source);
+        }
+
+        const originalSendEvent = window.sendEvent;
+        window.sendEvent = function (name, data = {}) {
+            data.source = sessionStorage.getItem(sourceKey) || source;
+            originalSendEvent(name, data);
+        };
+
+        setTimeout(() => {
+            if (window.location.search.includes("src=")) {
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+        }, 1000);
+    })();
+
+    // 🔹 Puslapio peržiūra
+    setTimeout(() => {
+        sendEvent("page_view", { title: document.title });
+    }, 150);
+
+})(); // 👈 uždaro pagrindinę funkciją

@@ -116,7 +116,7 @@ def events_overview(request):
 
     # 🛒 VEIKSMAI (tik konkretūs veiksmai)
     action_summary = (
-        qs.filter(name__in=["add_to_cart", "try_on_click"])
+        qs.filter(name__in=["add_to_cart", "try_on_click", "order_click"])
         .values("name")
         .annotate(total=Count("id"))
         .order_by("-total")
@@ -129,5 +129,5 @@ def events_overview(request):
         "start_date": start_date or "",
         "end_date": end_date or "",
     }
-
-    return render(request, "admin/events_overview.html", context)
+    from django.contrib.admin.sites import site
+    return render(request, "admin/analytics/events_overview.html", context)

@@ -46,16 +46,20 @@
             {% endfor %}
             {% elif product.main_image %}
               <div class="swiper-slide overflow-hidden">
-                <img
-                  class="block w-full h-auto object-contain"
-                  src="{{ product.main_image.url }}"
-                  alt="{% firstof product.title product.name product.slug %}">
+                <a href="{{ product.main_image.url }}" data-pswp-width="800" data-pswp-height="1200">
+                  <img
+                    class="block w-full h-auto object-contain"
+                    src="{{ product.main_image.url }}"
+                    alt="{% firstof product.title product.name product.slug %}">
+                </a>
               </div>
             {% else %}
               <div class="swiper-slide overflow-hidden">
-                <div class="w-full aspect-[203/305] md:aspect-[640/964] bg-brand-gray-light grid place-items-center text-xs">
-                  Nėra nuotraukos
-                </div>
+                <a href="#" tabindex="-1">
+                  <div class="w-full aspect-[203/305] md:aspect-[640/964] bg-brand-gray-light grid place-items-center text-xs">
+                    Nėra nuotraukos
+                  </div>
+                </a>
               </div>
             {% endif %}
           </div>
@@ -99,22 +103,32 @@
       {% firstof product.brand.title product.brand.name product.brand product.name %}
     </h1>
 
-    {# Kaina (mobile) #}
-    <div class="items-center flex md:hidden">
-      {% if product.discount_price %}
-        {{ product.discount_price }}
-      {% elif product.price %}
-        {{ product.price }}
-      {% else %}—{% endif %}
-      <span class="inline-block ml-2">€</span>
-    </div>
-  </div>
+    {# Kaina (mobile) su nuolaidos ženkliuku #}
+{% with variant=product.variants.first %}
+  {% if variant %}
+    {% with price=variant.price original_price=variant.compare_at_price %}
+      <div class="items-start flex flex-col md:hidden relative justify-end min-h-[38px]">
+        {% if original_price and original_price > price %}
+          <span class="line-through text-gray-400 text-[14px]">{{ original_price }} €</span>
+          <div class="inline-block">
+            {% include "shop/partials/_discount_badge.html" with price=price original_price=original_price %}
+          </div>
+        {% elif price %}
+          <span class="text-brand-maroon font-semibold text-[16px]">{{ price }} €</span>
+        {% else %}
+          <span class="invisible">—</span>
+        {% endif %}
+      </div>
+    {% endwith %}
+  {% endif %}
+{% endwith %}
+</div>
 
   {# ČIA BUVO KATEGORIJA – PAKEIČIAM Į NAME #}
   <p class="text-xs md:text-[14px] mb-2 md:mb-[50px]">
     {% firstof product.name product.title %}
   </p>
-</div>
+
 
           <div class="items-center flex md:hidden text-xs mb-5">
             {% if product.size %}Dydis {{ product.size }}{% endif %}
@@ -139,22 +153,26 @@
             ir pirmieji sužinokite apie kas mėnesį atvykstančius drabužius.
           </p>
 
-          {# Kaina (desktop) #}
-          <div class="items-center p-[10px] hidden md:flex">
-            {% if product.discount_price %}
-              {{ product.discount_price }}
-            {% elif product.price %}
-              {{ product.price }}
-            {% else %}
-              —
-            {% endif %}
-            <span class="inline-block ml-2">€</span>
-          </div>
+          {# Kaina (desktop) su nuolaidos ženkliuku #}
+        {% with variant=product.variants.first %}
+          {% if variant %}
+            {% with price=variant.price original_price=variant.compare_at_price %}
+              <div class="items-start flex flex-col md:items-start md:flex-col relative gap-1 p-[10px] hidden md:flex">
+                {% if original_price and original_price > price %}
+                  <span class="line-through text-gray-400 text-[14px] md:text-[16px]">{{ original_price }} €</span>
+                <div class="mt-1 inline-block">
+                  {% include "shop/partials/_discount_badge.html" with price=price original_price=original_price %}
+                </div>
 
-          {# Dydis (desktop) #}
-          <div class="items-center p-[10px] hidden md:flex">
-            {% if product.size %}Dydis {{ product.size }}{% endif %}
-          </div>
+                {% elif price %}
+                  <span class="text-brand-maroon font-semibold text-[16px] md:text-[18px]">{{ price }} €</span>
+                {% else %}
+                  —
+                {% endif %}
+              </div>
+            {% endwith %}
+          {% endif %}
+        {% endwith %}
 
 {# Veiksmai #}
 <div class="mb-[50px] mt-[30px] max-w-[230px] md:max-w-full mx-auto">

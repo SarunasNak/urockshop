@@ -61,16 +61,6 @@ class EventAdmin(admin.ModelAdmin):
     search_fields = ("pageview__path", "name")
     readonly_fields = ("pageview", "name", "data", "created_at")
 
-    # 🔹 1. Mygtukas "Events Overview"
-    def changelist_view(self, request, extra_context=None):
-        if not extra_context:
-            extra_context = {}
-        extra_context["custom_button"] = format_html(
-            '<a class="button" href="/admin/analytics/events_overview/" '
-            'style="margin-right:10px;">🛍️ EVENTS OVERVIEW</a>'
-        )
-        return super().changelist_view(request, extra_context=extra_context)
-
     # 🔹 2. Custom URL admin'e
     def get_urls(self):
         urls = super().get_urls()

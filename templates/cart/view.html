@@ -477,38 +477,56 @@
     <!-- Sumos -->
 <div class="mb-6 md:mb-1 p-5">
   <div class="flex items-start md:items-center md:gap-6">
-        <div class="uppercase text-xs hidden md:block md:self-start" style="margin-top:12px;">
-          NUOLAIDŲ KODAS
-        </div>
+
+    <div class="uppercase text-xs hidden md:block md:self-start" style="margin-top:12px;">
+      NUOLAIDŲ KODAS
+    </div>
 
     <div class="mb-2 w-full max-w-[231px] md:w-[231px] mx-auto md:ml-auto">
-      <input
-  type="text"
-  placeholder="Nuolaidų kodas"
-  required
-  class="px-8 py-2 border border-brand-gray-light md:border-brand-beige w-full text-center text-xs h-[40px] md:mb-[2px] bg-transparent
-         placeholder:text-white md:placeholder:text-brand-beige placeholder:opacity-100"
-/>
 
-      <button
-        type="submit"
-        class="tw-button-bg-mrm w-full p-[12px] text-xs transition-background duration-300 h-[40px] mt-2"
+      <form
+        method="post"
+        hx-post="{% url 'discounts:apply_coupon' %}"
+        hx-target="#coupon-result"
+        hx-swap="innerHTML"
       >
-        Taikyti
-      </button>
-    </div>
-  </div>
-</div>
+        {% csrf_token %}
+        <input
+          type="text"
+          name="code"
+          placeholder="Nuolaidų kodas"
+          required
+          class="px-8 py-2 border border-brand-gray-light md:border-brand-beige w-full text-center text-xs h-[40px] md:mb-[2px] bg-transparent
+                 placeholder:text-white md:placeholder:text-brand-beige placeholder:opacity-100"
+        />
+
+        <button
+          type="submit"
+          class="tw-button-bg-mrm w-full p-[12px] text-xs transition-background duration-300 h-[40px] mt-2"
+        >
+          Taikyti
+        </button>
+      </form>
+
+      <!-- čia HTMX įdės atsakymą (sėkmės ar klaidos pranešimą) -->
+      <div id="coupon-result" class="text-xs text-center mt-2"></div>
+
+    </div> <!-- /form konteineris -->
+
+  </div> <!-- /flex wrapper -->
+</div> <!-- /viso kupono bloko konteineris -->
 
   <!-- Sumos (to paties rėmelio viduje) -->
 <div class="px-5 pb-5 mt-5 relative" style="top:-20px;">
+  <!-- Jūsų užsakymas -->
   <div class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]">
     <div class="text-[11px] md:text-sm mb-1">Jūsų užsakymas</div>
-    <div class="text-[16px] flex items-center">
+    <div id="order-subtotal" class="text-[16px] flex items-center">
       {{ total }}<span class="ml-1">€</span>
     </div>
   </div>
 
+  <!-- Siuntimas -->
   <div class="flex justify-between items-center space-x-2 mb-5 md:mb-4 h-[24px]">
     <div class="text-[11px] md:text-sm mb-1">Siuntimas</div>
     <div class="text-[16px] flex items-center">
@@ -516,9 +534,10 @@
     </div>
   </div>
 
+  <!-- Galutinė suma -->
   <div class="flex justify-between items-center space-x-2 mb-2 h-[24px]">
     <div class="text-[11px] md:text-sm mb-1 font-bold">SUMA</div>
-    <div class="text-[16px] flex items-center">
+    <div id="order-total" class="text-[16px] flex items-center">
       {{ total }}<span class="ml-1">€</span>
     </div>
   </div>
@@ -682,6 +701,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <script id="dpd-points" type="application/json">
   {{ dpd_points_json|safe }}
+</script>
+
+<script>
+document.body.addEventListener("update-total", function (e) {
+  const data = e.detail;
+  if (!data || !data.new_total) return;
+
+  // Atnaujina SUMĄ
+  const totalEl = document.getElementById("order-total");
+  if (totalEl) totalEl.innerHTML = `${data.new_total}<span class="ml-1">€</span>`;
+
+  // Atnaujina „Jūsų užsakymas“
+  const subtotalEl = document.getElementById("order-subtotal");
+  if (subtotalEl) subtotalEl.innerHTML = `${data.new_total}<span class="ml-1">€</span>`;
+});
 </script>
 
 {% endblock %}

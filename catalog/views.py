@@ -93,6 +93,12 @@ class ProductListView(View):
             expanded.extend(onesize_slugs)
 
             if expanded:
+                # visuomet pridedam UNI variantus prie pasirinkto filtro
+                uni_slugs = list(
+                    Size.objects.filter(slug__in=["one-size", "onesize", "uni"]).values_list("slug", flat=True)
+                )
+                expanded.extend(uni_slugs)
+
                 qs = qs.filter(size__slug__in=expanded)
 
                 # rikiavimas: pirma selected + ONE SIZE, tada next (po to – kiti, jei būtų)

@@ -3,8 +3,24 @@
 
 {% block title %}Privatumo politika{% endblock %}
 
-{# Jei šio puslapio nenori indeksuoti: atkomentuok #}
-{# {% block extra_head %}<meta name="robots" content="noindex,follow">{% endblock %} #}
+{% block extra_head %}
+<style>
+  .entry-content h1 {
+    margin: 0 0 24px !important;
+    font-weight: 700 !important; /* Bold pavadinimas */
+  }
+  .entry-content p {
+    margin: 12px 0 !important;
+  }
+  .entry-content .sec {
+    margin: 48px 0 12px !important;
+    font-weight: 400 !important;
+  }
+  .entry-content .sec + p {
+    margin-top: 0 !important;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 <section class="pt-[50px]">
@@ -28,7 +44,6 @@
         užsakymo formą bei pažymėjęs varnelę prie teiginio „Sutinku su taisyklėmis“ patvirtina, kad su Taisyklėmis susipažino, su jomis sutinka ir
         įsipareigoja jų laikytis. Pardavėjas – Lietuvos Respublikos VĮ „Registrų centras“, Juridinių asmenų registre įregistruotas juridinis asmuo
         UAB „UROCK“, juridinio asmens kodas 302923014, adresas: Krėvės pr. 104A-13, 50380 Kaunas, el. paštas: <a href="mailto:info@urock.lt">info@urock.lt</a>.
-        Asmens duomenų tvarkymas
       </p>
 
       <p>1. Pirkėjui užsakant prekes elektroninėje Parduotuvėje registracija nereikalinga, tačiau tinkamam užsakymo įvykdymui reikalingi tokie asmens duomenys kaip vardas, pavardė, elektroninis paštas, adresas, kuriuo bus pristatytos prekės, telefono numeris ir kiti užsakyme nurodyti duomenys.</p>
@@ -36,7 +51,8 @@
       <p>3. Pirkėjo asmens duomenys (1 punktas) renkami ir tvarkomi elektroninės prekybos tikslais: sutarčių sudarymui, užsakymų vykdymui, finansinių dokumentų išrašymui, klausimų, susijusių su prekių pristatymu ir perdavimu sprendimui, kitų sutartinių įsipareigojimų vykdymui.</p>
       <p>4. Pirkėjo bei kitų www.urock.lt svetainės lankytojų asmens duomenys (el. pašto adresas) renkami ir tvarkomi tiesioginės rinkodaros tikslais, jei Pirkėjas užsakymo metu pažymi varnelę, kad sutinka gauti pasiūlymus, arba kiti lankytojai savo el. pašto adresą įveda skiltyje „Naujienlaiškis“. Sutikimą galima bet kada atšaukti pranešus Pardavėjui.</p>
       <p>5. Pirkėjo bei kitų www.urock.lt lankytojų asmens duomenys tvarkomi ir saugomi ne ilgiau, nei reikia šiose Taisyklėse nurodytais tikslais.</p>
-      <p>6. Pirkėjo asmens duomenys, susiję su prekyba, saugomi 10 (dešimt) metų nuo sutarties sudarymo. 7. Pirkėjas bei kiti klientai gali bet kada atsisakyti gauti tiesioginės rinkodaros pranešimus.</p>
+      <p>6. Pirkėjo asmens duomenys, susiję su prekyba, saugomi 10 (dešimt) metų nuo sutarties sudarymo.</p>
+      <p>7. Pirkėjas bei kiti klientai gali bet kada atsisakyti gauti tiesioginės rinkodaros pranešimus.</p>
       <p>8. Pardavėjas turi teisę Pirkėjo bei kitų www.urock.lt lankytojų asmens duomenis perduoti tik savo pasirinktiems tretiesiems asmenims 3 ir 4 punktuose nurodytais tikslais ir tik tiek, kiek reikia šiems tikslams pasiekti.</p>
       <p>9. Pardavėjas taiko duomenų apsaugą pagal LR asmens duomenų teisinės apsaugos įstatymą ir ES Bendrąjį duomenų apsaugos reglamentą (BDAR).</p>
       <p>10. Pardavėjas imasi atitinkamų techninių ir organizacinių priemonių, kad užtikrintų visų tvarkomų asmens duomenų apsaugą nuo neteisėto sunaikinimo, praradimo, pakeitimo, neįgalioto atskleidimo ar prieigos. Mūsų svetainėje naudojami tik būtini techniniai slapukai, užtikrinantys tinkamą el. parduotuvės veikimą. Nenaudojame trečiųjų šalių slapukų ar sekimo įrankių.</p>

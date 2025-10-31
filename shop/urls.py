@@ -10,6 +10,10 @@ from django.contrib.sitemaps.views import sitemap
 from shop.sitemaps import ProductSitemap, CategorySitemap, StaticViewSitemap
 from django.views.generic import TemplateView, RedirectView
 from newsletter.views_unsubscribe import unsubscribe_view
+from core.views_report import report_error
+
+# --- Instagram BIO redirect ---
+from django.shortcuts import redirect
 
 # APP views
 from checkout import views as checkout_views  # <-- naudokime šitą alias
@@ -34,6 +38,8 @@ urlpatterns = [
     path("newsletter/", include(("newsletter.urls", "newsletter"), namespace="newsletter")),
     path("analytics/", include("analytics.urls")),
     path("unsubscribe/", unsubscribe_view, name="unsubscribe"),
+    path("report-error/", report_error, name="report_error"),
+    path("discounts/", include("discounts.urls")),
 
     # API
     path("api/v1/", include("catalog.urls_api")),
@@ -62,6 +68,13 @@ urlpatterns += [
     path("delivery/", RedirectView.as_view(url="/pristatymas/",        permanent=True)),
     path("returns/",  RedirectView.as_view(url="/grazinimas/",         permanent=True)),
     path("privacy/",  RedirectView.as_view(url="/privatumo-politika/", permanent=True)),
+]
+
+def instagram_bio_redirect(request):
+    return redirect("/?src=insta_bio")
+
+urlpatterns += [
+    path("katalogas/", instagram_bio_redirect, name="instagram-bio"),
 ]
 
 # Media dev režime
