@@ -115,6 +115,14 @@ class Product(models.Model):
     )
 
     is_active = models.BooleanField(default=True)
+
+    # ✅ NAUJAS LAUKAS
+    on_model = models.BooleanField(
+        default=False,
+        verbose_name="Produktas ant modelio",
+        help_text="Pažymėkite, jei pagrindinė produkto nuotrauka yra ant modelio (žmogaus)."
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

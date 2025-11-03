@@ -237,8 +237,9 @@ class ProductAdminForm(forms.ModelForm):
 @admin.register(Product)
 class ProductAdmin(_BaseProductAdmin):
     form = ProductAdminForm
-    list_display = ("thumb", "sku", "brand", "category", "price_col", "stock_col", "is_active", "created_at")
-    list_filter = ("category",)
+    list_display = ("thumb", "sku", "brand", "category", "price_col", "stock_col", "on_model", "is_active", "created_at")
+    list_editable = ("is_active", "on_model",)
+    list_filter = ("category", "on_model",)
     search_fields = ("sku", "name", "brand", "description")
     prepopulated_fields = {"slug": ("name",)}
     inlines = [ProductImageInline]
@@ -253,9 +254,11 @@ class ProductAdmin(_BaseProductAdmin):
                 "sku", "brand", "category",
                 "name", "slug",
                 ("v_price", "v_size", "v_stock"),
-                "description", "is_active",
+                "description",
+                ("on_model", "is_active"),  # ✅ nauja eilutė – varnelės šalia viena kitos
             )
         }),
+
         ("Papildoma varianto informacija", {
             "fields": (("v_color", "v_sku", "v_compare_at_price"),),
             "classes": ("collapse",),

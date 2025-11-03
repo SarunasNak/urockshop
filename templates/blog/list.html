@@ -142,19 +142,30 @@
           </a>
 
           <!-- 2 -->
-          <a href="#brunello-cucinelli" class="clip-diagonal order-3 md:order-2">
-            <picture>
-              <source srcset="{% static 'fe/assets/img/blog-small-2.avif' %}" type="image/avif" />
-              <source srcset="{% static 'fe/assets/img/blog-small-2.webp' %}" type="image/webp" />
-              <img class="aspect-[126/176] md:aspect-[346/437] object-cover w-full mb-2 md:mb-5"
-                   src="{% static 'fe/assets/img/Cucinelli_Shearlin.jpg?v=2' %}" alt="Blog small preview 2"
-                   width="268" height="176" fetchpriority="high" loading="eager" />
-            </picture>
-            <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
-              Brunello Cucinelli – tylus vyro ginklas.
-            </h2>
-            <span class="text-brand-beige transition-text duration-300 md:hover:text-black">Skaityti daugiau</span>
+        <div class="clip-diagonal order-3 md:order-2">
+          <picture>
+            <a href="#brunello-cucinelli">
+              <img
+                class="aspect-[126/176] md:aspect-[346/437] object-cover w-full mb-2 md:mb-5"
+                src="{% static 'fe/assets/img/Cucinelli_Shearlin.jpg' %}?v=999"
+                alt="Brunello Cucinelli – tylus vyro ginklas"
+                width="268"
+                height="176"
+                fetchpriority="high"
+                loading="eager"
+              />
+            </a>
+          </picture>
+
+          <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
+            <a href="#brunello-cucinelli">Brunello Cucinelli – tylus vyro ginklas.</a>
+          </h2>
+
+          <a href="#brunello-cucinelli"
+             class="text-brand-beige transition-text duration-300 md:hover:text-black">
+            Skaityti daugiau
           </a>
+        </div>
 
           <!-- 3 -->
           <a class="order-2 md:order-3" href="#moteris">
@@ -223,17 +234,21 @@
       </p>
     </div>
 
-    <!-- Cucinelli -->
     <picture class="relative block">
-      <div id="brunello-cucinelli" class="anchor-hit"></div>
-      <source srcset="{% static 'fe/assets/img/blog-2-min.avif' %}" type="image/avif" />
-      <source srcset="{% static 'fe/assets/img/blog-2-min.webp' %}" type="image/webp" />
-      <img class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
-           src="{% static 'fe/assets/img/Brunello_Cucinelli_store.jpg?v=2' %}" alt="Blog main preview 2"
-           width="320" height="402" loading="lazy" decoding="async" />
-    </picture>
-    <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
-      <p>
+          <div id="brunello-cucinelli" class="anchor-hit"></div>
+          <img
+            class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
+            src="{% static 'fe/assets/img/Brunello_Cucinelli_store.jpg' %}?v=999"
+            alt="Brunello Cucinelli – tylus vyro ginklas (pilnas straipsnis)"
+            width="320"
+            height="402"
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
+
+        <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
+          <p>
         Šiandien, kai logotipai rėkia iš kiekvieno kampo, tikras vyras renkasi tylą. Tylą, kuri kalba garsiau nei blizgantys ženklai.
         Tą tylą įkūnija Brunello Cucinelli. Neatsitiktinai jo drabužius renkasi tokie vardai kaip George Clooney, Brad Pitt, Ben Affleck,
         Keanu Reeves, Jude Law. Vyrų, kurie nebemėgina niekam nieko įrodyti. Jie jau padarė savo darbus, sukūrė savo istorijas. Jiems

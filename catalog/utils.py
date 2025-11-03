@@ -82,3 +82,58 @@ def auto_related_for(product: Product, limit: int = 4) -> List[Product]:
     pos = {pid: i for i, pid in enumerate(picked_ids)}
     objs.sort(key=lambda o: pos.get(o.pk, 10**9))
     return objs[:limit]
+
+# ----------------------------------------------------------
+# Balansuotas produktų rodymas (ant modelio / ant žemės)
+# ----------------------------------------------------------
+
+def get_balanced_products(products, per_page: int = 12) -> list[Product]:
+    """
+    Grąžina subalansuotą produktų sąrašą iš pateikto sąrašo (ar queryset),
+    kad puslapyje būtų vizualiai maišyti produktai ant modelio ir ant žemės.
+    Išlaiko naujumo tvarką (created_at).
+    """
+    # paverčiam į list jei dar ne
+    products = list(products)
+
+    # atskiriam į dvi grupes pagal on_model
+    model_products = [p for p in products if p.on_model]
+    ground_products = [p for p in products if not p.on_model]
+
+    total_model = len(model_products)
+    total_ground = len(ground_products)
+    total = total_model + total_ground
+    if total == 0:
+        return []
+
+    # proporcijos pagal realų santykį
+    model_ratio = total_model / total
+    expected_model_count = round(per_page * model_ratio)
+    expected_ground_count = per_page - expected_model_count
+
+    selected_model = model_products[:expected_model_count]
+    selected_ground = ground_products[:expected_ground_count]
+
+    mixed = []
+    model_idx, ground_idx = 0, 0
+    model_share = expected_model_count / per_page if per_page else 0
+    model_next = 0.0
+
+    for i in range(per_page):
+        if model_next <= model_share and model_idx < len(selected_model):
+            mixed.append(selected_model[model_idx])
+            model_idx += 1
+            model_next += (1 - model_share)
+        elif ground_idx < len(selected_ground):
+            mixed.append(selected_ground[ground_idx])
+            ground_idx += 1
+            model_next -= model_share
+        else:
+            if model_idx < len(selected_model):
+                mixed.append(selected_model[model_idx])
+                model_idx += 1
+            elif ground_idx < len(selected_ground):
+                mixed.append(selected_ground[ground_idx])
+                ground_idx += 1
+
+    return mixed

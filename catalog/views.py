@@ -6,6 +6,7 @@ from django.utils.text import Truncator
 from django.views import View
 from .utils import auto_related_for
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
+from .utils import get_balanced_products
 
 from .models import Category, Product, ProductImage, Size
 
@@ -120,9 +121,18 @@ class ProductListView(View):
                 size_priority=Case(default=9, output_field=IntegerField())
             )
 
-        # Puslapiavimas
-        paginator = Paginator(qs.order_by("size_priority", "-id"), self.paginate_by)
-        page_obj = paginator.get_page(request.GET.get("page") or 1)
+        # Rikiuojam pagal prioritetą ir naujumą
+        qs = qs.order_by("size_priority", "-created_at")
+
+        # Įprastas puslapiavimas
+        paginator = Paginator(qs, self.paginate_by)
+        page_number = request.GET.get("page") or 1
+        page_obj = paginator.get_page(page_number)
+
+        # ✅ Balansuojam produktus šiame puslapyje
+        balanced_products = get_balanced_products(list(page_obj.object_list), per_page=self.paginate_by)
+        page_obj.object_list = balanced_products
+
         page_range = paginator.get_elided_page_range(
             number=page_obj.number, on_each_side=1, on_ends=1
         )
