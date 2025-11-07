@@ -20,6 +20,10 @@
       scroll-margin-top:160px;
     }
   }
+  /* tik dinaminėms kortelėms su klase .dynamic-post */
+  .dynamic-post.clip-diagonal {
+    margin-bottom: 40px; /* tavo norimas tarpelis */
+  }
 </style>
 {% endblock %}
 
@@ -90,32 +94,70 @@
     </h1>
 
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-      {% for post in posts %}
-        <a href="#{{ post.anchor_id }}"
-           class="{% if post.card_variant == 'large' %}clip-diagonal order-3 md:order-2{% elif forloop.counter == 1 %}col-span-2 md:col-span-1{% else %}order-2 md:order-3{% endif %}">
-          <picture>
-            {% if post.card_image %}
-              <img src="{{ post.card_image.url }}"
-                   alt="{{ post.title }}"
-                   class="{% if post.card_variant == 'large' %}aspect-[126/176] md:aspect-[346/437]{% else %}aspect-[268/126] md:aspect-[346/344]{% endif %} object-cover w-full mb-2 md:mb-5" />
-            {% elif post.cover %}
-              <img src="{{ post.cover.url }}"
-                   alt="{{ post.title }}"
-                   class="{% if post.card_variant == 'large' %}aspect-[126/176] md:aspect-[346/437]{% else %}aspect-[268/126] md:aspect-[346/344]{% endif %} object-cover w-full mb-2 md:mb-5" />
-            {% endif %}
-          </picture>
+  {% for post in posts %}
+    <a href="#{{ post.anchor_id }}"
+       class="dynamic-post {% if post.card_variant == 'large' %}clip-diagonal order-3 md:order-2{% elif forloop.counter == 1 %}col-span-2 md:col-span-1{% else %}order-2 md:order-3{% endif %}">
 
-          <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
-            {{ post.title }}
-          </h2>
+     <picture>
+  {% if post.card_image %}
+    <img src="{{ post.card_image.url }}"
+         alt="{{ post.title }}"
+         class="
+           {% comment %} --- MOBILIOJI VERSIJA: 1 plati, 2 vertikali, 3 kvadratinė --- {% endcomment %}
+           {% if forloop.counter|divisibleby:3 %}
+             aspect-[126/126]        {# 3 – kvadratinė #}
+           {% elif forloop.counter|add:'2'|divisibleby:3 %}
+             aspect-[268/126]        {# 1 – plati (horizontali) #}
+           {% else %}
+             aspect-[126/176]        {# 2 – vertikali #}
+           {% endif %}
 
-          <span class="text-brand-beige transition-text duration-300 md:hover:text-black">
-            Skaityti daugiau
-          </span>
-        </a>
-      {% empty %}
-      {% endfor %}
-    </div>
+           {% comment %} --- WEB VERSIJA: pagal TVS lauką "Card variant" --- {% endcomment %}
+           {% if post.card_variant == 'large' %}
+             md:aspect-[346/437]
+           {% else %}
+             md:aspect-[346/344]
+           {% endif %}
+
+           object-cover w-full mb-2 md:mb-5
+         " />
+  {% elif post.cover %}
+    <img src="{{ post.cover.url }}"
+         alt="{{ post.title }}"
+         class="
+           {% if forloop.counter|divisibleby:3 %}
+             aspect-[126/126]
+           {% elif forloop.counter|add:'2'|divisibleby:3 %}
+             aspect-[268/126]
+           {% else %}
+             aspect-[126/176]
+           {% endif %}
+
+           {% if post.card_variant == 'large' %}
+             md:aspect-[346/437]
+           {% else %}
+             md:aspect-[346/344]
+           {% endif %}
+
+           object-cover w-full mb-2 md:mb-5
+         " />
+  {% endif %}
+</picture>
+
+
+      <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
+        {{ post.title }}
+      </h2>
+
+      <span class="text-brand-beige transition-text duration-300 md:hover:text-black">
+        Skaityti daugiau
+      </span>
+    </a>
+  {% empty %}
+    <p class="col-span-3 text-center text-brand-beige">Nėra įrašų.</p>
+  {% endfor %}
+</div>
+
   </div>
 </section>
 

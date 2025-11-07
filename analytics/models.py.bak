@@ -12,7 +12,6 @@ def hash_ip(ip_address):
 
 class PageView(models.Model):
     session_id = models.CharField(max_length=64, db_index=True)
-    visitor_id = models.CharField(max_length=64, null=True, blank=True, db_index=True)
     ip_hash = models.CharField(max_length=64, null=True, blank=True, db_index=True)
     user_agent = models.CharField(max_length=255, null=True, blank=True)
     path = models.CharField(max_length=512)
@@ -25,6 +24,9 @@ class PageView(models.Model):
     def __str__(self):
         return f"{self.path} ({self.source})"
 
+    class Meta:
+        ordering = ['-created_at']
+
 
 class Event(models.Model):
     pageview = models.ForeignKey(PageView, on_delete=models.CASCADE, related_name="events")
@@ -34,3 +36,7 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.name} @ {self.pageview.path}"
+
+    class Meta:
+        ordering = ['-created_at']
+

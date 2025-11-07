@@ -86,3 +86,6 @@ LOGGING = {
 
 # --- PASIRINKTINAI: ADMIN AIŠKINIMAI APIE KLAIDAS ---
 # ADMINS = [("Sarunas", "info@urock.lt")]
+
+# --- CUSTOM PROJECT SETTINGS ---
+MAINTENANCE_COVER = os.getenv("MAINTENANCE_COVER", "false").lower() == "true"

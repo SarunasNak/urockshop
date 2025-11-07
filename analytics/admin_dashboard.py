@@ -39,9 +39,11 @@ def analytics_overview_view(request):
         pageviews = pageviews.filter(created_at__date__lte=end_date)
 
     # 🔹 Unikalūs lankytojai
-    today_count = pageviews.filter(created_at__date=today).values("ip_hash").distinct().count()
-    week_count = pageviews.filter(created_at__gte=start_of_week).values("ip_hash").distinct().count()
-    month_count = pageviews.filter(created_at__gte=start_of_month).values("ip_hash").distinct().count()
+    # 🔹 Unikalūs lankytojai (pagal visitor_id, o ne IP)
+    today_count = pageviews.filter(created_at__date=today).values("visitor_id").distinct().count()
+    week_count = pageviews.filter(created_at__gte=start_of_week).values("visitor_id").distinct().count()
+    month_count = pageviews.filter(created_at__gte=start_of_month).values("visitor_id").distinct().count()
+
 
     # 🔹 Vidutinė buvimo trukmė
     avg_duration = pageviews.aggregate(avg_duration=Avg("duration"))["avg_duration"] or 0

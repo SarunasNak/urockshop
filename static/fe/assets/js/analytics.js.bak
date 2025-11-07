@@ -11,33 +11,6 @@
     }
 
     const endpoint = "/analytics/track/";
-
-    // 🔹 Unikalus lankytojo ID (veikia tiek www, tiek be www)
-    function getVisitorId() {
-        let vid = localStorage.getItem("urock_visitor_id");
-
-        if (!vid) {
-            // pabandom paimti iš cookie
-            vid = document.cookie
-                .split("; ")
-                .find(row => row.startsWith("urock_visitor_id="))
-                ?.split("=")[1];
-        }
-
-        if (!vid) {
-            // sukuriam naują
-            vid = "vis-" + Math.random().toString(36).substring(2) + Date.now().toString(36);
-            const domain = window.location.hostname.includes("urock.lt") ? ".urock.lt" : window.location.hostname;
-            document.cookie = `urock_visitor_id=${vid}; path=/; domain=${domain}; max-age=31536000; SameSite=None; Secure`;
-        }
-
-        // sinchronizuojam į localStorage, kad greičiau veiktų
-        localStorage.setItem("urock_visitor_id", vid);
-        return vid;
-    }
-
-    const visitorId = getVisitorId();
-
     const sessionKey = "urock_session_id";
 
     // 🔹 Sukuriame arba paimame unikalų sesijos ID
@@ -74,7 +47,6 @@
     // 🔹 Siuntimo funkcija
     window.sendEvent = function (name, data = {}) {
         const payload = {
-            visitor_id: visitorId,
             session_id: sessionId,
             path: pagePath,
             event_name: name,
@@ -130,34 +102,16 @@ document.addEventListener("click", (e) => {
         }
     });
 
-    // 🔹 Kategorijos filtravimas — veikia ir po HTMX swap (Alpine @click.stop nebekliudo)
-
-// 1️⃣ Atskiriam handlerį, kad galėtume jį pašalinti
-function categoryClickHandler(e) {
-  const cat = e.target.closest("[data-category]");
-  if (!cat) return;
-
-  const category = cat.getAttribute("data-category");
-  if (!category || category === "VISI") return;
-
-  console.log("category_selected fired", category); // debug
-  sendEvent("category_selected", { category: category.toLowerCase() });
-}
-
-// 2️⃣ Funkcija, kuri visada nuima seną listenerį prieš pridedant naują
-function bindCategoryTracking() {
-  document.body.removeEventListener("click", categoryClickHandler, true);
-  document.body.addEventListener("click", categoryClickHandler, true);
-}
-
-// 3️⃣ Pirmas pririšimas
-bindCategoryTracking();
-
-// 4️⃣ Perregistruojam po kiekvieno HTMX turinio pakeitimo (be dubliavimosi)
-document.body.addEventListener("htmx:afterSwap", () => {
-  bindCategoryTracking();
-});
-
+    // 🔹 Kategorijos filtravimas (pvz. "Marškiniai", "Kelnės", "Paltai")
+    document.addEventListener("click", (e) => {
+        const cat = e.target.closest('[data-category], .filter-category, .category-link');
+        if (cat) {
+            const category =
+                cat.getAttribute("data-category") ||
+                cat.innerText.trim().toLowerCase();
+            sendEvent("category_selected", { category: category });
+        }
+    });
 
     // --- 🔹 PAPILDOMA SOURCE ANALYTICS LOGIKA ---
     (function () {

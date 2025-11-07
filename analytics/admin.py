@@ -21,7 +21,7 @@ class PageViewAdmin(admin.ModelAdmin):
         "referer", "source", "device", "duration", "created_at"
     )
 
-    ordering = ("-duration",)
+    ordering = ("-created_at",)
 
     def get_list_filter(self, request):
         filters = list(super().get_list_filter(request))
