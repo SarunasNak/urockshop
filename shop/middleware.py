@@ -3,6 +3,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.urls import resolve
 from django.utils.deprecation import MiddlewareMixin
+from analytics.utils import detect_source
 
 EXCLUDE_NAMESPACES = {"admin"}  # paliekam adminą
 BYPASS_TOKEN = os.getenv("MAINTENANCE_BYPASS_TOKEN", "secret123")  # iš .env.production
@@ -55,6 +56,13 @@ class MaintenanceCoverMiddleware:
         # Jei maintenance išjungtas – tęsiam normaliai
         return self.get_response(request)
 
+class TrafficSourceMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        ref = request.META.get("HTTP_REFERER", "")
+        ua = request.META.get("HTTP_USER_AGENT", "")
+        host = request.get_host()
+
+        request.source = detect_source(ref, host, ua)
 
 class DisableAnalyticsForStaffMiddleware(MiddlewareMixin):
     def process_response(self, request, response):

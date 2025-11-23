@@ -345,7 +345,7 @@
                     <div class="flex space-x-1 justify-between items-start md:items-center">
                       <p class="text-[11px] leading-4 truncate">{{ p.title|default:p.name|default:"Prekė" }}</p>
                       <div class="hidden md:flex items-center gap-6">
-                        <a href="{% url 'catalog:list' %}"
+                        <a href="{% url 'catalog:product_list' %}"
                            class="text-xs font-bold underline hover:text-[#AE9F9F]">
                           Keisti
                         </a>
@@ -372,7 +372,7 @@
                     </div>
 
                     <div class="md:hidden flex justify-between items-center mt-auto">
-                      <a href="{% url 'catalog:list' %}" class="text-xs font-bold underline">Keisti</a>
+                      <a href="{% url 'catalog:product_list' %}" class="text-xs font-bold underline">Keisti</a>
                       <form method="post" action="{% url 'cart:cart_remove' %}">
                         {% csrf_token %}
                         <input type="hidden" name="variant_id" value="{{ v.id }}">
@@ -428,7 +428,7 @@
               <div class="flex space-x-1 justify-between items-start md:items-center">
                 <p class="text-[11px] leading-4 truncate">{{ p.title|default:p.name|default:"Prekė" }}</p>
                 <div class="hidden md:flex items-center gap-6">
-                  <a href="{% url 'catalog:list' %}" class="text-xs font-bold underline hover:text-[#AE9F9F]">Keisti</a>
+                  <a href="{% url 'catalog:product_list' %}" class="text-xs font-bold underline hover:text-[#AE9F9F]">Keisti</a>
                   <form method="post" action="{% url 'cart:cart_remove' %}">
                     {% csrf_token %}
                     <input type="hidden" name="variant_id" value="{{ v.id }}">
@@ -453,7 +453,7 @@
               </div>
 
               <div class="md:hidden flex justify-between items-center mt-3">
-                <a href="{% url 'catalog:list' %}" class="text-xs font-bold underline">Keisti</a>
+                <a href="{% url 'catalog:product_list' %}" class="text-xs font-bold underline">Keisti</a>
                 <form method="post" action="{% url 'cart:cart_remove' %}">
                   {% csrf_token %}
                   <input type="hidden" name="variant_id" value="{{ v.id }}">

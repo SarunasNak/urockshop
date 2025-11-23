@@ -252,7 +252,7 @@ window.submitCatalogFilter = function (form) {
   form.setAttribute("hx-push-url", "false");
 
   // Paleidžiam HTMX užklausą
-  form.requestSubmit();
+  htmx.trigger(form, "submit");
 
   // 🔗 Atnaujinam naršyklės URL — gražus, švarus
   history.replaceState({}, "", cleanUrl);
@@ -260,24 +260,41 @@ window.submitCatalogFilter = function (form) {
   console.log("✅ Filtras išsiųstas į:", cleanUrl);
 };
 
-// 🧹 Papildoma apsauga — išvalom dublikatus prieš kiekvieną HTMX užklausą
+// ==========================================================
+// 🔄 Pagination fix — visada naudojam AKTYVŲ filtrą, ne seną
+// ==========================================================
 document.body.addEventListener("htmx:configRequest", function (evt) {
+  // Reaguojam tik jei tai pagination
+  if (!evt.detail.path.includes("page=")) return;
+
+  const form = document.querySelector('form[hx-get]');
+  if (!form) return;
+
+  const params = new URLSearchParams();
+
+  // Surenkam naujausius filtrus iš formos
+  const q = form.querySelector('[name=q]')?.value?.trim();
+  const size = form.querySelector('[name=size]')?.value?.trim();
+  const category = form.querySelector('[name=category]')?.value?.trim();
+
+  if (q) params.set("q", q);
+  if (size) params.set("size", size);
+  if (category) params.set("category", category);
+
+  // Ištraukiam puslapio numerį iš linko (pvz. ?page=2)
   const [path, query] = evt.detail.path.split("?");
-  if (!query) return;
+  const clicked = new URLSearchParams(query || "");
+  if (clicked.has("page")) params.set("page", clicked.get("page"));
 
-  const params = new URLSearchParams(query);
-  const cleaned = new URLSearchParams();
-  const seen = new Set();
+  // Sudarom galutinį, švarų URL
+  const cleanUrl = params.toString()
+    ? `${path}?${params.toString()}`
+    : path;
 
-  for (const [key, val] of params.entries()) {
-    const combo = `${key}:${val}`;
-    if (seen.has(combo)) continue;
-    seen.add(combo);
-    cleaned.append(key, val);
-  }
+  // 💥 Pakeičiam kelią, kad HTMX siųstų teisingą request'ą
+  evt.detail.path = cleanUrl;
 
-  evt.detail.path = path + "?" + cleaned.toString();
-  console.log("🧹 Išvalytas HTMX path prieš užklausą:", evt.detail.path);
+  console.log("📄 Pagination path atnaujintas į:", cleanUrl);
 });
 
 // ==========================================================

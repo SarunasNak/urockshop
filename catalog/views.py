@@ -8,6 +8,9 @@ from .utils import auto_related_for
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
 from .utils import get_balanced_products
 
+from django.shortcuts import redirect
+from django.http import Http404
+
 from .models import Category, Product, ProductImage, Size
 
 
@@ -269,3 +272,11 @@ class ProductDetailView(View):
             "related_products": related_qs,
         }
         return render(request, self.template_name, ctx)
+
+def category_redirect(request, slug):
+    # jei slug yra kategorija → redirect į /shop/?category=slug
+    if Category.objects.filter(slug=slug).exists():
+        return redirect(f"/shop/?category={slug}", permanent=True)
+
+    # jei ne — nėra nei kategorijos, nei produkto → 404
+    raise Http404

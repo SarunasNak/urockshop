@@ -91,6 +91,9 @@
               });
     };
 
+    // --- ir tik po to AUTOMATIC PAGE VIEW ---
+    sendEvent("page_view");
+
     // 🔹 Bendri mygtukų paspaudimai (pirkimas / pasimatuoti)
     document.addEventListener("click", (e) => {
         const target = e.target.closest("button, a");
@@ -158,44 +161,6 @@ document.body.addEventListener("htmx:afterSwap", () => {
   bindCategoryTracking();
 });
 
+})();
 
-    // --- 🔹 PAPILDOMA SOURCE ANALYTICS LOGIKA ---
-    (function () {
-        const sourceKey = "urock_source";
-        const urlParams = new URLSearchParams(window.location.search);
-        const srcParam = urlParams.get("src");
 
-        if (srcParam) sessionStorage.setItem(sourceKey, srcParam);
-
-        let source = sessionStorage.getItem(sourceKey);
-        if (!source) {
-            const ref = document.referrer || "";
-            if (!ref) source = "Direct";
-            else if (ref.includes("google")) source = "Google Organic";
-            else if (ref.includes("instagram")) source = "Instagram";
-            else if (ref.includes("facebook")) source = "Facebook";
-            else if (ref.includes("tiktok")) source = "TikTok";
-            else source = "Referral";
-            sessionStorage.setItem(sourceKey, source);
-        }
-
-        const originalSendEvent = window.sendEvent;
-        window.sendEvent = function (name, data = {}) {
-            data.source = sessionStorage.getItem(sourceKey) || source;
-            originalSendEvent(name, data);
-        };
-
-        setTimeout(() => {
-            if (window.location.search.includes("src=")) {
-                const cleanUrl = window.location.origin + window.location.pathname;
-                window.history.replaceState({}, document.title, cleanUrl);
-            }
-        }, 1000);
-    })();
-
-    // 🔹 Puslapio peržiūra
-    setTimeout(() => {
-        sendEvent("page_view", { title: document.title });
-    }, 150);
-
-})(); // 👈 uždaro pagrindinę funkciją

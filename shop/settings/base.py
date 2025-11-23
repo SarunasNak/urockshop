@@ -76,8 +76,16 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "shop.middleware.DisableAnalyticsForStaffMiddleware",  # 👈 pridėk šitą čia
-    "shop.middleware.MaintenanceCoverMiddleware",          # 👈 palik po to
+
+    # 🔒 1. Maintenance eina pirma
+    "shop.middleware.MaintenanceCoverMiddleware",
+
+    # 🎯 2. Čia įdedi TrafficSourceMiddleware (IDEALI VIETA)
+    "shop.middleware.TrafficSourceMiddleware",
+
+    # 👇 3. Staff disable analytics (gali būti čia, gali būti apačioje, netrukdo)
+    "shop.middleware.DisableAnalyticsForStaffMiddleware",
+
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
