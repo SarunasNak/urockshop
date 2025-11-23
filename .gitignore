@@ -48,3 +48,7 @@ checkout/data/dpd_lt_pickup_points.json
 # ── Logs
 *.log
 logs/
+
+#Staging Settings
+use_staging.sh
+use_prod.sh

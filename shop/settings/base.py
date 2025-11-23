@@ -2,25 +2,22 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-# Rodo į projekto šaknį (šalia manage.py)
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-ENVIRONMENT = os.getenv("DJANGO_ENV", "staging")
+# ✅ Patikrinam ar DJANGO_SETTINGS_MODULE jau nustatytas (pvz. WSGI)
+# Jei taip – neloaduojam jokio kito .env
+if not os.getenv("DJANGO_SETTINGS_MODULE"):
+    # Jei ENV_FILE nenurodytas, pagal nutylėjimą imam .env
+    env_file = os.getenv("ENV_FILE", ".env")
+    env_path = BASE_DIR / env_file
 
-# Automatinis .env failo pasirinkimas pagal aplinką
-settings_module = os.getenv("DJANGO_SETTINGS_MODULE", "")
-env_file = ".env"  # default (development)
-
-# 💡 Visada naudok .env.production prod aplinkoje
-env_path = BASE_DIR / ".env.production"
-if env_path.exists():
-    load_dotenv(env_path)
-    print(f"✅ Loaded {env_path}")
+    if env_path.exists():
+        print(f"✅ Loading environment from {env_path}")
+        load_dotenv(env_path)
+    else:
+        print(f"⚠️ Environment file not found at {env_path}")
 else:
-    load_dotenv(BASE_DIR / ".env")
-    print("⚠️ Loaded fallback .env")
-
-load_dotenv(BASE_DIR / env_file)
+    print(f"ℹ️ Using environment already loaded via WSGI: {os.getenv('DJANGO_SETTINGS_MODULE')}")
 
 # Maintenance flag (skaitymas iš .env)
 MAINTENANCE_COVER = os.getenv("MAINTENANCE_COVER", "false").lower() == "true"
@@ -76,8 +73,16 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "shop.middleware.DisableAnalyticsForStaffMiddleware",  # 👈 pridėk šitą čia
-    "shop.middleware.MaintenanceCoverMiddleware",          # 👈 palik po to
+
+    # 🔒 1. Maintenance eina pirma
+    "shop.middleware.MaintenanceCoverMiddleware",
+
+    # 🎯 2. Čia įdedi TrafficSourceMiddleware (IDEALI VIETA)
+    "shop.middleware.TrafficSourceMiddleware",
+
+    # 👇 3. Staff disable analytics (gali būti čia, gali būti apačioje, netrukdo)
+    "shop.middleware.DisableAnalyticsForStaffMiddleware",
+
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]

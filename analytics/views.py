@@ -1,7 +1,6 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from urllib.parse import urlparse
 import json
 from .models import PageView, Event, hash_ip
 from django.db.models import Count
@@ -37,21 +36,7 @@ def track_event(request):
     device = "mobile" if "mobile" in user_agent or "android" in user_agent or "iphone" in user_agent else "desktop"
 
     # 🔹 Nustatome srauto šaltinį (su domeno palyginimu)
-    if not referrer:
-        source = "Direct"
-    else:
-        domain = urlparse(referrer).netloc.lower()
-        current_domain = request.get_host().lower()
-
-        # Jei vartotojas naršo tame pačiame domene – laikom kaip „Direct“
-        if current_domain in domain:
-            source = "Direct"
-        elif "google" in domain:
-            source = "Organic"
-        elif any(x in domain for x in ["facebook", "instagram", "tiktok", "twitter"]):
-            source = "Social"
-        else:
-            source = "Referral"
+    source = getattr(request, "source", "direct")
 
     # 🔹 PageView kūrimas / atnaujinimas
     pv, _ = PageView.objects.get_or_create(
