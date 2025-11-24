@@ -1,1 +1,58 @@
 
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ meta_title }}{% endblock %}
+
+{% block extra_head %}
+<meta name="description" content="{{ meta_description }}">
+<link rel="canonical" href="{{ canonical_url }}">
+{% endblock %}
+
+{% block content %}
+<main>
+  <section class="py-4 md:py-[50px]">
+    <div class="container flex flex-col md:flex-row md:justify-between relative">
+
+      <!-- Left side -->
+      <div class="w-full md:w-1/2 order-2 md:order-1">
+        <div class="max-w-[70%] mx-auto md:max-w-full">
+
+          <h1 class="text-lg md:text-2xl text-brand-maroon mb-8">
+            {{ post.title }}
+          </h1>
+
+          <p class="text-sm text-gray-500 mb-4">
+          {{ post.published_at|date:"Y \\m\\. F j \\d\\." }}
+        </p>
+
+          <div class="text-md md:text-lg entry-blog">
+            {{ post.body|safe }}
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right side (image) -->
+      <div class="w-full md:w-[40%] relative z-10 order-1 md:order-2 md:px-[45px] md:mb-0">
+        <div class="md:sticky md:top-[72px] mt-6 w-[calc(100%+10px)] md:w-full ml-[-5px] md:ml-0">
+
+          {% if post.cover %}
+            <picture>
+              <img
+                class="w-full md:aspect-[456/340] object-cover"
+                src="{{ post.cover.url }}"
+                alt="{{ post.title }}"
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
+          {% endif %}
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+{% endblock %}

@@ -86,7 +86,7 @@
     </div>
   </section>
 
-  <!-- 🆕 Dinaminiai straipsniai iš TVS (be atskiro puslapio) -->
+ <!-- 🆕 Dinaminiai straipsniai iš TVS (be atskiro puslapio) -->
 <section class="container mb-10 md:mb-[80px]">
   <div class="px-4 lg:px-[50px]">
     <h1 class="text-[40px] md:text-[80px] font-serif text-brand-maroon mb-5 md:mb-[50px] text-center md:text-start">
@@ -94,70 +94,87 @@
     </h1>
 
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-  {% for post in posts %}
-    <a href="#{{ post.anchor_id }}"
-       class="dynamic-post {% if post.card_variant == 'large' %}clip-diagonal order-3 md:order-2{% elif forloop.counter == 1 %}col-span-2 md:col-span-1{% else %}order-2 md:order-3{% endif %}">
 
-     <picture>
-  {% if post.card_image %}
-    <img src="{{ post.card_image.url }}"
-         alt="{{ post.title }}"
-         class="
-           {% comment %} --- MOBILIOJI VERSIJA: 1 plati, 2 vertikali, 3 kvadratinė --- {% endcomment %}
-           {% if forloop.counter|divisibleby:3 %}
-             aspect-[126/126]        {# 3 – kvadratinė #}
-           {% elif forloop.counter|add:'2'|divisibleby:3 %}
-             aspect-[268/126]        {# 1 – plati (horizontali) #}
-           {% else %}
-             aspect-[126/176]        {# 2 – vertikali #}
-           {% endif %}
+      {% for post in posts %}
+      <a
+        {% if post.show_in_separate_page %}
+            href="{% url 'blog:detail' slug=post.slug %}"
+        {% else %}
+            href="#{{ post.anchor_id }}"
+        {% endif %}
+        class="dynamic-post
+               {% if post.card_variant == 'large' %}
+                 clip-diagonal order-3 md:order-2
+               {% elif forloop.counter == 1 %}
+                 col-span-2 md:col-span-1
+               {% else %}
+                 order-2 md:order-3
+               {% endif %}
+        ">
 
-           {% comment %} --- WEB VERSIJA: pagal TVS lauką "Card variant" --- {% endcomment %}
-           {% if post.card_variant == 'large' %}
-             md:aspect-[346/437]
-           {% else %}
-             md:aspect-[346/344]
-           {% endif %}
+        <picture>
+          {% if post.card_image %}
+            <img src="{{ post.card_image.url }}"
+                 alt="{{ post.title }}"
+                 class="
+                   {% if forloop.counter|divisibleby:3 %}
+                     aspect-[126/126]
+                   {% elif forloop.counter|add:'2'|divisibleby:3 %}
+                     aspect-[268/126]
+                   {% else %}
+                     aspect-[126/176]
+                   {% endif %}
 
-           object-cover w-full mb-2 md:mb-5
-         " />
-  {% elif post.cover %}
-    <img src="{{ post.cover.url }}"
-         alt="{{ post.title }}"
-         class="
-           {% if forloop.counter|divisibleby:3 %}
-             aspect-[126/126]
-           {% elif forloop.counter|add:'2'|divisibleby:3 %}
-             aspect-[268/126]
-           {% else %}
-             aspect-[126/176]
-           {% endif %}
+                   {% if post.card_variant == 'large' %}
+                     md:aspect-[346/437]
+                   {% else %}
+                     md:aspect-[346/344]
+                   {% endif %}
 
-           {% if post.card_variant == 'large' %}
-             md:aspect-[346/437]
-           {% else %}
-             md:aspect-[346/344]
-           {% endif %}
+                   object-cover w-full mb-2 md:mb-5
+                 " />
 
-           object-cover w-full mb-2 md:mb-5
-         " />
-  {% endif %}
-</picture>
+          {% elif post.cover %}
+            <img src="{{ post.cover.url }}"
+                 alt="{{ post.title }}"
+                 class="
+                   {% if forloop.counter|divisibleby:3 %}
+                     aspect-[126/126]
+                   {% elif forloop.counter|add:'2'|divisibleby:3 %}
+                     aspect-[268/126]
+                   {% else %}
+                     aspect-[126/176]
+                   {% endif %}
 
+                   {% if post.card_variant == 'large' %}
+                     md:aspect-[346/437]
+                   {% else %}
+                     md:aspect-[346/344]
+                   {% endif %}
 
-      <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
-        {{ post.title }}
-      </h2>
+                   object-cover w-full mb-2 md:mb-5
+                 " />
+          {% endif %}
+        </picture>
 
-      <span class="text-brand-beige transition-text duration-300 md:hover:text-black">
-        Skaityti daugiau
-      </span>
-    </a>
-  {% empty %}
-    <p class="col-span-3 text-center text-brand-beige">Nėra įrašų.</p>
-  {% endfor %}
-</div>
+        <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
+          {{ post.title }}
+        </h2>
 
+        <p class="text-[10px] md:text-sm text-gray-500 mb-2">
+          {{ post.published_at|date:"Y \\m\\. F j \\d\\." }}
+        </p>
+
+        <span class="text-brand-beige transition-text duration-300 md:hover:text-black">
+          Skaityti daugiau
+        </span>
+
+      </a>
+      {% empty %}
+        <p class="col-span-3 text-center text-brand-beige">Nėra įrašų.</p>
+      {% endfor %}
+
+    </div>
   </div>
 </section>
 
@@ -229,25 +246,28 @@
   </section>
 
   <!-- 🧩 Dinaminiai straipsniai iš TVS (pilnas turinys tame pačiame puslapyje) -->
-<section>
-  {% for post in posts %}
-    <picture class="relative block">
-      <div id="{{ post.anchor_id }}" class="anchor-hit"></div>
-      {% if post.cover %}
-        <img src="{{ post.cover.url }}"
-             alt="{{ post.title }}"
-             class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
-             width="320" height="402"
-             loading="lazy" decoding="async" />
-      {% endif %}
-    </picture>
+        <section>
+          {% for post in posts %}
+            {% if not post.show_in_separate_page %}
+              <picture class="relative block">
+                <div id="{{ post.anchor_id }}" class="anchor-hit"></div>
 
-    <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
-      <h2 class="text-[24px] md:text-[32px] font-serif text-brand-maroon mb-3">{{ post.title }}</h2>
-      <p>{{ post.body|safe }}</p>
-    </div>
-  {% endfor %}
-</section>
+                {% if post.cover %}
+                  <img src="{{ post.cover.url }}"
+                       alt="{{ post.title }}"
+                       class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
+                       width="320" height="402"
+                       loading="lazy" decoding="async" />
+                {% endif %}
+              </picture>
+
+              <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
+                <h2 class="text-[24px] md:text-[32px] font-serif text-brand-maroon mb-3">{{ post.title }}</h2>
+                <p>{{ post.body|safe }}</p>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </section>
 
   <!-- Pilni straipsniai (inkarai tame pačiame puslapyje) -->
   <section>

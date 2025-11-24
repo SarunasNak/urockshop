@@ -54,11 +54,31 @@ class Post(models.Model):
     card_image = models.ImageField(upload_to="blog/", blank=True, null=True)
     card_variant = models.CharField(max_length=10, choices=CARD_VARIANTS, default=CARD_SMALL)
 
+    meta_title = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Jei tuščia, bus naudojamas straipsnio pavadinimas."
+    )
+
+    meta_description = models.CharField(
+        max_length=320,
+        blank=True,
+        help_text="Trumpas aprašymas (160–320 simbolių) SEO ir socialiniams tinklams."
+    )
+
+    show_in_separate_page = models.BooleanField(
+        default=False,
+        help_text="Pažymėjus – straipsnis atsidarys atskirame puslapyje."
+    )
+
     published_at = models.DateTimeField(auto_now_add=True)
     is_published = models.BooleanField(default=True)
 
+    # 🆕 NAUJAS LAUKAS — DRAG-AND-DROP RIKIAVIMUI
+    sort_order = models.PositiveIntegerField(default=0, db_index=True)
+
     class Meta:
-        ordering = ["-published_at"]
+        ordering = ["sort_order", "id"]
 
     def __str__(self):
         return self.title
@@ -71,3 +91,5 @@ class Post(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)[:220]
         super().save(*args, **kwargs)
+
+
