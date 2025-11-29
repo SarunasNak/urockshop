@@ -21,10 +21,8 @@
 
 {% block content %}
 
-<!-- PAGRINDINIS ALPINE WRAPPER -->
-<div x-data>
 
-<!-- HERO -->
+  <!-- HERO -->
 <div class="py-6 md:py-[50px]">
   <div class="md:max-w-[1122px] mx-auto md:px-5 mb-3 md:mb-[50px]">
 
@@ -40,141 +38,131 @@
     </div>
 
   </div>
-</div>
+</div>   <!-- ← ← ← LABAI SVARBU. ŠITO TRŪKO. -->
 
 
-<!-- ========================= -->
-<!--     2025 PATARIMAI        -->
-<!-- ========================= -->
-<section class="mb-6 md:mb-[50px] max-w-[1138px] mx-auto md:px-5">
+  <!-- 2025 STILIAUS PATARIMAI -->
+  <section class="mb-6 md:mb-[50px] max-w-[1138px] mx-auto md:px-5">
 
-  <h1 class="mb-6 md:mb-[50px] text-md md:text-[40px] text-center font-serif uppercase">
-    2025 Stiliaus patarimai
-  </h1>
+    <h1 class="mb-6 md:mb-[50px] text-md md:text-[40px] text-center font-serif uppercase">
+      2025 Stiliaus patarimai
+    </h1>
 
-  <div class="swiper video-slider w-full pl-[44px] md:px-[52px]">
-    <div class="swiper-wrapper relative">
+    <div class="swiper video-slider w-full pl-[44px] md:px-[52px]">
+      <div class="swiper-wrapper relative">
 
-      {% for v in tips %}
-      <div class="swiper-slide overflow-hidden cursor-pointer group"
-           @click.stop="Alpine.store('video').open = true; Alpine.store('video').url = '{{ v.video_url|safe }}'">
+        {% for v in tips %}
+        <div class="swiper-slide overflow-hidden cursor-pointer group"
+     @click.stop="window.dispatchEvent(new CustomEvent('open-video', { detail: { url: '{{ v.video_url|safe }}' }}))">
 
-        <div class="relative">
-          <img
+    <div class="relative">
+        <img
             src="{{ v.cover_desktop.url|default:v.cover_mobile.url }}"
             alt="{{ v.title }}"
             class="w-full aspect-[126/130] md:aspect-[1112/940] object-cover mb-3 brightness-75 group-hover:brightness-50 transition"
-            loading="lazy" />
+            loading="lazy">
 
-          <!-- PLAY ICON -->
-          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <!-- PLAY ICON (ŠITAS PRIDEDA TRIKAMPIUKĄ) -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div class="w-12 h-12 md:w-20 md:h-20 bg-black/50 rounded-full flex items-center justify-center group-hover:bg-black/70 transition">
-              <svg class="w-6 h-6 md:w-10 md:h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
+                <svg class="w-6 h-6 md:w-10 md:h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                </svg>
             </div>
-          </div>
         </div>
+    </div>
 
-        <div class="text-[9px] md:text-[15px] font-bold text-brand-beige mb-5 text-center">
-          {{ v.label|default:"Patarimas" }}
-        </div>
+    <div class="text-[9px] md:text-[15px] font-bold text-brand-beige mb-5 text-center">
+        {{ v.label|default:"Patarimas" }}
+    </div>
 
-        <div class="text-[10px] md:text-lg text-center min-h-[65px]">
-          {{ v.title }}
-        </div>
+    <div class="text-[10px] md:text-lg text-center min-h-[65px]">
+        {{ v.title }}
+    </div>
+
+    </div>
+        {% endfor %}
 
       </div>
-      {% endfor %}
     </div>
-  </div>
 
-</section>
+  </section>
 
+  <!-- KOLEKCIJA -->
+  <section class="mb-6 md:mb-[50px] max-w-[1138px] mx-auto md:px-5">
 
-<!-- ========================= -->
-<!--        KOLEKCIJA          -->
-<!-- ========================= -->
-<section class="mb-6 md:mb-[50px] max-w-[1138px] mx-auto md:px-5">
+    <h1 class="mb-6 md:mb-[50px] text-md md:text-[40px] text-center font-serif uppercase">
+      2025 Kolekcija
+    </h1>
 
-  <h1 class="mb-6 md:mb-[50px] text-md md:text-[40px] text-center font-serif uppercase">
-    2025 Kolekcija
-  </h1>
+    <div class="swiper video-slider w-full pl-[44px] md:px-[52px]">
+      <div class="swiper-wrapper relative">
 
-  <div class="swiper video-slider w-full pl-[44px] md:px-[52px]">
-    <div class="swiper-wrapper relative">
+        {% for v in collection %}
+        <div class="swiper-slide overflow-hidden cursor-pointer group"
+     @click.stop="window.dispatchEvent(new CustomEvent('open-video', { detail: { url: '{{ v.video_url|safe }}' }}))">
 
-      {% for v in collection %}
-      <div class="swiper-slide overflow-hidden cursor-pointer group"
-           @click.stop="Alpine.store('video').open = true; Alpine.store('video').url = '{{ v.video_url|safe }}'">
-
-        <div class="relative">
-          <img
+    <div class="relative">
+        <img
             src="{{ v.cover_desktop.url|default:v.cover_mobile.url }}"
             alt="{{ v.title }}"
             class="w-full aspect-[126/130] md:aspect-[1112/940] object-cover mb-3 brightness-75 group-hover:brightness-50 transition"
-            loading="lazy" />
+            loading="lazy">
 
-          <!-- PLAY ICON -->
-          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <!-- PLAY ICON (ŠITAS PRIDEDA TRIKAMPIUKĄ) -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div class="w-12 h-12 md:w-20 md:h-20 bg-black/50 rounded-full flex items-center justify-center group-hover:bg-black/70 transition">
-              <svg class="w-6 h-6 md:w-10 md:h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
+                <svg class="w-6 h-6 md:w-10 md:h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                </svg>
             </div>
-          </div>
         </div>
+    </div>
 
-        <div class="text-[9px] md:text-[15px] font-bold text-brand-beige mb-5 text-center">
-          {{ v.label|default:"Kolekcija" }}
-        </div>
+    <div class="text-[9px] md:text-[15px] font-bold text-brand-beige mb-5 text-center">
+        {{ v.label|default:"Patarimas" }}
+    </div>
 
-        <div class="text-[10px] md:text-lg text-center min-h-[65px]">
-          {{ v.title }}
-        </div>
-
-      </div>
-      {% endfor %}
+    <div class="text-[10px] md:text-lg text-center min-h-[65px]">
+        {{ v.title }}
+    </div>
 
     </div>
-  </div>
+        {% endfor %}
 
-</section>
+      </div>
+    </div>
 
-</div> <!-- END ALPINE -->
+  </section>
 
-
-{% endblock %}
-
-
-<!-- ===================== -->
-<!--  GLOBAL VIDEO MODAL   -->
-<!-- ===================== -->
-
-{% block extra_body %}
-
-<!-- GLOBAL MODAL -->
+<!-- GLOBAL VIDEO MODAL -->
 <div
-  x-data
-  x-show="$store.video.open"
+  x-data="{ open: false, videoUrl: '' }"
+  x-init="console.log('modal ready')"
+  @open-video.window="open = true; videoUrl = $event.detail.url;"
+  x-show="open"
   x-transition.opacity
-  class="fixed inset-0 bg-black/90 z-[99999999] flex items-center justify-center"
-  @click.self="$store.video.open=false; $store.video.url=''"
-  x-cloak>
+  x-effect="document.body.style.overflow = open ? 'hidden' : 'auto'"
+  class="fixed inset-0 bg-black/80 backdrop-blur-sm 
+         z-[99999999] flex items-center justify-center p-4"
+  x-cloak
+  @click.self="open = false; videoUrl='';">
 
-  <!-- Close Button -->
+  <!-- Close -->
   <button
-    @click.stop="$store.video.open=false; $store.video.url=''"
-    class="absolute top-5 right-5 bg-white/30 hover:bg-white/50 backdrop-blur px-4 py-2 rounded-full text-white text-xl">
+    @click.stop="open = false; videoUrl='';"
+    class="absolute top-8 right-8 bg-black/60 hover:bg-black/80 
+           w-12 h-12 flex items-center justify-center rounded-full 
+           text-white text-3xl backdrop-blur-md shadow-xl">
     ✕
   </button>
 
-  <!-- VIDEO CONTAINER -->
-  <div class="w-[90vw] max-w-[1280px] bg-black rounded-lg overflow-hidden shadow-2xl" @click.stop>
-    <div class="relative pb-[56.25%]">
+  <!-- Video -->
+  <div class="w-full max-w-[900px] bg-black rounded-xl overflow-hidden shadow-2xl">
+    <div class="relative w-full" style="padding-bottom:56.25%;">
       <iframe
+        :src="videoUrl"
         class="absolute inset-0 w-full h-full"
-        :src="$store.video.url"
         allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen"
         allowfullscreen>
       </iframe>
@@ -184,3 +172,7 @@
 </div>
 
 {% endblock %}
+
+
+
+

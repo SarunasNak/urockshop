@@ -45,6 +45,8 @@
     {# Puslapių specifiniai <head> įdėklai (pvz. noindex krepšeliui) #}
     {% block extra_head %}{% endblock %}
 
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
 
     <!-- Šriftas: preload tik Playfair (H1) -->
@@ -93,7 +95,6 @@
   <script defer src="{% static 'fe/vendor/headroom/headroom.min.js' %}"></script>
   <script defer src="{% static 'fe/vendor/swiper/swiper-bundle.min.js' %}"></script>
   <script src="{% static 'fe/vendor/htmx.min.js' %}" defer></script>
-  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   <!-- Projektinis JS (po vendor) -->
   <script defer src="{% static 'fe/assets/js/script.js' %}?v=500"></script>
