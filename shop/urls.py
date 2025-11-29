@@ -35,6 +35,7 @@ urlpatterns = [
     path("checkout/", include(("checkout.urls", "checkout"), namespace="checkout")),
     path("paysera/", include(("paysera.urls", "paysera"), namespace="paysera")),
     path("blog/", include(("blog.urls", "blog"), namespace="blog")),
+    path("video/", include("video.urls", namespace="video")),
     path("newsletter/", include(("newsletter.urls", "newsletter"), namespace="newsletter")),
     path("analytics/", include("analytics.urls")),
     path("unsubscribe/", unsubscribe_view, name="unsubscribe"),

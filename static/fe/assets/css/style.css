@@ -419,3 +419,241 @@
     margin-top: 120px !important; /* gali keisti į 100px, 150px, ir pan. */
   }
 }
+@font-face {
+  font-family: "Montserrat";
+  src: url("../fonts/monserrat/montserrat-latin-400-normal.woff2")
+      format("woff2"),
+    url("../fonts/monserrat/Montserrat-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("../fonts/monserrat/montserrat-latin-700-normal.woff2")
+      format("woff2"),
+    url("../fonts/monserrat/Montserrat-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/inter/inter-v20-latin-regular.woff2") format("woff2"),
+    url(../fonts/);
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  src: url("../fonts/inter/inter-v20-latin-700.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/playfair-display/playfair-display-v40-latin-regular.woff2")
+    format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 600;
+  src: url("../fonts/playfair-display/playfair-display-v40-latin-600.woff2")
+    format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 700;
+  src: url("../fonts/playfair-display/playfair-display-v40-latin-700.woff2")
+    format("woff2");
+}
+.entry-content {
+  padding: 0 5px;
+}
+.entry-content h1 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 50px;
+  font-weight: 700;
+}
+.entry-content h2 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 50px;
+  font-weight: 700;
+}
+.entry-content a:hover {
+  text-decoration: underline;
+}
+@media only screen and (max-width: 768px) {
+  .entry-content h1 {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  .entry-content h2 {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+}
+
+.entry-blog h1 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 50px;
+  font-weight: 700;
+}
+.entry-blog h2 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 50px;
+  font-weight: 700;
+}
+.entry-blog p {
+  font-size: 18px;
+}
+.entry-blog a:hover {
+  text-decoration: underline;
+}
+@media only screen and (max-width: 768px) {
+  .entry-blog h1 {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  .entry-blog h2 {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  .entry-blog p {
+    font-size: 12px;
+  }
+}
+
+.entry-about-us h1 {
+  font-size: 24px;
+  margin-bottom: 50px;
+  font-family: "Playfair Display";
+}
+.entry-about-us h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-decoration: underline;
+  font-family: "Playfair Display";
+}
+.entry-about-us p {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.entry-about-us p:last-child {
+  margin-bottom: 0px;
+}
+.entry-about-us a:hover {
+  text-decoration: underline;
+}
+@media only screen and (max-width: 768px) {
+  .entry-about-us h1 {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+  .entry-about-us h2 {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  .entry-about-us p {
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+}
+.marquee-max {
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  width: 100%;
+}
+.marquee-max__inner {
+  display: inline-flex;
+  animation: marquee-max 15s linear infinite;
+}
+.marquee-max__inner span {
+  padding-right: 32px;
+  font-size: 24px;
+}
+@keyframes marquee-max {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.clip-diagonal {
+  clip-path: polygon(0 0, 80% 0, 100% 12%, 100% 100%, 0 100%);
+}
+
+@media only screen and (max-width: 768px) {
+  .clip-diagonal {
+    clip-path: polygon(0 0, 85% 0, 100% 7%, 100% 100%, 0 100%);
+  }
+  .clip-diagonal-left {
+    clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 100%, 0 20%);
+  }
+}
+<style>
+@media (min-width: 768px) {
+    .video-hero-title {
+        font-size: 64px !important;
+    }
+}
+</style>
+
+/* ===========================================
+   BLOG GRID – CARD LAYOUT (OVERRIDES TAILWIND)
+   =========================================== */
+
+/* 3-card pattern – mobile first */
+.card:nth-child(3n+1) {
+  grid-column: span 2;
+}
+
+.card:nth-child(3n+2) {
+  grid-column: span 1;
+  clip-path: polygon(0 0, 85% 0, 100% 7%, 100% 100%, 0 100%);
+}
+
+.card:nth-child(3n+3) {
+  grid-column: span 1;
+}
+
+/* Aspect ratios (mobile) */
+.card:nth-child(3n+1) img { aspect-ratio: 268 / 126; }
+.card:nth-child(3n+2) img { aspect-ratio: 126 / 176; }
+.card:nth-child(3n+3) img { aspect-ratio: 126 / 126; }
+
+/* Desktop */
+@media (min-width: 768px) {
+  .card:nth-child(3n+1),
+  .card:nth-child(3n+2),
+  .card:nth-child(3n+3) {
+    grid-column: span 1;
+  }
+
+  /* Aspect ratios (desktop) */
+  .card:nth-child(3n+1) img { aspect-ratio: 346 / 344; }
+  .card:nth-child(3n+2) img { aspect-ratio: 346 / 437; }
+  .card:nth-child(3n+3) img { aspect-ratio: 346 / 344; }
+
+  /* Diagonal cut – desktop */
+  .card:nth-child(3n+2) img {
+    clip-path: polygon(0 0, 80% 0, 100% 12%, 100% 100%, 0 100%);
+  }
+}

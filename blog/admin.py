@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django import forms
 from django_ckeditor_5.widgets import CKEditor5Widget
+from adminsortable2.admin import SortableAdminMixin
 
 from .models import BlogSettings, BrandItem, Post
 
@@ -44,19 +45,41 @@ class PostAdminForm(forms.ModelForm):
         css = {"all": ("ckeditor.css",)}
 
 @admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(SortableAdminMixin, admin.ModelAdmin):
     form = PostAdminForm
     save_on_top = True
 
-    list_display = ("title", "published_at", "is_published", "card_variant", "thumb")
-    list_editable = ("is_published",)
+    list_display = (
+        "title",
+        "published_at",
+        "is_published",
+        "show_in_separate_page",
+        "card_variant",
+        "thumb",
+        "sort_order",
+    )
+
+    list_editable = ("published_at", "is_published", "show_in_separate_page")
     list_filter = ("is_published", "card_variant")
     search_fields = ("title", "body")
     prepopulated_fields = {"slug": ("title",)}
     date_hierarchy = "published_at"
 
     fieldsets = (
-        (None, {"fields": ("title", "slug", "body", "is_published")}),
+        (None, {
+            "fields": (
+                "title",
+                "slug",
+                "meta_title",
+                "meta_description",
+                "body",
+                "published_at",
+                "is_published",
+                "show_in_separate_page",
+                "sort_order",
+            )
+        }),
+
         ("Vaizdai", {"fields": ("cover", "card_image")}),
         ("Kortelės išvaizda", {"fields": ("card_variant",)}),
     )

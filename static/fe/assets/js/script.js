@@ -1,5 +1,14 @@
 // script.js
 
+// 🔥 TURI BŪTI PAČIOJE VIRŠUTINĖJE script.js DALYJE:
+window.addEventListener("alpine:init", () => {
+    console.log("STORE INIT OK");
+    Alpine.store("video", {
+        open: false,
+        url: ""
+    });
+});
+
 // Example: Alpine.js reactive state
 document.addEventListener("alpine:init", () => {
   Alpine.data("dropdown", () => ({
@@ -66,6 +75,38 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     });
   }
+
+// ----------------------------------------------------------
+// VIDEO SLIDER (homepage video section)
+// ----------------------------------------------------------
+const videoSliderElement = document.querySelectorAll(".video-slider");
+
+if (videoSliderElement.length && window.Swiper) {
+  new Swiper(".video-slider", {
+    slidesPerView: 1,
+    spaceBetween: 0,
+    loop: false,
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    breakpoints: {
+      0: {
+        slidesPerView: 1.8,
+        spaceBetween: 56,
+        navigation: false,
+      },
+      768: {
+        slidesPerView: 3,
+        spaceBetween: 56,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      },
+    },
+  });
+}
 
   // ─────────────────────────────────────────────────────────────
   // Cart: remove line via AJAX (delegation on document)

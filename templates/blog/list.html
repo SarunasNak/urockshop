@@ -4,334 +4,329 @@
 
 {% block title %}Tinklaraštis{% endblock %}
 
-{# Tik šitam puslapiui – kad #inkaras sustotų ties tekstu, o ne ties paveikslu #}
 {% block extra_head %}
 <style>
-  /* Kur „sustos“ #inkaras, kai paspaudi „Skaityti daugiau“ */
-  .anchor-hit{
-    position:absolute;
-    left:0; width:100%; height:1px;
-    top:58%;                 /* REGULIUOK: ~55–65% – „nuotraukos vidurys“ */
-    scroll-margin-top:100px; /* kompensuoja sticky header'į (mobile) */
+  /* #inkaro pozicionavimas */
+  .anchor-hit {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    top: 58%;
+    scroll-margin-top: 100px;
   }
-  @media (min-width:768px){
-    .anchor-hit{
-      top:62%;               /* desktop padėtis */
-      scroll-margin-top:160px;
+
+  @media (min-width: 768px) {
+    .anchor-hit {
+      top: 62%;
+      scroll-margin-top: 160px;
     }
   }
-  /* tik dinaminėms kortelėms su klase .dynamic-post */
-  .dynamic-post.clip-diagonal {
-    margin-bottom: 40px; /* tavo norimas tarpelis */
+
+  /* Dinaminių postų korekcijos */
+  .dynamic-grid .clip-diagonal {
+    margin-bottom: 40px;
   }
 </style>
 {% endblock %}
 
 {% block content %}
 <main>
+
+  <!-- HERO + TICKER -->
   <section class="md:pt-[50px]">
-    <!-- Mobile crumbs (be Django url tag'ų) -->
-    <ul class="flex md:hidden space-x-2 lg:space-x-5 text-[10px] pt-[30px] pb-[40px] px-3 justify-center">
+
+    <ul class="flex md:hidden space-x-2 text-[10px] pt-[30px] pb-[40px] px-3 justify-center">
       <li>
-        <a href="/about/" class="transition-text duration-300 text-[12px] text-brand-beige hover:text-black pr-3 uppercase">APIE MUS</a> /
+        <a href="/about/" class="text-[12px] text-brand-beige hover:text-black pr-3 uppercase">APIE MUS</a> /
       </li>
       <li>
-        <a href="{% url 'catalog:product_list' %}" class="transition-text duration-300 text-[12px] text-brand-beige hover:text-black uppercase">KATALOGAS</a>
+        <a href="{% url 'catalog:product_list' %}" class="text-[12px] text-brand-beige hover:text-black uppercase">KATALOGAS</a>
       </li>
     </ul>
 
-    <!-- Desktop intro eilutė -->
-    <div class="hidden md:block container">
-      <div class="text-center">
-        <span class="text-brand-maroon text-[24px]">
-          Mūsų
-          <a href="https://www.urock.lt/shop/"
-             class="text-[32px] text-brand-beige hover:text-black transition duration-300 underline-offset-4 hover:underline">
-            kataloge
-          </a>
-          rasite prabangių mados namų drabužius, tokius kaip:
-        </span>
-      </div>
+    <div class="hidden md:block container text-center">
+      <span class="text-brand-maroon text-[24px]">
+        Mūsų
+        <a href="https://www.urock.lt/shop/"
+           class="text-[32px] text-brand-beige hover:text-black transition underline-offset-4 hover:underline">
+          kataloge
+        </a>
+        rasite prabangių mados namų drabužius, tokius kaip:
+      </span>
     </div>
 
     <!-- Bėganti juosta -->
     <div class="marquee-max my-[50px] hidden md:block">
       <div class="marquee-max__inner">
-        <span>BURBERRY</span>
-        <span>Acne Studios</span>
-        <span>PRADA</span>
-        <span>BOTTEGA VENETA</span>
-        <span>GUCCI</span>
-        <span>Yves Saint Laurent</span>
-        <span>ETRO</span>
-        <span>Alexander McQueen</span>
-        <span>MONCLER</span>
-        <span>JIL SANDER</span>
-        <span>RALPH LAUREN</span>
-        <span>Dolce&Gabbana</span>
-        <!-- pakartojimas -->
-        <span>BURBERRY</span>
-        <span>Acne Studios</span>
-        <span>PRADA</span>
-        <span>BOTTEGA VENETA</span>
-        <span>GUCCI</span>
-        <span>Yves Saint Laurent</span>
-        <span>ETRO</span>
-        <span>Alexander McQueen</span>
-        <span>MONCLER</span>
-        <span>JIL SANDER</span>
-        <span>RALPH LAUREN</span>
-        <span>Dolce&Gabbana</span>
+        <span>BURBERRY</span><span>Acne Studios</span><span>PRADA</span><span>BOTTEGA VENETA</span>
+        <span>GUCCI</span><span>Yves Saint Laurent</span><span>ETRO</span><span>Alexander McQueen</span>
+        <span>MONCLER</span><span>JIL SANDER</span><span>RALPH LAUREN</span><span>Dolce&Gabbana</span>
+
+        <!-- repeat -->
+        <span>BURBERRY</span><span>Acne Studios</span><span>PRADA</span><span>BOTTEGA VENETA</span>
+        <span>GUCCI</span><span>Yves Saint Laurent</span><span>ETRO</span><span>Alexander McQueen</span>
+        <span>MONCLER</span><span>JIL SANDER</span><span>RALPH LAUREN</span><span>Dolce&Gabbana</span>
       </div>
     </div>
+
   </section>
 
-  <!-- 🆕 Dinaminiai straipsniai iš TVS (be atskiro puslapio) -->
-<section class="container mb-10 md:mb-[80px]">
-  <div class="px-4 lg:px-[50px]">
-    <h1 class="text-[40px] md:text-[80px] font-serif text-brand-maroon mb-5 md:mb-[50px] text-center md:text-start">
-      MUST READ
-    </h1>
+  <!-- 🆕 DINAMINIAI STRAIPSNIAI -->
+  <section class="container mb-10 md:mb-[80px]">
+    <div class="px-4 lg:px-[50px]">
 
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-  {% for post in posts %}
-    <a href="#{{ post.anchor_id }}"
-       class="dynamic-post {% if post.card_variant == 'large' %}clip-diagonal order-3 md:order-2{% elif forloop.counter == 1 %}col-span-2 md:col-span-1{% else %}order-2 md:order-3{% endif %}">
+      <h1 class="text-[40px] md:text-[80px] font-serif text-brand-maroon mb-5 md:mb-[50px] text-center md:text-start">
+        MUST READ
+      </h1>
 
-     <picture>
-  {% if post.card_image %}
-    <img src="{{ post.card_image.url }}"
-         alt="{{ post.title }}"
-         class="
-           {% comment %} --- MOBILIOJI VERSIJA: 1 plati, 2 vertikali, 3 kvadratinė --- {% endcomment %}
-           {% if forloop.counter|divisibleby:3 %}
-             aspect-[126/126]        {# 3 – kvadratinė #}
-           {% elif forloop.counter|add:'2'|divisibleby:3 %}
-             aspect-[268/126]        {# 1 – plati (horizontali) #}
-           {% else %}
-             aspect-[126/176]        {# 2 – vertikali #}
-           {% endif %}
+      <!-- DINAMINIS GRID — PAKEISTA 100% SAUGU -->
+      <div class="dynamic-grid grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
 
-           {% comment %} --- WEB VERSIJA: pagal TVS lauką "Card variant" --- {% endcomment %}
-           {% if post.card_variant == 'large' %}
-             md:aspect-[346/437]
-           {% else %}
-             md:aspect-[346/344]
-           {% endif %}
-
-           object-cover w-full mb-2 md:mb-5
-         " />
-  {% elif post.cover %}
-    <img src="{{ post.cover.url }}"
-         alt="{{ post.title }}"
-         class="
-           {% if forloop.counter|divisibleby:3 %}
-             aspect-[126/126]
-           {% elif forloop.counter|add:'2'|divisibleby:3 %}
-             aspect-[268/126]
-           {% else %}
-             aspect-[126/176]
-           {% endif %}
-
-           {% if post.card_variant == 'large' %}
-             md:aspect-[346/437]
-           {% else %}
-             md:aspect-[346/344]
-           {% endif %}
-
-           object-cover w-full mb-2 md:mb-5
-         " />
-  {% endif %}
-</picture>
-
-
-      <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
-        {{ post.title }}
-      </h2>
-
-      <span class="text-brand-beige transition-text duration-300 md:hover:text-black">
-        Skaityti daugiau
-      </span>
-    </a>
-  {% empty %}
-    <p class="col-span-3 text-center text-brand-beige">Nėra įrašų.</p>
-  {% endfor %}
-</div>
-
-  </div>
-</section>
-
-
-  <!-- MUST READ -->
-  <section>
-    <div class="container mb-5 md:mb-[50px]">
-      <div class="px-4 lg:px-[50px]">
-
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-          <!-- 1 -->
-          <a href="#giorgio-armani" class="col-span-2 md:col-span-1">
-            <picture>
-              <source srcset="{% static 'fe/assets/img/blog-small-1.avif' %}" type="image/avif" />
-              <source srcset="{% static 'fe/assets/img/blog-small-1.webp' %}" type="image/webp" />
-              <img class="aspect-[268/126] md:aspect-[346/344] object-cover w-full mb-2 md:mb-5"
-                   src="{% static 'fe/assets/img/blog-small-1.jpg' %}" alt="Blog small preview" width="268" height="126"
-                   fetchpriority="high" loading="eager" />
-            </picture>
-            <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
-              Giorgio Armani (1975-2025) – vyras, kuris išmokė pasaulį, kad elegancija gali kalbėti tyliai.
-            </h2>
-            <span class="text-brand-beige transition-text duration-300 md:hover:text-black">Skaityti daugiau</span>
-          </a>
-
-          <!-- 2 -->
-        <div class="clip-diagonal order-3 md:order-2">
+        {% for post in posts %}
+        <a
+          {% if post.show_in_separate_page %}
+              href="{% url 'blog:detail' slug=post.slug %}"
+          {% else %}
+              href="#{{ post.anchor_id }}"
+          {% endif %}
+          class="card"
+          id="post-{{ post.id }}"
+        >
+        
           <picture>
-            <a href="#brunello-cucinelli">
-              <img
-                class="aspect-[126/176] md:aspect-[346/437] object-cover w-full mb-2 md:mb-5"
-                src="{% static 'fe/assets/img/Cucinelli_Shearlin.jpg' %}?v=999"
-                alt="Brunello Cucinelli – tylus vyro ginklas"
-                width="268"
-                height="176"
-                fetchpriority="high"
-                loading="eager"
-              />
-            </a>
+            <img
+              src="{{ post.card_image.url|default:post.cover.url }}"
+              alt="{{ post.title }}"
+              class="object-cover w-full mb-2 md:mb-5"
+              loading="lazy"
+            />
           </picture>
-
+        
           <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
-            <a href="#brunello-cucinelli">Brunello Cucinelli – tylus vyro ginklas.</a>
+            {{ post.title }}
           </h2>
-
-          <a href="#brunello-cucinelli"
-             class="text-brand-beige transition-text duration-300 md:hover:text-black">
+        
+          <p class="text-[10px] md:text-sm text-gray-500 mb-2">
+            {{ post.published_at|date:"Y \\m\\. F j \\d\\." }}
+          </p>
+        
+          <span class="text-brand-beige transition-text duration-300 md:hover:text-black">
             Skaityti daugiau
-          </a>
-        </div>
+          </span>
+        
+        </a>
+        {% empty %}
+        <p class="col-span-3 text-center text-brand-beige">Nėra įrašų.</p>
+        {% endfor %}
 
-          <!-- 3 -->
-          <a class="order-2 md:order-3" href="#moteris">
-            <picture>
-              <source srcset="{% static 'fe/assets/img/blog-small-3.avif' %}" type="image/avif" />
-              <source srcset="{% static 'fe/assets/img/blog-small-3.webp' %}" type="image/webp" />
-              <img class="aspect-[126/126] md:aspect-[346/344] object-cover w-full mb-2 md:mb-5"
-                   src="{% static 'fe/assets/img/blog-small-3.jpg' %}" alt="Blog small preview 3"
-                   width="268" height="126" fetchpriority="high" loading="eager" />
-            </picture>
-            <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
-              „Moteris, kuri supažindino vyrą su ,,UROCK Luxury Boutique“.
-            </h2>
-            <span class="text-brand-beige transition-text duration-300 md:hover:text-black">Skaityti daugiau</span>
-          </a>
-        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- 3️⃣ STATINIAI MUST READ (GRID) -->
+  <section class="container mb-10 md:mb-[80px]">
+    <div class="px-4 lg:px-[50px]">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+
+        <!-- ARMANI -->
+        <a href="#giorgio-armani" class="col-span-2 md:col-span-1">
+          <picture>
+            <source srcset="{% static 'fe/assets/img/blog-small-1.avif' %}" type="image/avif" />
+            <source srcset="{% static 'fe/assets/img/blog-small-1.webp' %}" type="image/webp" />
+            <img class="aspect-[268/126] md:aspect-[346/344] object-cover mb-2 md:mb-5"
+                 src="{% static 'fe/assets/img/blog-small-1.jpg' %}" loading="lazy" />
+          </picture>
+          <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
+            Giorgio Armani (1975–2025) – vyras, kuris išmokė pasaulį tylos elegancijos.
+          </h2>
+          <span class="text-brand-beige md:hover:text-black transition">Skaityti daugiau</span>
+        </a>
+
+        <!-- BRUNELLO -->
+        <a href="#brunello-cucinelli" class="clip-diagonal">
+          <img class="aspect-[126/176] md:aspect-[346/437] object-cover mb-2 md:mb-5"
+               src="{% static 'fe/assets/img/Cucinelli_Shearlin.jpg' %}?v=999"
+               loading="lazy" />
+          <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
+            Brunello Cucinelli – tylus vyro ginklas.
+          </h2>
+          <span class="text-brand-beige md:hover:text-black transition">Skaityti daugiau</span>
+        </a>
+
+        <!-- MOTERIS -->
+        <a href="#moteris">
+          <picture>
+            <source srcset="{% static 'fe/assets/img/blog-small-3.avif' %}" type="image/avif" />
+            <source srcset="{% static 'fe/assets/img/blog-small-3.webp' %}" type="image/webp" />
+            <img class="aspect-[126/126] md:aspect-[346/344] object-cover mb-2 md:mb-5"
+                 src="{% static 'fe/assets/img/blog-small-3.jpg' %}" loading="lazy" />
+          </picture>
+          <h2 class="text-base md:text-[24px] md:hover:underline mb-[10px]">
+            Moteris, kuri supažindino vyrą su „UROCK Luxury Boutique“.
+          </h2>
+          <span class="text-brand-beige md:hover:text-black transition">Skaityti daugiau</span>
+        </a>
+
       </div>
     </div>
   </section>
 
-  <!-- 🧩 Dinaminiai straipsniai iš TVS (pilnas turinys tame pačiame puslapyje) -->
-<section>
-  {% for post in posts %}
-    <picture class="relative block">
-      <div id="{{ post.anchor_id }}" class="anchor-hit"></div>
-      {% if post.cover %}
-        <img src="{{ post.cover.url }}"
-             alt="{{ post.title }}"
-             class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
-             width="320" height="402"
-             loading="lazy" decoding="async" />
-      {% endif %}
-    </picture>
 
-    <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
-      <h2 class="text-[24px] md:text-[32px] font-serif text-brand-maroon mb-3">{{ post.title }}</h2>
-      <p>{{ post.body|safe }}</p>
-    </div>
-  {% endfor %}
+  <!-- 🧩 STRAIPSNIŲ KŪNAI (DINAMINIAI) -->
+  <section>
+    {% for post in posts %}
+      {% if not post.show_in_separate_page %}
+      <picture class="relative block">
+        <div id="{{ post.anchor_id }}" class="anchor-hit"></div>
+        <img src="{{ post.cover.url }}" alt="{{ post.title }}"
+             class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full" />
+      </picture>
+
+      <div class="entry-blog max-w-[70%] md:max-w-[946px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
+        <h2 class="text-[24px] md:text-[32px] font-serif text-brand-maroon mb-3">{{ post.title }}</h2>
+        <p>{{ post.body|safe }}</p>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </section>
+
+
+<!-- 🧩 PILNI STATINIAI STRAIPSNIAI -->
+<section>
+
+  <!-- ARMANI -->
+  <picture class="relative block">
+    <div id="giorgio-armani" class="anchor-hit"></div>
+
+    <source srcset="{% static 'fe/assets/img/blog-1-min.avif' %}" type="image/avif" />
+    <source srcset="{% static 'fe/assets/img/blog-1-min.webp' %}" type="image/webp" />
+
+    <img
+      class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
+      src="{% static 'fe/assets/img/blog-1-min.jpg' %}"
+      alt="Blog main preview"
+      width="320"
+      height="402"
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
+
+  <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
+    <p>
+      91-erių išėjęs Giorgio Armani buvo daugiau nei dizaineris. Jis buvo vyrų stiliaus architektas, kuris pakeitė mūsų supratimą,
+      ką reiškia atrodyti stipriai. Iki Armani kostiumas buvo šarvas – kietas, formalus, verčiantis vyrą slėptis už audinio.
+      Armani jį nuvilko. Pašalino paminkštinimus, atlaisvino formas, leido kūnui kvėpuoti. Ir staiga kostiumas tapo ne ginklu,
+      o įrankiu – tyliai kalbančiu apie pasitikėjimą, rafinuotumą, vidinę jėgą.
+      Jo vizija nebuvo apie madą. Ji buvo apie gyvenimo būdą. Armani sakė:
+      „Elegancija – tai ne būti pastebėtam, o būti prisimintam.“
+      Tai žodžiai, kurie tinka bet kuriam vyrui, kuris ryte stoja prieš veidrodį ir žino – diena laukia sunki, bet įvaizdis turi kalbėti už jį.
+      Armani išliko iki galo savo prekės ženklo kapitonas. Jis nekūrė triukšmingų kolekcijų – jis kūrė tylos galią.
+      Kol kiti siekė šokiruoti, Armani ramiai siuvo uniformą vyrui, kuris žino, kad jo laikas yra brangesnis už bet kokį logotipą.
+      Šiandien, kai verslininkai renkasi Gucci, Burberry ar Brunello Cucinelli,
+      Armani vardas vis dar stovi pirmoje eilėje.
+      Nes jis ne tik pardavinėjo audinį – jis pardavė discipliną, tvarką ir tylų autoritetą.
+      Jis išėjo, bet jo palikimas liko spintose ir galvose.
+      Kiekvieną kartą, kai vyras užsisega švarką ir nuleidžia rankas be įtampos,
+      jis kartoja Armani pamoką: tikras stilius – ne triukšmas, o jėga tylėti.
+    </p>
+  </div>
+
+
+  <!-- BRUNELLO CUCINELLI -->
+  <picture class="relative block">
+    <div id="brunello-cucinelli" class="anchor-hit"></div>
+
+    <img
+      class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
+      src="{% static 'fe/assets/img/Brunello_Cucinelli_store.jpg' %}?v=999"
+      alt="Brunello Cucinelli – tylus vyro ginklas (pilnas straipsnis)"
+      width="320"
+      height="402"
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
+
+  <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
+    <p>
+      Šiandien, kai logotipai rėkia iš kiekvieno kampo, tikras vyras renkasi tylą. 
+      Tylą, kuri kalba garsiau nei blizgantys ženklai. 
+      Tą tylą įkūnija Brunello Cucinelli. 
+      Neatsitiktinai jo drabužius renkasi tokie vardai kaip George Clooney,
+      Brad Pitt, Ben Affleck, Keanu Reeves, Jude Law.
+      Vyrų, kurie nebemėgina niekam nieko įrodyti. 
+      Jie jau padarė savo darbus, sukūrė savo istorijas.
+      Jiems nebereikia šaukti – už juos kalba kostiumo linija,
+      audinio kritimas, ramus, bet nepajudinamas autoritetas.
+      Cucinelli stilius – tai ne podiumo triukas.
+      Tai kasdienybė vyrui, kuris vertina laiką labiau nei bet kokį prabangos demonstravimą.
+      Švarkas, kuris nespaudžia, bet formuoja siluetą.
+      Kelnės, kurios leidžia judėti, bet kartu primena – kiekvienas žingsnis yra kryptingas.
+      Vakarų elitas pasirinko savo uniformą.
+      Ir tai nėra Gucci, kuris demonstruoja, ar Burberry, kuris šaukia tradicijomis.
+      Tai Brunello Cucinelli – „gentle luxury“, tylus prabangos kodas, suprantamas tik saviems.
+      Kai Clooney atsisėda prie „Nespresso“ stalo,
+      kai Affleck eina į susitikimą ar Reeves žengia raudonu kilimu –
+      jie visi kalba ta pačia kalba. 
+      Tai ne mada, tai disciplina.
+      Brunello Cucinelli yra vyrams, kurie valdo savo laiką, savo verslą ir savo tylą.
+    </p>
+  </div>
+
+
+  <!-- MOTERIS -->
+  <picture class="relative block">
+    <div id="moteris" class="anchor-hit"></div>
+
+    <source srcset="{% static 'fe/assets/img/blog-3-min.avif' %}" type="image/avif" />
+    <source srcset="{% static 'fe/assets/img/blog-3-min.webp' %}" type="image/webp" />
+
+    <img
+      class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
+      src="{% static 'fe/assets/img/blog-3-min.jpg' %}"
+      alt="Blog main preview 3"
+      width="320"
+      height="402"
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
+
+  <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
+    <p>
+      Aš puikiai žinau, kad vyrai retai skiria laiko apsipirkimui. 
+      Jie gyvena greitai, tvarko savo reikalus, juda pirmyn. 
+      Bet dažniausiai būtent jūs – moterys – pastebite, 
+      kada jų spintoje reikia pokyčio. 
+      Ir tai ne tik kostiumas darbui, bet ir kasdienis įvaizdis. 
+      Todėl sukūriau šį luxury boutique kaip vietą, 
+      kur klasika jungiasi su šiuolaikišku vyro stiliumi. 
+      Čia yra ne tik marškiniai ar švarkai, bet ir odinės striukės,
+      megztiniai aukštu kaklu, stilingi džinsai.
+      Tai garderobas, leidžiantis vyrui atrodyti stipriai 
+      tiek darbe, tiek mieste, tiek laisvalaikio aplinkoje.
+      Mano žinutė jums paprasta: jums nereikia pirkti už juos.
+      Užtenka supažindinti savo vyrus su boutique, 
+      kuriame vienoje vietoje surinkti Gucci, Brunello Cucinelli, 
+      Burberry, Jil Sander ir kiti vardai.
+      Tai ne tik drabužiai – tai šiandienos vyriškos elegancijos interpretacija.
+      Vyro įvaizdis yra daugiau nei stilius.
+      Tai jo kasdienė istorija – kaip jis eina, kaip kalba, kaip pasirodo šalia jūsų.
+      Ir būtent jūs galite būti ta, kuri atveria jam duris 
+      į pasaulį, kur vyriškas garderobas tampa lengvas, patogus ir nepriekaištingas.
+      Pakvieskite savo vyrą atrasti boutique, kuris kuria modernų vyro stilių.
+      Leiskite jam pačiam pajausti, ką reiškia įvaizdis, kalbantis už jį – be žodžių.
+    </p>
+  </div>
+
 </section>
 
-  <!-- Pilni straipsniai (inkarai tame pačiame puslapyje) -->
-  <section>
-    <!-- Armani -->
-    <picture class="relative block">
-      <div id="giorgio-armani" class="anchor-hit"></div>
-      <source srcset="{% static 'fe/assets/img/blog-1-min.avif' %}" type="image/avif" />
-      <source srcset="{% static 'fe/assets/img/blog-1-min.webp' %}" type="image/webp" />
-      <img class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
-           src="{% static 'fe/assets/img/blog-1-min.jpg' %}" alt="Blog main preview"
-           width="320" height="402" loading="lazy" decoding="async" />
-    </picture>
-    <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
-      <p>
-        91-erių išėjęs Giorgio Armani buvo daugiau nei dizaineris. Jis buvo vyrų stiliaus architektas, kuris pakeitė mūsų supratimą,
-        ką reiškia atrodyti stipriai. Iki Armani kostiumas buvo šarvas – kietas, formalus, verčiantis vyrą slėptis už audinio.
-        Armani jį nuvilko. Pašalino paminkštinimus, atlaisvino formas, leido kūnui kvėpuoti. Ir staiga kostiumas tapo ne ginklu,
-        o įrankiu – tyliai kalbančiu apie pasitikėjimą, rafinuotumą, vidinę jėgą. Jo vizija nebuvo apie madą. Ji buvo apie gyvenimo būdą.
-        Armani sakė: „Elegancija – tai ne būti pastebėtam, o būti prisimintam.“ Tai žodžiai, kurie tinka bet kuriam vyrui, kuris ryte
-        stoja prieš veidrodį ir žino – diena laukia sunki, bet įvaizdis turi kalbėti už jį. Armani išliko iki galo savo prekės ženklo
-        kapitonas. Jis nekūrė triukšmingų kolekcijų – jis kūrė tylos galią. Kol kiti siekė šokiruoti, Armani ramiai siuvo uniformą vyrui,
-        kuris žino, kad jo laikas yra brangesnis už bet kokį logotipą. Šiandien, kai verslininkai renkasi Gucci, Burberry ar Brunello
-        Cucinelli, Armani vardas vis dar stovi pirmoje eilėje. Nes jis ne tik pardavinėjo audinį – jis pardavė discipliną, tvarką ir tylų
-        autoritetą. Jis išėjo, bet jo palikimas liko spintose ir galvose. Kiekvieną kartą, kai vyras užsisega švarką ir nuleidžia rankas be
-        įtampos, jis kartoja Armani pamoką: tikras stilius – ne triukšmas, o jėga tylėti.
-      </p>
-    </div>
 
-    <picture class="relative block">
-          <div id="brunello-cucinelli" class="anchor-hit"></div>
-          <img
-            class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
-            src="{% static 'fe/assets/img/Brunello_Cucinelli_store.jpg' %}?v=999"
-            alt="Brunello Cucinelli – tylus vyro ginklas (pilnas straipsnis)"
-            width="320"
-            height="402"
-            loading="lazy"
-            decoding="async"
-          />
-        </picture>
-
-        <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
-          <p>
-        Šiandien, kai logotipai rėkia iš kiekvieno kampo, tikras vyras renkasi tylą. Tylą, kuri kalba garsiau nei blizgantys ženklai.
-        Tą tylą įkūnija Brunello Cucinelli. Neatsitiktinai jo drabužius renkasi tokie vardai kaip George Clooney, Brad Pitt, Ben Affleck,
-        Keanu Reeves, Jude Law. Vyrų, kurie nebemėgina niekam nieko įrodyti. Jie jau padarė savo darbus, sukūrė savo istorijas. Jiems
-        nebereikia šaukti – už juos kalba kostiumo linija, audinio kritimas, ramus, bet nepajudinamas autoritetas. Cucinelli stilius – tai
-        ne podiumo triukas. Tai kasdienybė vyrui, kuris vertina laiką labiau nei bet kokį prabangos demonstravimą. Švarkas, kuris nespaudžia,
-        bet formuoja siluetą. Kelnės, kurios leidžia judėti, bet kartu primena – kiekvienas žingsnis yra kryptingas. Vakarų elitas pasirinko
-        savo uniformą. Ir tai nėra Gucci, kuris demonstruoja, ar Burberry, kuris šaukia tradicijomis. Tai Brunello Cucinelli – „gentle luxury“,
-        tylus prabangos kodas, suprantamas tik saviems. Kai Clooney atsisėda prie „Nespresso“ stalo, kai Affleck eina į susitikimą ar Reeves
-        žengia raudonu kilimu – jie visi kalba ta pačia kalba. Tai ne mada, tai disciplina. Brunello Cucinelli yra vyrams, kurie valdo savo laiką,
-        savo verslą ir savo tylą.
-      </p>
-    </div>
-
-    <!-- Moteris -->
-    <picture class="relative block">
-      <div id="moteris" class="anchor-hit"></div>
-      <source srcset="{% static 'fe/assets/img/blog-3-min.avif' %}" type="image/avif" />
-      <source srcset="{% static 'fe/assets/img/blog-3-min.webp' %}" type="image/webp" />
-      <img class="aspect-[320/402] md:aspect-[1283/766] object-cover w-full"
-           src="{% static 'fe/assets/img/blog-3-min.jpg' %}" alt="Blog main preview 3"
-           width="320" height="402" loading="lazy" decoding="async" />
-    </picture>
-    <div class="entry-blog max-w-[70%] md:max-w-[946px] px-[5px] mx-auto pt-[10px] md:pt-[30px] pb-[20px] md:pb-[50px]">
-      <p>
-        Aš puikiai žinau, kad vyrai retai skiria laiko apsipirkimui. Jie gyvena greitai, tvarko savo reikalus, juda pirmyn. Bet dažniausiai
-        būtent jūs – moterys – pastebite, kada jų spintoje reikia pokyčio. Ir tai ne tik kostiumas darbui, bet ir kasdienis įvaizdis. Todėl
-        sukūriau šį luxury boutique kaip vietą, kur klasika jungiasi su šiuolaikišku vyro stiliumi. Čia yra ne tik marškiniai ar švarkai, bet ir
-        odinės striukės, megztiniai aukštu kaklu, stilingi džinsai. Tai garderobas, leidžiantis vyrui atrodyti stipriai tiek darbe, tiek mieste,
-        tiek laisvalaikio aplinkoje. Mano žinutė jums paprasta: jums nereikia pirkti už juos. Užtenka supažindinti savo vyrus su boutique, kuriame
-        vienoje vietoje surinkti Gucci, Brunello Cucinelli, Burberry, Jil Sander ir kiti vardai. Tai ne tik drabužiai – tai šiandienos vyriškos
-        elegancijos interpretacija. Vyro įvaizdis yra daugiau nei stilius. Tai jo kasdienė istorija – kaip jis eina, kaip kalba, kaip pasirodo
-        šalia jūsų. Ir būtent jūs galite būti ta, kuri atveria jam duris į pasaulį, kur vyriškas garderobas tampa lengvas, patogus ir
-        nepriekaištingas. Pakvieskite savo vyrą atrasti boutique, kuris kuria modernų vyro stilių. Leiskite jam pačiam pajausti, ką reiškia
-        įvaizdis, kalbantis už jį – be žodžių.
-      </p>
-    </div>
-  </section>
 </main>
 
 <script>
-  // Sklandus scroll tik kai ateinama su #inkaru per URL
   document.addEventListener('DOMContentLoaded', () => {
     if (location.hash) {
       const el = document.querySelector(location.hash);
@@ -339,4 +334,5 @@
     }
   });
 </script>
+
 {% endblock %}
