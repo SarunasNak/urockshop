@@ -427,3 +427,34 @@ document.body.addEventListener("htmx:configRequest", function (e) {
   }
 })();
 
+document.addEventListener("DOMContentLoaded", () => {
+
+  new Swiper(".tips-slider", {
+    slidesPerView: 1.3,
+    spaceBetween: 40,
+    breakpoints: {
+      768: { slidesPerView: 3 }
+    },
+    navigation: {
+      nextEl: ".tips-next",
+      prevEl: ".tips-prev",
+    },
+  });
+
+  new Swiper(".collection-slider", {
+    slidesPerView: 1.3,
+    spaceBetween: 40,
+    breakpoints: {
+      768: { slidesPerView: 3 }
+    },
+    navigation: {
+      nextEl: ".collection-next",
+      prevEl: ".collection-prev",
+    },
+  });
+
+});
+
+
+
+

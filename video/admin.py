@@ -9,10 +9,9 @@ class VideoAdmin(admin.ModelAdmin):
     list_filter = ("category",)
     search_fields = ("title", "cloudflare_id")
 
-    # Laukai sugrupuoti patogiai admin'e
     fieldsets = (
         ("Pagrindinė informacija", {
-            "fields": ("title", "category", "label")
+            "fields": ("title", "title_url", "category", "label")
         }),
         ("Cloudflare video", {
             "fields": ("cloudflare_id",)
@@ -22,7 +21,6 @@ class VideoAdmin(admin.ModelAdmin):
         }),
     )
 
-    # Thumbnail preview stulpelis
     def cover_preview(self, obj):
         if obj.cover_desktop:
             try:
@@ -35,4 +33,3 @@ class VideoAdmin(admin.ModelAdmin):
         return "—"
 
     cover_preview.short_description = "Viršelis"
-
