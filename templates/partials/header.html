@@ -5,7 +5,7 @@
   </div>
 
   <div class="container">
-    <div class="flex items-center justify-between py-[6px] md:pt-3 md:pb-2 relative">
+    <div class="flex items-center justify-between py-4 md:py-6 relative">
 
       {# Saugiai „reverse“: jei nepavyktų, kintamasis bus tuščias – href'ui duodam fallback per |default #}
       {% url 'about' as about_url %}
@@ -13,24 +13,37 @@
       {% url 'catalog:product_list' as product_list_url %}
       {% url 'cart_view' as cart_url %}
 
-      <nav class="hidden md:flex space-x-2 lg:space-x-5 text-[13px]">
-        <a href="{{ about_url|default:'/about/' }}"
-           class="transition-text duration-300 p-[10px] {% if request.path == '/about' or request.path|slice:':7' == '/about/' or request.path == about_url %}text-brand-beige{% else %}hover:text-brand-beige{% endif %}">
-          APIE MUS
-        </a>
+      <nav class="hidden md:flex space-x-2 lg:space-x-5 text-[13px] md:text-[11px] lg:text-[13px]">
 
-        <a href="{{ blog_url|default:'/blog/' }}"
-           class="transition-text duration-300 p-[10px] {% if request.path == '/blog' or request.path|slice:':6' == '/blog/' or request.path == blog_url %}text-brand-beige{% else %}hover:text-brand-beige{% endif %}">
-          BLOGAS
-        </a>
+      <a href="{{ about_url|default:'/about/' }}"
+         class="transition-text duration-300 p-[6px] lg:px-[10px] py-[10px]
+         {% if '/about' in request.path %}text-brand-beige{% endif %}">
+        APIE MUS
+      </a>
 
-        <a href="{{ product_list_url|default:'/shop/' }}"
-           class="transition-text duration-300 p-[10px] {% if request.path == '/shop' or request.path|slice:':6' == '/shop/' or request.path == product_list_url %}text-brand-beige{% else %}hover:text-brand-beige{% endif %}">
-          KATALOGAS
-        </a>
-      </nav>
+      <a href="{{ blog_url|default:'/blog/' }}"
+         class="transition-text duration-300 p-[6px] lg:px-[10px] py-[10px]
+         {% if '/about' in request.path %}text-brand-beige{% endif %}">
+        BLOGAS
+      </a>
 
-      <div class="absolute left-1/2 -translate-x-1/2 top-[-17%] md:top-[-7%]">
+      <a href="{{ product_list_url|default:'/shop/' }}"
+         class="transition-text duration-300 p-[6px] lg:px-[10px] py-[10px]
+         {% if '/about' in request.path %}text-brand-beige{% endif %}">
+        E-PARDUOTUVĖ
+      </a>
+
+      {% url 'video' as video_url %}
+      <a href="{{ video_url|default:'/video/' }}"
+         class="transition-text duration-300 p-[6px] lg:px-[10px] py-[10px]
+         {% if '/about' in request.path %}text-brand-beige{% endif %}">
+        VIDEO
+      </a>
+
+    </nav>
+
+
+      <div class="absolute left-1/2 -translate-x-1/2 top-2 md:top-[-7%]">
         <a class="h-[52px] max-w-[125px] md:h-[70px] md:max-w-[180px] inline-block" href="{% url 'home' %}" aria-label="logo">
           {% if site and site.logo and site.logo.url %}
             <img class="aspect-[79/29.87] md:aspect-[110/41.6] object-cover w-full h-full"
@@ -60,9 +73,10 @@
     </div>
 
     <div x-show="open" x-transition @click.self="open=false" class="md:hidden flex flex-col items-center space-y-1 py-12 text-sm">
-      <a href="{{ about_url|default:'/about/' }}" class="p-5 {% if request.path == '/about' or request.path|slice:':7' == '/about/' %}text-brand-beige font-semibold{% endif %}" @click="open=false">APIE MUS</a>
-      <a href="{{ blog_url|default:'/blog/'  }}" class="p-5 {% if request.path == '/blog'  or request.path|slice:':6' == '/blog/'  %}text-brand-beige font-semibold{% endif %}" @click="open=false">BLOGAS</a>
-      <a href="{{ product_list_url|default:'/shop/'  }}" class="p-5 {% if request.path == '/shop'  or request.path|slice:':6' == '/shop/'  %}text-brand-beige font-semibold{% endif %}" @click="open=false">KATALOGAS</a>
+      <a href="{{ about_url|default:'/about/' }}" class="p-5">APIE MUS</a>
+    <a href="{{ blog_url|default:'/blog/' }}" class="p-5">BLOGAS</a>
+    <a href="{{ product_list_url|default:'/shop/' }}" class="p-5">E-PARDUOTUVĖ</a>
+    <a href="{{ video_url|default:'/video/' }}" class="p-5">VIDEO</a>
     </div>
   </div>
 </header>

@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Video{% endblock %}
+
+{% block extra_head %}
+
+<style>
+.modal-force {
+   isolation: isolate !important;
+   transform: none !important;
+   will-change: auto !important;
+   z-index: 2147483647 !important;
+}
+</style>
+
+<style>
+.custom-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #D8D9D833;
+  padding: 8px;
+  border-radius: 4px;
+  z-index: 20;
+  width: 32px;
+  height: 32px;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: #666;
+  transition: background 0.2s;
+}
+
+.custom-arrow:hover {
+  background: #D8D9D8CC;
+}
+</style>
+
+<style>
+  @media (min-width: 768px) {
+      .video-hero-title {
+          font-size: 64px !important;
+          line-height: 1 !important;
+      }
+  }
+  @media (max-width: 767px) {
+      .video-hero-title {
+          font-size: 20px !important;
+      }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+  <!-- HERO -->
+<div class="py-6 md:py-[50px]">
+  <div class="md:max-w-[1122px] mx-auto md:px-5 mb-3 md:mb-[50px]">
+
+    <div class="relative w-full">
+      <img
+        src="{% static 'fe/assets/img/nuotrauka_1112x940_face.webp' %}"
+        class="w-full h-full object-cover aspect-[126/130] md:aspect-[1112/940]"
+      />
+
+      <div class="absolute inset-0 flex items-center justify-center">
+        <span class="text-white video-hero-title">VIDEO</span>
+      </div>
+    </div>
+
+  </div>
+</div>   <!-- ← ← ← LABAI SVARBU. ŠITO TRŪKO. -->
+
+
+<!-- =============================== -->
+<!-- 1️⃣  KAIP MES, UROCK, SUTEIKIAME VERTĘ -->
+<!-- =============================== -->
+
+<section class="mb-6 md:mb-[50px] max-w-[1138px] mx-auto md:px-5">
+
+  <h1 class="mb-6 md:mb-[50px] text-[11px] md:text-[26px] text-center font-serif uppercase">
+  KAIP MES, UROCK, SUTEIKIAME VERTĘ
+    </h1>
+
+  <div class="relative">
+
+    <!-- SWIPER -->
+    <div class="swiper tips-slider">
+      <div class="swiper-wrapper">
+
+        {% for v in tips %}
+        <div class="swiper-slide cursor-pointer group"
+             @click.stop="window.dispatchEvent(new CustomEvent('open-video', { detail: { url: '{{ v.video_url|safe }}' }}))">
+
+          <div class="relative">
+            <img
+              src="{{ v.cover_desktop.url|default:v.cover_mobile.url }}"
+              class="w-full aspect-[126/130] md:aspect-[1112/940] object-cover brightness-75 group-hover:brightness-50 transition"
+              loading="lazy">
+
+            <!-- PLAY ICON -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div class="w-12 h-12 md:w-20 md:h-20 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6 md:w-10 md:h-10" viewBox="0 0 24 24" fill="#ffffff">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+        </div>
+        </div>
+
+          <div class="text-[9px] md:text-[15px] font-bold text-brand-beige mb-2 text-center">
+            {{ v.label|default:"Patarimas" }}
+          </div>
+          <div class="text-[10px] md:text-lg text-center min-h-[65px]">
+            {{ v.title }}
+          </div>
+
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+
+    <!-- ARROWS -->
+    <button class="tips-prev custom-arrow left-0 hidden md:flex">
+      ‹
+    </button>
+
+    <button class="tips-next custom-arrow right-0 hidden md:flex">
+      ›
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =============================== -->
+<!-- 2️⃣  UROCK – APIE DRABUŽIUS IR ŠIUOLAIKIŠKĄ ĮVAIZDĮ -->
+<!-- =============================== -->
+
+<section class="mb-6 md:mb-[50px] max-w-[1138px] mx-auto md:px-5">
+
+  <h1 class="mb-6 md:mb-[50px] text-[11px] md:text-[26px] text-center font-serif uppercase">
+    APIE DRABUŽIUS IR ŠIUOLAIKIŠKĄ ĮVAIZDĮ
+  </h1>
+
+  <div class="relative">
+
+    <!-- SWIPER -->
+    <div class="swiper collection-slider">
+      <div class="swiper-wrapper">
+
+        {% for v in collection %}
+        <div class="swiper-slide cursor-pointer group"
+             @click.stop="window.dispatchEvent(new CustomEvent('open-video', { detail: { url: '{{ v.video_url|safe }}' }}))">
+
+          <!-- THUMBNAIL -->
+          <div class="relative">
+            <img
+              src="{{ v.cover_desktop.url|default:v.cover_mobile.url }}"
+              class="w-full aspect-[126/130] md:aspect-[1112/940] object-cover brightness-75 group-hover:brightness-50 transition"
+              loading="lazy">
+
+            <!-- PLAY ICON -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div class="w-12 h-12 md:w-20 md:h-20 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center">
+                <svg class="w-6 h-6 md:w-10 md:h-10" viewBox="0 0 24 24" fill="#ffffff">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- LABEL (ne-keičiamas, be linkų) -->
+          <div class="text-[9px] md:text-[15px] font-bold text-brand-beige mb-2 text-center">
+            {{ v.label|default:"Patarimas" }}
+          </div>
+
+          <!-- TITLE (jei yra URL → tampa clickable) -->
+          <div class="text-[10px] md:text-lg text-center min-h-[65px]">
+            {% if v.title_url %}
+                <a href="{{ v.title_url }}"
+                   class="underline hover:text-white"
+                   target="_blank"
+                   @click.stop>
+                    {{ v.title }}
+                </a>
+            {% else %}
+                {{ v.title }}
+            {% endif %}
+        </div>
+
+
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+
+    <!-- ARROWS -->
+    <button class="collection-prev custom-arrow left-0 hidden md:flex">
+      ‹
+    </button>
+
+    <button class="collection-next custom-arrow right-0 hidden md:flex">
+      ›
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- GLOBAL VIDEO MODAL -->
+<div x-data="{ open: false, videoUrl: '' }"
+     @open-video.window="open = true; videoUrl = $event.detail.url;"
+     x-cloak>
+
+  <template x-teleport="body">
+    <div
+      x-show="open"
+      x-transition.opacity
+      x-effect="document.body.style.overflow = open ? 'hidden' : 'auto'"
+      class="fixed inset-0 bg-black/80 backdrop-blur-sm
+             z-[2147483647] flex items-center justify-center p-4 modal-force"
+      @click.self="open = false; videoUrl='';">
+
+      <!-- Video box -->
+      <div
+        class="video-modal-box bg-black rounded-xl overflow-hidden shadow-2xl"
+        style="
+          width: 100%;
+          max-width: 680px;
+          max-height: 80vh;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <div style="position: relative; width: 100%; padding-bottom: 56.25%;">
+          <iframe
+            :src="videoUrl"
+            class="absolute inset-0 w-full h-full"
+            allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+
+    </div>
+  </template>
+</div>
+
+
+
+{% endblock %}
+
+
+
+

@@ -30,6 +30,15 @@ DATABASES = {
     }
 }
 
+# --- STATIC & MEDIA override ---
+STATIC_ROOT = BASE_DIR / "staticfiles"
+MEDIA_ROOT = BASE_DIR / "media"
+
+# --- Pridėti VIDEO aplikaciją ---
+INSTALLED_APPS += [
+    "video",
+]
+
 # --- PROXY/HTTPS ---
 # Cloudflare ar PythonAnywhere siunčia X-Forwarded-Proto, kad Django suprastų HTTPS
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

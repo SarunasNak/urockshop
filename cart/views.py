@@ -169,7 +169,7 @@ def tryon_submit(request):
 
     # 1) Honeypot: jei „company“ užpildyta – apsimetam sėkme ir nieko nedarom
     if request.POST.get("company"):
-        resp = HttpResponse("Užklausa išsiųsta ✓")
+        resp = HttpResponse("Rezervacija patvirtinta")
         resp["HX-Trigger-After-Settle"] = json.dumps({"cart-updated": _cart_counts_payload(cart)})
         return resp
 
@@ -311,6 +311,6 @@ def tryon_submit(request):
     cart.clear_try_on()
 
     # 9) grąžinam mygtuko tekstą ir event'ą (AFTER-SETTLE!)
-    resp = HttpResponse("Užklausa išsiųsta ✓")
+    resp = HttpResponse("Rezervacija patvirtinta")
     resp["HX-Trigger-After-Settle"] = json.dumps({"cart-updated": _cart_counts_payload(cart)})
     return resp

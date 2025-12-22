@@ -1,6 +1,7 @@
 # blog/models.py
 from django.db import models
 from django.utils.text import slugify
+from django.utils import timezone
 
 class BlogSettings(models.Model):
     # leisti turėti vieną įrašą
@@ -71,7 +72,7 @@ class Post(models.Model):
         help_text="Pažymėjus – straipsnis atsidarys atskirame puslapyje."
     )
 
-    published_at = models.DateTimeField(auto_now_add=True)
+    published_at = models.DateTimeField(default=timezone.now)
     is_published = models.BooleanField(default=True)
 
     # 🆕 NAUJAS LAUKAS — DRAG-AND-DROP RIKIAVIMUI
@@ -91,5 +92,3 @@ class Post(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)[:220]
         super().save(*args, **kwargs)
-
-

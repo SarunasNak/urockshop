@@ -1,5 +1,14 @@
 // script.js
 
+// 🔥 TURI BŪTI PAČIOJE VIRŠUTINĖJE script.js DALYJE:
+window.addEventListener("alpine:init", () => {
+    console.log("STORE INIT OK");
+    Alpine.store("video", {
+        open: false,
+        url: ""
+    });
+});
+
 // Example: Alpine.js reactive state
 document.addEventListener("alpine:init", () => {
   Alpine.data("dropdown", () => ({
@@ -66,6 +75,38 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     });
   }
+
+// ----------------------------------------------------------
+// VIDEO SLIDER (homepage video section)
+// ----------------------------------------------------------
+const videoSliderElement = document.querySelectorAll(".video-slider");
+
+if (videoSliderElement.length && window.Swiper) {
+  new Swiper(".video-slider", {
+    slidesPerView: 1,
+    spaceBetween: 0,
+    loop: false,
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    breakpoints: {
+      0: {
+        slidesPerView: 1.8,
+        spaceBetween: 56,
+        navigation: false,
+      },
+      768: {
+        slidesPerView: 3,
+        spaceBetween: 56,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      },
+    },
+  });
+}
 
   // ─────────────────────────────────────────────────────────────
   // Cart: remove line via AJAX (delegation on document)
@@ -385,4 +426,37 @@ document.body.addEventListener("htmx:configRequest", function (e) {
     console.warn("🚨 500 klaida aptikta, išsiųstas pranešimas:", payload);
   }
 })();
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  new Swiper(".tips-slider", {
+    slidesPerView: 1.3,
+    spaceBetween: 40,
+    breakpoints: {
+      768: { slidesPerView: 3 }
+    },
+    navigation: {
+      nextEl: ".tips-next",
+      prevEl: ".tips-prev",
+    },
+  });
+
+  new Swiper(".collection-slider", {
+    slidesPerView: 1.3,
+    spaceBetween: 40,
+    breakpoints: {
+      768: { slidesPerView: 3 }
+    },
+    navigation: {
+      nextEl: ".collection-next",
+      prevEl: ".collection-prev",
+    },
+  });
+
+});
+
+
+
+
+
 

@@ -59,7 +59,7 @@ class PostAdmin(SortableAdminMixin, admin.ModelAdmin):
         "sort_order",
     )
 
-    list_editable = ("is_published", "show_in_separate_page")
+    list_editable = ("published_at", "is_published", "show_in_separate_page")
     list_filter = ("is_published", "card_variant")
     search_fields = ("title", "body")
     prepopulated_fields = {"slug": ("title",)}
@@ -73,6 +73,7 @@ class PostAdmin(SortableAdminMixin, admin.ModelAdmin):
                 "meta_title",
                 "meta_description",
                 "body",
+                "published_at",
                 "is_published",
                 "show_in_separate_page",
                 "sort_order",
@@ -89,4 +90,3 @@ class PostAdmin(SortableAdminMixin, admin.ModelAdmin):
             return format_html('<img src="{}" style="height:48px;border-radius:6px;">', img.url)
         return "—"
     thumb.short_description = "Peržiūra"
-
