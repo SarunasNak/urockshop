@@ -828,3 +828,10 @@ button.border-b {
   border-bottom-style: solid !important;
   border-bottom-color: rgb(158 146 136) !important; /* brand-beige */
 }
+
+/* ================================
+   Headroom lock during HTMX
+   ================================ */
+.no-headroom .header {
+  transform: translateY(0) !important;
+}

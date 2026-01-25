@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "stripe_payments",
     "discounts",
     "newsletter",
+    "marketing",
 ]
 
 INSTALLED_APPS += ["django.contrib.sitemaps"]

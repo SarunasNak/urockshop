@@ -113,71 +113,64 @@
 </footer>
 
 <script>
-  function getCookie(name){const v=`; ${document.cookie}`.split(`; ${name}=`);if(v.length===2)return v.pop().split(';').shift();}
-  const csrftoken = getCookie('csrftoken');
+(function () {
+  const form = document.getElementById('newsletterForm');
+  if (!form) return;
 
-  (function () {
-    const form = document.getElementById('newsletterForm');
-    if (!form) return;
+  const btn = document.getElementById('subscribeBtn');
+  const labelEl = btn.querySelector('.btn-label');
+  const checkEl = btn.querySelector('.check-icon');
+  const defaultText = btn.dataset.default || 'PRENUMERUOTI';
+  const doneText = btn.dataset.done || 'UŽSIPRENUMERUOTA';
 
-    const btn = document.getElementById('subscribeBtn');
-    const labelEl = btn.querySelector('.btn-label');
-    const checkEl = btn.querySelector('.check-icon');
-    const defaultText = btn.dataset.default || 'PRENUMERUOTI';
-    const doneText = btn.dataset.done || 'UŽSIPRENUMERUOTA';
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btn.disabled = true;
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    try {
+      const csrf =
+        form.querySelector('input[name=csrfmiddlewaretoken]')?.value;
 
-      // trumpam užrakinti, kad nebūtų dvigubo submit
-      btn.disabled = true;
+      const res = await fetch(form.action, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'X-CSRFToken': csrf,
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'application/json'
+        },
+        body: new FormData(form)
+      });
 
-      try {
-        const res = await fetch(form.action, {
-          method: 'POST',
-          credentials: 'same-origin',
-          headers: {
-            'X-CSRFToken': csrftoken,
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json'
-          },
-          body: new FormData(form)
-        });
-
-        const ct = res.headers.get('content-type') || '';
-        if (!ct.includes('application/json')) {
-          const text = await res.text();
-          throw new Error(`Tikėtasi JSON, gavau (${res.status}) ${ct}. ${text.slice(0,180)}`);
-        }
-
-        const data = await res.json();
-
-        if (res.ok && (data.ok || data.success)) {
-          // parodyti varnelę ir pakeisti tekstą
-          if (labelEl) labelEl.textContent = doneText;
-          if (checkEl) checkEl.classList.remove('hidden');
-
-          form.reset();
-
-          // <- svarbiausia: nepaliekam disabled (kad nebūtų „plytos“ kursoriaus)
-          btn.disabled = false;
-          btn.setAttribute('aria-disabled', 'true');
-          btn.classList.add('pointer-events-none'); // nebeleidžia spausti, bet kursorius normalus
-          return;
-        }
-        throw new Error(data.error || 'Nepavyko užsiprenumeruoti');
-      } catch (err) {
-        // atstatom
-        if (labelEl) labelEl.textContent = defaultText;
-        if (checkEl) checkEl.classList.add('hidden');
-        btn.classList.remove('pointer-events-none');
-        btn.removeAttribute('aria-disabled');
-      } finally {
-        // jei ne „return“ iš sėkmės — vėl leidžiam spausti
-        if (!btn.classList.contains('pointer-events-none')) {
-          btn.disabled = false;
-        }
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        throw new Error('Ne JSON atsakymas');
       }
-    });
-  })();
+
+      const data = await res.json();
+
+      if (res.ok && (data.ok || data.success)) {
+        labelEl.textContent = doneText;
+        checkEl.classList.remove('hidden');
+        form.reset();
+
+        btn.disabled = false;
+        btn.setAttribute('aria-disabled', 'true');
+        btn.classList.add('pointer-events-none');
+        return;
+      }
+
+      throw new Error(data.error || 'Klaida');
+    } catch (err) {
+      labelEl.textContent = defaultText;
+      checkEl.classList.add('hidden');
+      btn.classList.remove('pointer-events-none');
+      btn.removeAttribute('aria-disabled');
+    } finally {
+      if (!btn.classList.contains('pointer-events-none')) {
+        btn.disabled = false;
+      }
+    }
+  });
+})();
 </script>

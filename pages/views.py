@@ -26,7 +26,7 @@ class HomeView(TemplateView):
         ctx.update({
             "home": home,               # <— pasirinkau 'home'
             "tiles": tiles,
-            "meta_title": (home.seo_title or "Urockas") if home else "Urockas",
+            "meta_title": home.seo_title if home and home.seo_title else None,
             "meta_description": (home.seo_description or "Urockas – pasveikinimo puslapis ir mūsų parduotuvė.") if home else "Urockas – pasveikinimo puslapis ir mūsų parduotuvė.",
             "meta_robots": "index,follow",
             "canonical_url": self.request.build_absolute_uri(self.request.path),

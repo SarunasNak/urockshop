@@ -7,7 +7,7 @@
     <meta name="robots" content="{% firstof meta_robots 'index,follow' %}">
     <meta name="verify-paysera" content="16afce7474e450a6515c53d90d004fef">
 
-    <title>{% firstof meta_title site.site_name SITE.title "Urock Shop" %}</title>
+    <title>{% firstof meta_title site.name "Urock | Contemporary Luxury Menswear" %}</title>
 
     {# ─── SEO basics ─── #}
     <meta name="description" content="{% firstof meta_description site.meta_description SITE.meta_description '' %}">
@@ -18,7 +18,7 @@
     {% endif %}
 
     {# ─── Open Graph ─── #}
-    <meta property="og:title" content="{% firstof og_title meta_title site.site_name SITE.title 'Urock' %}">
+    <meta property="og:title" content="{% firstof og_title meta_title site.name SITE.title 'Urock' %}">
     <meta property="og:description" content="{% firstof og_description meta_description site.meta_description SITE.meta_description '' %}">
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
     {% if canonical_url %}<meta property="og:url" content="{{ canonical_url }}">{% endif %}
@@ -32,7 +32,7 @@
 
     {# ─── Twitter Cards ─── #}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% firstof og_title meta_title site.site_name SITE.title 'Urock' %}">
+    <meta name="twitter:title" content="{% firstof og_title meta_title site.name SITE.title 'Urock' %}">
     <meta name="twitter:description" content="{% firstof og_description meta_description site.meta_description SITE.meta_description '' %}">
     {% if og_image %}
       <meta name="twitter:image" content="{{ og_image }}">
@@ -45,7 +45,7 @@
     {# Puslapių specifiniai <head> įdėklai (pvz. noindex krepšeliui) #}
     {% block extra_head %}{% endblock %}
 
-    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
 
@@ -72,6 +72,8 @@
     {% block header %}
       {% include "partials/header.html" %}
     {% endblock %}
+
+    {% block after_header %}{% endblock %}
 
    <main>
   {% block messages %}

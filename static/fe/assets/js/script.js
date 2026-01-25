@@ -1,13 +1,6 @@
 // script.js
 
-// 🔥 TURI BŪTI PAČIOJE VIRŠUTINĖJE script.js DALYJE:
-window.addEventListener("alpine:init", () => {
-    console.log("STORE INIT OK");
-    Alpine.store("video", {
-        open: false,
-        url: ""
-    });
-});
+window.__isHistoryRestore = false;
 
 // Example: Alpine.js reactive state
 document.addEventListener("alpine:init", () => {
@@ -24,24 +17,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const productSliderElement = document.querySelectorAll(".product-slider");
 
   // Example: Headroom
-  const header = document.querySelector(".header");
-  if (header && window.Headroom) {
-    const headroom = new Headroom(header, {
-      offset: 100,
-      tolerance: { up: 0, down: 0 },
-      classes: {
-        initial: "header",
-        pinned: "header--pinned",
-        unpinned: "header--unpinned",
-        top: "header--top",
-        notTop: "header--scrolled",
-        bottom: "header--bottom",
-        notBottom: "header--not-bottom",
-      },
-      scroller: window,
-    });
-    headroom.init();
-  }
+window.__headroom = null;
+
+const header = document.querySelector(".header");
+if (header && window.Headroom) {
+  window.__headroom = new Headroom(header, {
+    offset: 100,
+    tolerance: { up: 0, down: 0 },
+    classes: {
+      initial: "header",
+      pinned: "header--pinned",
+      unpinned: "header--unpinned",
+      top: "header--top",
+      notTop: "header--scrolled",
+      bottom: "header--bottom",
+      notBottom: "header--not-bottom",
+    },
+    scroller: window,
+  });
+
+  window.__headroom.init();
+}
 
   // Smooth scroll for anchor links
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
@@ -82,31 +78,38 @@ document.addEventListener("DOMContentLoaded", () => {
 const videoSliderElement = document.querySelectorAll(".video-slider");
 
 if (videoSliderElement.length && window.Swiper) {
-  new Swiper(".video-slider", {
-    slidesPerView: 1,
-    spaceBetween: 0,
-    loop: false,
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-    breakpoints: {
-      0: {
-        slidesPerView: 1.8,
-        spaceBetween: 56,
-        navigation: false,
+
+  // apsauga nuo dvigubo init
+  if (!videoSliderElement[0].classList.contains("swiper-initialized")) {
+
+    new Swiper(".video-slider", {
+      slidesPerView: 1,
+      spaceBetween: 0,
+      loop: false,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
       },
-      768: {
-        slidesPerView: 3,
-        spaceBetween: 56,
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
+      breakpoints: {
+        0: {
+          slidesPerView: 1.8,
+          spaceBetween: 56,
+          navigation: false
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 56,
+          navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          },
         },
       },
-    },
-  });
+    });
+
+  }
 }
+  });
 
   // ─────────────────────────────────────────────────────────────
   // Cart: remove line via AJAX (delegation on document)
@@ -152,7 +155,6 @@ if (videoSliderElement.length && window.Swiper) {
       })
       .catch(console.error);
   });
-});
 
 document.body.addEventListener('cart-updated', function (e) {
   const d = e.detail || {};
@@ -190,11 +192,42 @@ document.addEventListener('htmx:afterSwap', function (e) {
   }
 });
 
+// 🔒 Headroom reset po HTMX swap (FIX header disappearing)
+document.body.addEventListener("htmx:afterSwap", function () {
+  if (!window.__headroom) return;
+
+  const header = document.querySelector(".header");
+  if (!header) return;
+
+  // Priverstinai parodyti headerį
+  header.classList.remove("header--unpinned");
+  header.classList.add("header--pinned");
+
+  // Resetinam Headroom būseną
+  window.__headroom.destroy();
+  window.__headroom.init();
+});
+
 // 3) Atsarginis variantas: kai keičiasi URL (htmx pushState),
 // dar kartą sulyginam disabled (neprivaloma, bet naudinga)
 window.addEventListener('popstate', function () {
-  var f = document.querySelector('form[hx-get]');
-  if (f) syncDisabledFields(f);
+  const f = document.querySelector('form[hx-get]');
+  if (f) syncFormFromUrl(f);
+});
+
+// 👇 PRIDĖTI ČIA
+document.body.addEventListener('htmx:historyRestore', function () {
+  window.__isHistoryRestore = true;
+
+  const f = document.querySelector('form[hx-get]');
+  if (f) syncFormFromUrl(f);
+
+  // atleidžiam PO viso HTMX ciklo
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      window.__isHistoryRestore = false;
+    });
+  });
 });
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -202,10 +235,28 @@ document.addEventListener('DOMContentLoaded', function () {
   if (f) syncDisabledFields(f);
 });
 
-document.body.addEventListener('htmx:configRequest', function (e) {
-  var f = document.querySelector('form[hx-get]');
-  if (f) syncDisabledFields(f);
-});
+// 🔄 Atstato filtrų formą iš URL (BACK / BFCache / history)
+function syncFormFromUrl(form) {
+  const params = new URLSearchParams(window.location.search);
+
+  ['q', 'size', 'category'].forEach(name => {
+    const el = form.querySelector(`[name="${name}"]`);
+    if (!el) return;
+
+    const val = params.get(name) || '';
+
+    if (el.tagName === 'SELECT') {
+      el.value = val;
+    } else if (el.type === 'radio' || el.type === 'checkbox') {
+      el.checked = el.value === val;
+    } else {
+      el.value = val;
+    }
+  });
+
+  // po value atkūrimo – disabled logika
+  syncDisabledFields(form);
+}
 
 // ─────────────────────────────────────────────
 // Checkout validacija prieš submit
@@ -244,37 +295,69 @@ if (!payment) {
     checkoutForm.submit();
   });
 });
+
 // ─────────────────────────────────────────────
-// HTMX Loading Overlay Fix (su fade efektu)
+// HTMX Loading Overlay Fix (STABILI BACK + MOBILE)
+// ─────────────────────────────────────────────
 (function() {
   const loader = document.getElementById("catalog-loading");
   if (!loader) return;
 
+  let isLoading = false;
+
   function showLoader() {
+    isLoading = true;
     loader.style.display = "flex";
     requestAnimationFrame(() => loader.style.opacity = "1");
   }
 
   function hideLoader() {
+    isLoading = false;
     loader.style.opacity = "0";
-    setTimeout(() => loader.style.display = "none", 300);
+    setTimeout(() => {
+      if (!isLoading) {
+        loader.style.display = "none";
+      }
+    }, 300);
   }
 
+  // HTMX normalus request
   document.body.addEventListener("htmx:beforeRequest", showLoader);
   document.body.addEventListener("htmx:afterOnLoad", hideLoader);
+  document.body.addEventListener("htmx:responseError", hideLoader);
+
+  // 🔒 Užrakinam headerį HTMX filtrų metu (UX protection)
+document.body.addEventListener("htmx:beforeRequest", () => {
+  document.body.classList.add("no-headroom");
+});
+
+document.body.addEventListener("htmx:afterOnLoad", () => {
+  document.body.classList.remove("no-headroom");
+});
+
+  // 🔥 BACK / FORWARD (HTMX history)
+  document.body.addEventListener("htmx:historyRestore", hideLoader);
+
+  // 🔥 MOBILE SAFARI / CHROME BFCache
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      hideLoader();
+    }
+  });
+
+  // 🛟 Safety fallback (jei kažkas nulūžta)
+  setTimeout(hideLoader, 2500);
 })();
 
 // ==========================================================
 //  Galutinė versija — URL nebeauga, filtrai lieka švarūs
 // ==========================================================
 window.submitCatalogFilter = function (form) {
-  // ✅ visada imam bazinį URL (be senų parametrų)
   const base = new URL(form.getAttribute("hx-get") || form.action, window.location.origin);
-  const basePath = base.pathname; // pvz. /shop/
+  const basePath = base.pathname;
 
   const params = new URLSearchParams();
 
-  // Surenkam reikšmes iš laukų
   const q = form.querySelector('[name=q]')?.value?.trim();
   const size = form.querySelector('[name=size]')?.value?.trim();
   const category = form.querySelector('[name=category]')?.value?.trim();
@@ -283,101 +366,77 @@ window.submitCatalogFilter = function (form) {
   if (size) params.set("size", size);
   if (category) params.set("category", category);
 
-  // Sukuriam švarų URL be pasikartojimų
   const cleanUrl = params.toString()
     ? `${basePath}?${params.toString()}`
     : basePath;
 
-  // 🔧 Atnaujinam tik hx-get (action nebeliečiam!)
-  form.setAttribute("hx-get", cleanUrl);
-  form.setAttribute("hx-push-url", "false");
-
-  // Paleidžiam HTMX užklausą
+  // 1️⃣ siunčiam HTMX
   htmx.trigger(form, "submit");
 
-  // 🔗 Atnaujinam naršyklės URL — gražus, švarus
+  // 2️⃣ atnaujinam URL
   history.replaceState({}, "", cleanUrl);
+
+  // 3️⃣ informuojam JS state
+  window.__catalogState.lastQuery = params.toString();
 
   console.log("✅ Filtras išsiųstas į:", cleanUrl);
 };
 
 // ==========================================================
-// 🔄 Pagination fix — visada naudojam AKTYVŲ filtrą, ne seną
+// ✅ VIENINTELIS HTMX configRequest (FILTRAI + PAGINATION)
 // ==========================================================
-document.body.addEventListener("htmx:configRequest", function (evt) {
-  // Reaguojam tik jei tai pagination
-  if (!evt.detail.path.includes("page=")) return;
 
-  const form = document.querySelector('form[hx-get]');
-  if (!form) return;
 
-  const params = new URLSearchParams();
+// 1️⃣ init state
+window.__catalogState = window.__catalogState || {
+lastQuery: ""
+};
 
-  // Surenkam naujausius filtrus iš formos
-  const q = form.querySelector('[name=q]')?.value?.trim();
-  const size = form.querySelector('[name=size]')?.value?.trim();
-  const category = form.querySelector('[name=category]')?.value?.trim();
 
-  if (q) params.set("q", q);
-  if (size) params.set("size", size);
-  if (category) params.set("category", category);
+// 2️⃣ init iš URL (fix pirmam pagination clickui)
+(function initCatalogStateFromUrl() {
+const params = new URLSearchParams(window.location.search);
+const filterKeys = ["size", "category", "q"];
+window.__catalogState.lastQuery = filterKeys
+.map(k => params.get(k) || "")
+.join("|");
+})();
 
-  // Ištraukiam puslapio numerį iš linko (pvz. ?page=2)
-  const [path, query] = evt.detail.path.split("?");
-  const clicked = new URLSearchParams(query || "");
-  if (clicked.has("page")) params.set("page", clicked.get("page"));
 
-  // Sudarom galutinį, švarų URL
-  const cleanUrl = params.toString()
-    ? `${path}?${params.toString()}`
-    : path;
-
-  // 💥 Pakeičiam kelią, kad HTMX siųstų teisingą request'ą
-  evt.detail.path = cleanUrl;
-
-  console.log("📄 Pagination path atnaujintas į:", cleanUrl);
-});
-
-// ==========================================================
-// Filtrų reset į 1 puslapį (be papildomų funkcijų ar kvietimų)
-// + apsauga nuo dvigubo "grįžimo į 1 puslapį"
-// ==========================================================
-let lastRequestPath = "";
-let lastQuery = "";
-let justChangedFilters = false; // 👈 naujas flag
-
-// Kai HTMX ruošiasi siųsti užklausą
+// 3️⃣ HTMX request korekcija
 document.body.addEventListener("htmx:configRequest", function (e) {
-  const [path, query] = e.detail.path.split("?");
-  const params = new URLSearchParams(query || "");
+const [path, query] = e.detail.path.split("?");
+const params = new URLSearchParams(query || "");
 
-  const filterKeys = ["size", "category", "q"];
-  const currentFilters = filterKeys.map(k => params.get(k) || "").join("|");
 
-  const sameFilters = currentFilters === lastQuery;
-  const samePath = path === lastRequestPath;
+const filterKeys = ["size", "category", "q"];
+const currentFilters = filterKeys.map(k => params.get(k) || "").join("|");
 
-  // 1️⃣ Jei filtrai pasikeitė – pažymim, kad ką tik keitėsi
-  if (!sameFilters) {
-    justChangedFilters = true;
-    setTimeout(() => (justChangedFilters = false), 600); // 👈 0.6s "langas"
-  }
 
-  // 2️⃣ Jei yra "page" parametras ir tai naujas filtras — resetinam
-  if (params.has("page") && (!sameFilters || !samePath)) {
-    if (!justChangedFilters) {
-      // tik jei ne ką tik po filtro keitimo (kad pagination veiktų iškart)
-      params.delete("page");
-      e.detail.path = path + (params.toString() ? "?" + params.toString() : "");
-      console.log("↩️ Grįžtam į pirmą puslapį dėl naujo filtro:", e.detail.path);
-    } else {
-      console.log("⏸️ Praleidžiam pirmą pagination po filtro (apsauga)");
-    }
-  }
+// 🔒 BACK / FORWARD – NIEKO NELIEČIAM
+if (window.__isHistoryRestore) {
+window.__catalogState.lastQuery = currentFilters;
+return;
+}
 
-  lastRequestPath = path;
-  lastQuery = currentFilters;
+
+const isPagination = params.has("page");
+const filtersChanged = currentFilters !== window.__catalogState.lastQuery;
+
+
+// 🔄 resetinam page tik kai tikrai pasikeitė filtrai
+if (filtersChanged && isPagination && window.__catalogState.lastQuery !== "") {
+params.delete("page");
+}
+
+
+e.detail.path = path + (params.toString() ? "?" + params.toString() : "");
+window.__catalogState.lastQuery = currentFilters;
+
+
+console.log("🔁 Final path:", e.detail.path);
 });
+
 
 // ==========================================================
 // 500 klaidų gaudymas (HTMX + Fetch)
@@ -455,7 +514,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+// ===============================
+// PhotoSwipe init (PRODUCT PAGE)
+// ===============================
+document.addEventListener("DOMContentLoaded", () => {
+if (!window.PhotoSwipeLightbox || !window.PhotoSwipe) return;
 
+
+const gallery = document.querySelector(".product-slider");
+if (!gallery) return;
+
+
+const lightbox = new PhotoSwipeLightbox({
+gallery: ".product-slider",
+children: "a",
+pswpModule: PhotoSwipe,
+
+
+// 🖱️ Mouse wheel zoom
+wheelToZoom: true,
+
+
+// 🧠 Zoom ribos
+maxZoomLevel: 4, // kiek max gali priartinti
+secondaryZoomLevel: 2 // double-click / scroll mid
+});
+
+
+lightbox.init();
+});
 
 
 

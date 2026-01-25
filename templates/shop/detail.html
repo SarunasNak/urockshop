@@ -11,6 +11,189 @@
   <link rel="stylesheet" href="{% static 'fe/vendor/photoswipe/photoswipe.css' %}">
 {% endblock %}
 
+{% block after_header %}
+{% if popup %}
+<div
+    x-data="{
+        openModal: false,
+        showTrigger: false,
+        submitting: false,
+        submitted: false,
+
+        submitPopupForm() {
+            if (this.submitting || this.submitted) return;
+            this.submitting = true;
+
+            const form = this.$refs.popupForm;
+
+            fetch('{% url "marketing:popup_submit" %}', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: new FormData(form),
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                    form.reset();
+                    this.submitted = true;
+
+                    setTimeout(() => {
+                        this.openModal = false;
+                        this.showTrigger = false;
+                        localStorage.setItem('popup_closed_product', '1');
+                        this.submitted = false;
+                    }, 3000);
+                }
+            })
+            .finally(() => {
+                this.submitting = false;
+            });
+        }
+    }"
+    x-init="
+  console.log('POPUP INIT, delay:', {{ popup.delay_seconds }});
+  setTimeout(() => {
+    showTrigger = true;
+  }, {{ popup.delay_seconds }} * 1000);
+"
+>
+    <!-- TRIGGER -->
+    <div
+        x-show="showTrigger"
+        @click="openModal = true"
+        class="cursor-pointer text-brand-maroon text-center pt-6 pb-2 text-sm relative z-30"
+    >
+        {{ popup.title }}
+    </div>
+
+
+   <!-- OVERLAY -->
+   <div
+  x-show="openModal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+  @click.self="openModal = false"
+>
+
+   <div
+  class="bg-white rounded-2xl shadow-2xl relative"
+  style="
+    width: 750px;
+    max-width: calc(100vw - 32px);
+    max-height: 90vh;
+    overflow-y: auto;
+  "
+>
+
+
+<div class="px-4 py-5 sm:py-6 md:py-8 space-y-4 sm:space-y-6">
+
+
+          <!-- TITLE -->
+          <h2 class="text-center text-sm sm:text-base md:text-lg
+                     font-semibold text-brand-maroon leading-snug">
+            {{ popup.title }}
+          </h2>
+
+          <!-- MESSAGE -->
+        <div
+          class="text-center text-xs sm:text-sm
+                 text-gray-600 leading-snug sm:leading-relaxed
+                 mb-6 sm:mb-8"
+        >
+          {{ popup.message|safe }}
+        </div>
+
+<form
+  x-ref="popupForm"
+  @submit.prevent="submitPopupForm"
+  class="space-y-4 pb-6"
+>
+  {% csrf_token %}
+  <input type="hidden" name="popup_id" value="{{ popup.id }}">
+  <input type="hidden" name="source" value="popup_product">
+
+ <!-- 👇 PLOČIO WRAPPERIS (ESMINIS FIX) -->
+  <div class="w-[280px] sm:w-[320px] md:w-[360px] mx-auto space-y-4">
+
+    <input
+      required
+      name="name"
+      placeholder="Vardas"
+      class="w-full border border-gray-300 px-3 py-2 rounded-lg text-sm"
+    >
+
+    <input
+      required
+      name="phone"
+      placeholder="Telefonas"
+      inputmode="numeric"
+      pattern="[0-9]*"
+      class="w-full border border-gray-300 px-3 py-2 rounded-lg text-sm"
+    >
+
+    <input
+      required
+      type="email"
+      name="email"
+      placeholder="El. paštas"
+      class="w-full border border-gray-300 px-3 py-2 rounded-lg text-sm"
+    >
+
+    <input
+      required
+      name="city"
+      placeholder="Miestas"
+      class="w-full border border-gray-300 px-3 py-2 rounded-lg text-sm"
+    >
+
+    <textarea
+      name="message"
+      rows="3"
+      placeholder="Jūsų adresas arba pageidaujama DPD paštomato vieta"
+      class="w-full border border-gray-300 px-3 py-2 rounded-lg text-sm resize-none"
+    ></textarea>
+
+  </div>
+
+            <!-- BUTTONS -->
+            <div class="flex justify-center gap-3 pt-3">
+              <button
+                type="button"
+                @click="openModal = false"
+                class="px-5 py-2 bg-gray-200 rounded-lg text-sm"
+              >
+                Uždaryti
+              </button>
+
+              <button
+                type="submit"
+                class="px-5 py-2 rounded-lg
+                       text-[13px] sm:text-sm leading-tight
+                       text-white bg-brand-maroon
+                       flex items-center justify-center gap-1"
+                :disabled="submitting || submitted"
+              >
+                <span x-show="!submitted">Siųsti</span>
+                <span
+                  x-show="submitted"
+                  class="text-[12px] sm:text-sm leading-tight"
+                >
+                  Išsiųsta ✔
+                </span>
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+
 {% block content %}
   {# preloader gali būti base.html. Jei jo nėra – atkomentuok šitą: #}
   {# <div id="preloader"></div> #}
@@ -23,13 +206,16 @@
         <a href="{% url 'blog:list' %}" class="transition-text duration-300 text-[12px] text-brand-beige hover:text-black pr-3 uppercase">BLOGAS</a> /
       </li>
       <li>
-        <a href="{% url 'catalog:product_list' %}" class="transition-text duration-300 text-[12px] text-brand-beige hover:text-black uppercase">KATALOGAS</a>
+        <a href="{% url 'catalog:product_list' %}" class="transition-text duration-300 text-[12px] text-brand-beige hover:text-black uppercase">E-PARDUOTUVĖ</a>
       </li>
     </ul>
 
-        <section class="grid md:grid-cols-2 items-start relative gap-y-0 gap-x-6">
+        <section
+            class="grid md:grid-cols-2 items-start relative gap-y-0 gap-x-6"
+            x-data
+            >
           {# LEFT: Swiper galerija #}
-          <div class="swiper product-slider w-full">
+          <div class="swiper product-slider w-full" style="z-index: 0 !important; position: relative;">
           <div class="swiper-wrapper relative">
             {% if product.images.exists %}
               {% for pi in product.images.all %}
@@ -192,9 +378,9 @@
 
   <button id="btn-buy"
         type="submit"
-        class="w-full tw-button-bg-mrm inline-block bg-brand-maroon text-white p-3 text-sm hover:opacity-90 transition-colors duration-300"
+        class="w-full tw-button-bg-mrm inline-block bg-brand-maroon text-white p-3 text-sm opacity-70 hover:opacity-90 transition-colors duration-300"
         data-loading-text="Pridedama…"
-        data-success-text="Krepšelyje">
+        data-success-text="Krepšelyje ✓">
   Užsisakyti
 </button>
 </form>
@@ -207,7 +393,7 @@
     <path d="M6.75 13.5C6.75 13.8978 6.59196 14.2794 6.31066 14.5607C6.02936 14.842 5.64782 15 5.25 15C4.85218 15 4.47064 14.842 4.18934 14.5607C3.90804 14.2794 3.75 13.8978 3.75 13.5M15 13.5C15 13.8978 14.842 14.2794 14.5607 14.5607C14.2794 14.842 13.8978 15 13.5 15C13.1022 15 12.7206 14.842 12.4393 14.5607C12.158 14.2794 12 13.8978 12 13.5"
           stroke="#DBDAD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
-  <span>- Nemokamas pristatymas ir grąžinimas</span>
+  <span>- Siuntimo ir grąžinimo paslaugos nemokamos.</span>
 </div>
 
 
@@ -225,7 +411,7 @@
         type="submit"
         class="w-full tw-button-bg-mrm inline-block bg-brand-maroon text-white p-3 text-sm opacity-70 hover:opacity-90 transition-colors duration-300 text-center"
         data-loading-text="Fiksuojama…"
-        data-success-text="Pridėta į krepšelį">
+        data-success-text="Užfiksuota krepšelyje ✓">
   Rezervuoti
 </button>
 </form>
@@ -238,27 +424,47 @@
 
   {% endif %}
 </div>
-
             <div class="text-[8px] md:text-[11px] flex items-center">
-              <svg class="inline-block mr-2" xmlns="http://www.w3.org/2000/svg"
-                width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2
-           19.86 19.86 0 0 1-8.63-3.07
-           19.5 19.5 0 0 1-6-6
-           19.86 19.86 0 0 1-3.11-8.67
-           A2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72
-           c.12.9.3 1.77.57 2.6a2 2 0 0 1-.45 2.11L8.09 9.91
-           a16 16 0 0 0 6 6l1.48-1.09a2 2 0 0 1 2.11-.45
-           c.83.27 1.7.45 2.6.57A2 2 0 0 1 22 16.92z"
-        stroke="#D8D9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <svg class="inline-block mr-2" xmlns="http://www.w3.org/2000/svg"
+        width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2
+         19.86 19.86 0 0 1-8.63-3.07
+         19.5 19.5 0 0 1-6-6
+         19.86 19.86 0 0 1-3.11-8.67
+         A2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72
+         c.12.9.3 1.77.57 2.6a2 2 0 0 1-.45 2.11L8.09 9.91
+         a16 16 0 0 0 6 6l1.48-1.09a2 2 0 0 1 2.11-.45
+         c.83.27 1.7.45 2.6.57A2 2 0 0 1 22 16.92z"
+         stroke="#D8D9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
 
-              Nesate tikri dėl dydžio? Pristatysime pasimatavimui prieš perkant.
-            </div>
-          </div>
-        </div>
-          </div> <!-- čia uždarai vidinį wrapperį -->
-      </div>
+      <span>
+        <!-- MOBILE -->
+        <span class="md:hidden">
+          Abejoji ar tiks? Informuok ir mes asmeniškai pristatysime drabužį.
+        </span>
+
+        <!-- DESKTOP -->
+        <span class="hidden md:inline-block">
+          Abejoji ar tiks? Informuok ir mes asmeniškai pristatysime drabužį išbandyti prieš perkant.
+        </span>
+
+        <!-- LINK -->
+        <!--
+        <a
+          href="#"
+          @click.prevent="window.dispatchEvent(new CustomEvent('open-fit-video'))"
+          class="underline ml-1 text-brand-maroon hover:text-black transition-colors font-bold"
+        >
+          Kaip tai veikia?
+        </a>
+        -->
+      </span>
+    </div>
+    </div>
+    </div>
+    </div> <!-- čia uždarai vidinį wrapperį -->
+    </div>
     </section>
 
 {# SUSIJĘ / REKOMENDUOJAMI (grid 4) #}
@@ -287,7 +493,6 @@
           </a>
 
           <div>
-            {# VIRŠUS: brand KAIRĖJE + kaina DEŠINĖJE (VISADA) #}
             <div class="flex justify-between items-baseline space-x-2">
               <div class="text-[13px] md:text-[16px] text-brand-maroon font-serif mb-1">
                 {% firstof p.brand.name p.brand "" %}
@@ -311,12 +516,10 @@
               </div>
             </div>
 
-            {# VIDURYS: pavadinimas #}
             <div class="text-[10px] md:text-xs mb-1">
               {% firstof p.name p.category.name p.category "" %}
             </div>
 
-            {# APAČIA: Dydis KAIRĖJE (be kainos) #}
             <div class="flex justify-between items-center space-x-2">
               <div class="text-[10px] h-[20px] md:text-xs">
                 {% if p.size %}Dydis {{ p.size }}{% endif %}
@@ -331,8 +534,40 @@
 </section>
 {% endif %}
 
-  </main>
+<!-- GLOBAL FIT VIDEO MODAL – TIKRAI VIRŠ VISKO -->
+<div x-data="{ open: false, videoUrl: '' }"
+     @open-fit-video.window="open = true; videoUrl = 'https://iframe.videodelivery.net/71db479aba0849bb6b6a27a978c860b2'"
+     x-cloak>
+
+  <template x-teleport="body">
+    <div
+      x-show="open"
+      x-transition.opacity
+      x-effect="document.body.style.overflow = open ? 'hidden' : 'auto'"
+      class="fixed inset-0 bg-black/80 backdrop-blur-sm modal-force
+             z-[2147483647] flex items-center justify-center p-4"
+      @click.self="open = false; videoUrl = ''">
+
+      <div class="video-modal-box bg-black rounded-xl overflow-hidden shadow-2xl"
+           style="width:100%; max-width:680px; max-height:80vh; display:flex; flex-direction:column;">
+
+        <div style="position:relative; width:100%; padding-bottom:56.25%;">
+          <iframe
+            :src="videoUrl"
+            class="absolute inset-0 w-full h-full"
+            allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowfullscreen>
+          </iframe>
+        </div>
+
+      </div>
+
+    </div>
+  </template>
+</div>
+</main>
 {% endblock %}
+
 
 {% block scripts_extra %}
 <script>
@@ -409,52 +644,57 @@ document.addEventListener('DOMContentLoaded', function () {
 <script src="{% static 'fe/vendor/photoswipe/photoswipe.umd.min.js' %}"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Inicijuojam Swiper
-  const swiper = new Swiper('.product-slider', {
-    slidesPerView: 1,
-    spaceBetween: 0,
-    loop: false,
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-    breakpoints: {
-      0: { slidesPerView: 1.5, spaceBetween: 10, navigation: false },
-      768:{ slidesPerView: 1, spaceBetween: 0,
-             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' } },
-    },
-  });
+(function () {
+const el = document.querySelector('.product-slider');
+if (!el || el.dataset.swiperReady) return;
 
-  // Tik mobiliems (iki 1023px pločio)
-  if (window.matchMedia("(max-width: 1023px)").matches) {
-    const lightbox = new PhotoSwipeLightbox({
-      gallery: '.product-slider',              // 👈 PAKEISTA čia
-      children: '.swiper-slide a',
-      pswpModule: PhotoSwipe,
-      showHideAnimationType: 'zoom',           // 👌 gražesnis atidarymas
-      bgOpacity: 0.95,                         // šiek tiek tamsesnis fonas
-    });
 
-    lightbox.init();
+function init() {
+if (el.dataset.swiperReady) return;
+el.dataset.swiperReady = '1';
 
-    // Kai atidarai PhotoSwipe — pristabdom Swiper
-    lightbox.on('open', () => {
-      swiper.allowTouchMove = false;
-    });
 
-    // Kai PhotoSwipe užsidaro — vėl įjungiam Swiper
-    lightbox.on('close', () => {
-      swiper.allowTouchMove = true;
-      swiper.update();
-    });
-  } else {
-    // Desktop: neleisti atidaryti PhotoSwipe
-    document.querySelectorAll('.product-slider .swiper-slide a').forEach(a => {
-      a.addEventListener('click', e => e.preventDefault());
-    });
-  }
+const swiper = new Swiper(el, {
+slidesPerView: 1,
+spaceBetween: 0,
+loop: false,
+observer: true,
+observeParents: true,
+resizeObserver: true,
+navigation: {
+nextEl: '.swiper-button-next',
+prevEl: '.swiper-button-prev',
+},
+breakpoints: {
+0: { slidesPerView: 1.5, spaceBetween: 10, navigation: false },
+768: {
+slidesPerView: 1,
+spaceBetween: 0,
+navigation: {
+nextEl: '.swiper-button-next',
+prevEl: '.swiper-button-prev',
+},
+},
+},
 });
+
+
+// extra safety prod layout shiftams
+requestAnimationFrame(() => swiper.update());
+}
+
+
+function waitForLayout() {
+if (el.offsetWidth > 50) {
+init();
+} else {
+requestAnimationFrame(waitForLayout);
+}
+}
+
+
+waitForLayout();
+})();
 </script>
 
 {% endblock %}

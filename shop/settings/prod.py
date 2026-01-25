@@ -17,7 +17,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://www.urock.lt",
 ]
 
-# ========= DB (PostgreSQL) =========
+# ========= DB (PostgreSQL-NEON) =========
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
