@@ -12,16 +12,16 @@
 
 <div style="display: flex; gap: 20px;">
   <div style="flex:1; background: #1a1a1a; color: white; padding: 20px; border-radius: 8px;">
-    🧍‍♂️ <strong>Šiandien</strong>
-    <div style="font-size: 28px; margin-top: 10px;">{{ today_count }}</div>
+    👤 <strong>Lankytojai</strong>
+<div style="font-size: 28px; margin-top: 10px;">{{ visitors }}</div>
   </div>
   <div style="flex:1; background: #1a1a1a; color: white; padding: 20px; border-radius: 8px;">
-    📆 <strong>Šią savaitę</strong>
-    <div style="font-size: 28px; margin-top: 10px;">{{ week_count }}</div>
+    📊 <strong>Sesijos</strong>
+    <div style="font-size: 28px; margin-top: 10px;">{{ sessions }}</div>
   </div>
   <div style="flex:1; background: #1a1a1a; color: white; padding: 20px; border-radius: 8px;">
-    📅 <strong>Šį mėnesį</strong>
-    <div style="font-size: 28px; margin-top: 10px;">{{ month_count }}</div>
+    📄 <strong>Puslapio peržiūros</strong>
+    <div style="font-size: 28px; margin-top: 10px;">{{ pageviews_count }}</div>
   </div>
   <div style="flex:1; background: #1a1a1a; color: white; padding: 20px; border-radius: 8px;">
     ⏱️ <strong>Vid. trukmė</strong>
@@ -62,5 +62,52 @@
   <span>Vidutiniai</span>
   <span>Ilgi</span>
 </div>
+
+<!-- 🔥 TOP PRODUKTAI -->
+<h2 style="margin-top:40px;">🔥 Top produktai pagal peržiūras</h2>
+
+<div style="background:#1a1a1a;color:white;padding:20px;border-radius:8px;">
+<table style="width:100%;">
+<tr>
+<th>Produktas</th>
+<th>Peržiūros</th>
+</tr>
+
+{% for row in top_products %}
+<tr>
+<td>
+  <a href="{{ row.path }}" target="_blank" style="color:#5bc0de;">
+    {{ row.path|cut:"/shop/preke/"|cut:"/" }}
+  </a>
+</td>
+<td>{{ row.views }}</td>
+</tr>
+{% empty %}
+<tr>
+<td colspan="2">Nėra duomenų</td>
+</tr>
+{% endfor %}
+
+</table>
+</div>
+
+<h2 style="margin-top:40px;">📱 Įrenginiai</h2>
+
+<div style="background:#1a1a1a;color:white;padding:20px;border-radius:8px;">
+<table style="width:100%;">
+<tr>
+<th>Įrenginys</th>
+<th>Peržiūros</th>
+</tr>
+
+{% for row in device_stats %}
+<tr>
+<td>{{ row.device }}</td>
+<td>{{ row.total }}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
 
 {% endblock %}

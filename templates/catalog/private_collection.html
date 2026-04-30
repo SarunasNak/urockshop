@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block messages %}{% endblock %}
+{% load static %}
+
+{% block content %}
+
+<div class="container py-10">
+  <div id="catalog-results">
+    {% include "shop/partials/_products_grid.html" %}
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts_extra %}
+<script>
+(function(){
+
+  // 🔹 1. session_id (vienam user)
+  let session_id = localStorage.getItem("pv_session");
+  if (!session_id) {
+    session_id = Math.random().toString(36).substring(2) + Date.now();
+    localStorage.setItem("pv_session", session_id);
+  }
+
+  let start = Date.now();
+
+  function send(duration){
+    fetch("/analytics/track-private/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        session_id: session_id,
+        path: window.location.pathname,
+        duration: duration
+      })
+    });
+  }
+
+  // 🔹 2. kas 5s siunčiam laiką
+  setInterval(function(){
+    let duration = (Date.now() - start) / 1000;
+    send(duration);
+  }, 5000);
+
+  // 🔹 3. išeinant (labai svarbu)
+  window.addEventListener("beforeunload", function(){
+    let duration = (Date.now() - start) / 1000;
+    navigator.sendBeacon("/analytics/track-private/", JSON.stringify({
+      session_id: session_id,
+      path: window.location.pathname,
+      duration: duration
+    }));
+  });
+
+})();
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+

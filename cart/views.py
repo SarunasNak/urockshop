@@ -16,6 +16,8 @@ from .models import TryOnRequest
 from django.core.mail import send_mail
 from django.conf import settings
 
+from catalog.models import PrivateProduct
+
 from checkout.services import get_all_dpd_points
 
 # <<< PAKAITALAS: griežtas importas (jei kas blogai – pamatysit klaidą loguose ir konsolėje)
@@ -58,12 +60,34 @@ def _cart_counts_payload(cart):
 
 def cart_view(request):
     cart = Cart(request)
+
     lines = cart.items()
 
     order_items = [l for l in lines if l.intent == "purchase"]
     try_on_items = [l for l in lines if l.intent == "try_on"]
 
+    is_private = request.session.get("is_private", False)
+
+    private_collection_slug = None
+
+    if is_private:
+        for l in lines:
+            product = l.variant.product
+
+            private = (
+                PrivateProduct.objects
+                .select_related("collection")
+                .filter(product=product)
+                .first()
+            )
+
+            if private:
+                private_collection_slug = private.collection.slug
+                break
+
     ctx = {
+        "is_private": is_private,
+        "private_collection_slug": private_collection_slug,
         "items": try_on_items,                         # „Noriu pasimatuoti“
         "fit_total": sum(l.qty for l in try_on_items),
 
@@ -81,6 +105,7 @@ def cart_view(request):
 
 @require_POST
 def cart_add(request):
+
     mode = (request.POST.get("mode") or "buy").lower()
     intent = "try_on" if mode == "fit" else "purchase"
 
@@ -91,10 +116,36 @@ def cart_add(request):
             return JsonResponse({"ok": False, "error": "Netinkamas prekės ID."}, status=400)
         return redirect("cart:cart_view")
 
-    v = get_object_or_404(
-        Variant.objects.select_related("product"),
-        pk=variant_id, is_active=True, product__is_active=True
-    )
+    v = Variant.objects.select_related("product").filter(pk=variant_id).first()
+    if not v:
+        if _is_ajax(request):
+            return JsonResponse({"ok": False, "error": "Prekė nerasta."}, status=404)
+        return redirect("cart:cart_view")
+
+    is_private_flow = request.POST.get("private_flow") == "1"
+
+    if is_private_flow:
+        request.session["is_private"] = True
+
+    if is_private_flow:
+        # ✔️ leidžiam tik jei produktas yra private kolekcijoje
+        if not PrivateProduct.objects.filter(product=v.product).exists():
+            if _is_ajax(request):
+                return JsonResponse({"ok": False, "error": "Neprieinama prekė."}, status=403)
+            return redirect("cart:cart_view")
+
+    else:
+        # ❗ uždraudžiam private produktus per public
+        if PrivateProduct.objects.filter(product=v.product).exists():
+            if _is_ajax(request):
+                return JsonResponse({"ok": False, "error": "Neprieinama prekė."}, status=403)
+            return redirect("cart:cart_view")
+
+        # ✔️ public – tik active
+        if not v.is_active or not v.product.is_active:
+            if _is_ajax(request):
+                return JsonResponse({"ok": False, "error": "Prekė neaktyvi."}, status=403)
+            return redirect("cart:cart_view")
 
     if intent == "purchase" and getattr(v, "stock", 0) <= 0:
         if _is_ajax(request):
@@ -104,11 +155,15 @@ def cart_add(request):
     cart = Cart(request)
     cart.add(variant_id=v.id, qty=1, intent=intent)
 
+    next_url = request.POST.get("next") or request.META.get("HTTP_REFERER")
+
+    if next_url:
+        request.session["return_url"] = next_url
+
     if _is_ajax(request):
         return JsonResponse(_cart_counts_payload(cart))
 
-    return redirect(request.POST.get("next") or request.META.get("HTTP_REFERER") or "cart:cart_view")
-
+    return redirect(next_url or "cart:cart_view")
 
 @require_POST
 def cart_update(request):
@@ -185,43 +240,39 @@ def tryon_submit(request):
     if not any(l.intent == "try_on" for l in cart.items()):
         return _json_error("Krepšelis tuščias.")
 
-    # 4) normalizuojam laukus
+    ## 4) laukų paėmimas
+    name = (request.POST.get("name") or "").strip()
     email = (request.POST.get("email") or "").strip()
     phone = (request.POST.get("phone") or "").strip()[:32]
-    try:
-        height = int((request.POST.get("height_cm") or "").strip())
-    except Exception:
-        height = None
-    try:
-        weight = int((request.POST.get("weight_kg") or "").strip())
-    except Exception:
-        weight = None
+    comment = (request.POST.get("comment") or "").strip()
 
-    # paprastas „required“ tikrinimas (be regex)
+    # 5) validacija
     missing = {}
+    if not name:
+        missing["name"] = ["Privalomas laukas."]
     if not email:
         missing["email"] = ["Privalomas laukas."]
     if not phone:
         missing["phone"] = ["Privalomas laukas."]
-    if height is None:
-        missing["height_cm"] = ["Privalomas laukas."]
-    if weight is None:
-        missing["weight_kg"] = ["Privalomas laukas."]
+
     if missing:
         return JsonResponse({"ok": False, "errors": missing}, status=400)
 
     if request.POST.get("terms_accepted") not in ("on", "true", "1"):
-        return JsonResponse({"ok": False, "errors": {"terms_accepted": ["Būtina sutikti su sąlygomis."]}}, status=400)
+        return JsonResponse({
+            "ok": False,
+            "errors": {"terms_accepted": ["Būtina sutikti su sąlygomis."]}
+        }, status=400)
 
     marketing = request.POST.get("marketing_consent") in ("on", "true", "1")
 
     # 5) snapshot -> DB
     snapshot = cart.snapshot("try_on")
     tor = TryOnRequest.objects.create(
+        name=name,
         email=email,
         phone=phone,
-        height_cm=height,
-        weight_kg=weight,
+        comment=comment,
         terms_accepted=True,
         marketing_consent=marketing,
         items_json=snapshot,
@@ -235,8 +286,6 @@ def tryon_submit(request):
                 "is_active": True,
                 "source": "cart_tryon",
                 "phone": phone,
-                "height_cm": height,
-                "weight_kg": weight,
             },
         )
 
@@ -263,11 +312,11 @@ def tryon_submit(request):
             unsubscribe_line = ""
 
         # Klientui
-        customer_subject = "Jūsų pasimatavimo užklausa gauta – UROCK"
+        customer_subject = "Jūsų užklausa gauta – UROCK"
         customer_body = (
             "Sveiki,\n\n"
-            "Ačiū! Gavome Jūsų užklausą pasimatuoti pasirinktus drabužius.\n"
-            "Mūsų komanda artimiausiu metu su Jumis susisieks ir suderins vizito laiką.\n\n"
+            "Ačiū! Gavome Jūsų užklausą.\n"
+            "Mūsų komanda artimiausiu metu su Jumis susisieks.\n\n"
             "Jūsų pasirinktos prekės:\n"
             f"{items_text}\n\n"
             "Jei turite klausimų, atsakykite į šį laišką.\n\n"
@@ -286,11 +335,11 @@ def tryon_submit(request):
         # Administratoriui
         admin_subject = "Nauja TRY-ON užklausa – UROCK"
         admin_body = (
-            "Yra nauja try-on užklausa TVS sistemoje.\n\n"
+            "Yra nauja užklausa.\n\n"
+            f"Vardas: {name}\n"
             f"El. paštas: {email}\n"
             f"Tel.: {phone}\n"
-            f"Ūgis: {height or ''} cm\n"
-            f"Svoris: {weight or ''} kg\n"
+            f"Komentaras: {comment}\n"
             f"Rinkodara: {'Taip' if marketing else 'Ne'}\n\n"
             "Prekės:\n"
             f"{items_text}\n"
@@ -310,7 +359,9 @@ def tryon_submit(request):
     # 8) išvalom tik try_on
     cart.clear_try_on()
 
-    # 9) grąžinam mygtuko tekstą ir event'ą (AFTER-SETTLE!)
-    resp = HttpResponse("Rezervacija patvirtinta")
-    resp["HX-Trigger-After-Settle"] = json.dumps({"cart-updated": _cart_counts_payload(cart)})
-    return resp
+    # 9) grąžinam mygtuko tekstą ir event'ą
+    return JsonResponse({
+        "ok": True,
+        "message": "Rezervacija patvirtinta",
+        "cart": _cart_counts_payload(cart)
+    })

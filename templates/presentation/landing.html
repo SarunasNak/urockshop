@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>Privatus UROCK pristatymas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+margin:0;
+font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+background:#faf7f7;
+}
+
+.wrapper{
+min-height:100vh;
+display:flex;
+justify-content:center;
+padding:40px 20px;
+box-sizing:border-box;
+}
+
+@media (min-width:768px){
+.wrapper{
+align-items:center;
+}
+}
+
+.card{
+width:100%;
+max-width:420px;
+}
+
+.brand {
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  margin-bottom: 14px;
+  color: #7a2e2e;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+h1{
+font-size:22px;
+margin-bottom:12px;
+}
+
+p{
+font-size:14px;
+line-height:1.5;
+margin:10px 0;
+color:#111;
+}
+
+.muted{
+  opacity:0.7;
+  font-size:13px;
+  margin-bottom:12px; /* mažesnis tarpas tarp paragrafų */
+  line-height:1.6;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin-bottom:12px;
+border:1px solid #ddd;
+font-size:14px;
+box-sizing:border-box;
+background:white;
+}
+
+input:focus,select:focus{
+outline:none;
+border-color:#7a2e2e;
+}
+
+button{
+width:100%;
+padding:14px;
+background:#000;
+color:#fff;
+border:none;
+font-size:14px;
+cursor:pointer;
+margin-top:6px;
+transition:background 0.2s ease;
+}
+
+button:hover{
+background:#7a2e2e;
+}
+
+.footer{
+margin-top:16px;
+font-size:12px;
+opacity:0.6;
+text-align:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<div class="card">
+
+<p class="brand">UROCK</p>
+
+<h1>UROCK asortimento pristatymai</h1>
+
+<p class="muted">
+Skirta tiems, kurie renkasi gyvą susitikimą ir mieliau perka gyvai nei internetu.
+Kviečiame susipažinti su UROCK bei turimu asortimentu. Skirsime laiko kiekvienam, kuris norės užsukti, apžiūrėti drabužius ir susidaryti įspūdį iš arčiau.
+</p>
+
+<form method="post">
+{% csrf_token %}
+
+<input type="text" name="name" placeholder="Vardas" required>
+
+<input type="email" name="email" placeholder="El. paštas" required>
+
+<input type="text" name="phone" placeholder="Telefonas">
+
+<select name="city" required>
+<option value="">Pasirinkite miestą</option>
+<option value="vilnius">Vilnius</option>
+<option value="kaunas">Kaunas</option>
+</select>
+
+<button type="submit">
+Gauti informaciją apie pristatymą
+</button>
+
+</form>
+
+<div class="footer">
+Informuosime nurodytais kontaktais.
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

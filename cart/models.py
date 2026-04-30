@@ -5,13 +5,14 @@ from django.utils.safestring import mark_safe
 
 
 class TryOnRequest(models.Model):
+    name = models.CharField(max_length=120)
     email = models.EmailField()
     phone = models.CharField(max_length=32)
-    height_cm = models.PositiveIntegerField()
-    weight_kg = models.PositiveIntegerField()
+    comment = models.TextField(blank=True)
+
     terms_accepted = models.BooleanField(default=False)
     marketing_consent = models.BooleanField(default=False)
-    # Krepšelio momentinė kopija (žr. Cart.snapshot)
+
     items_json = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

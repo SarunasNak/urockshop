@@ -4,13 +4,15 @@
 
 {% block head_extra %}
   <!-- Mobile LCP -->
-  <link rel="preload" as="image"
-        href="{% static 'fe/assets/img/modelis-su-svarku-1-mob.avif' %}"
+  <link rel="preload"
+        as="image"
+        href="{% static 'fe/assets/img/canali-jacket-for-men.jpg' %}"
         fetchpriority="high">
 
-  <!-- Desktop LCP (pasirinktinai) -->
-  <link rel="preload" as="image"
-        href="{% static 'fe/assets/img/du-modeliai-su-svarku.avif' %}"
+  <!-- Desktop LCP -->
+  <link rel="preload"
+        as="image"
+        href="{% static 'fe/assets/img/Canali_Blazer_for_men_1.jpg' %}"
         media="(min-width: 768px)">
 {% endblock %}
 
@@ -20,7 +22,7 @@
     <div class="max-w-3xl">
     <p class="mx-auto text-center text-[12px] mb-8 text-brand-maroon block md:hidden">
       Prestižiniai drabužiai vyrams,<br />
-      kurie vertina laiką ir įvaizdį
+      kurkite garderobą kartu su UROCK
     </p>
 
       <h1 class="text-[24px] max-w-[251px] md:max-w-full text-brand-maroon md:text-[40px] font-serif font-normal md:font-bold mb-8">
@@ -31,7 +33,7 @@
         Prabangūs dizainerių drabužiai vyrams, kurie vertina laiką ir įvaizdį
       </p>
       <p class="text-[13px] text-[#C7C9C7] mb-12 hidden md:block">
-      Atrinktos kolekcijos su asmenine stiliaus konsultacija
+      Kuriame stiprų garderobą palaipsniui - kartu su jumis
     </p>
 
       <a
@@ -48,41 +50,38 @@
  <section id="catalog" class="grid md:grid-cols-2 gap-0 mb-12">
   {# Image 1 (HERO / LCP) #}
   <picture>
-    <!-- MOBILE (AVIF + JPG fallback) -->
-    <source media="(max-width: 767px)" type="image/avif"
-            srcset="{% static 'fe/assets/img/modelis-su-svarku-1-mob-320.avif' %} 320w,
-                    {% static 'fe/assets/img/modelis-su-svarku-1-mob.avif' %} 640w"
-            sizes="(max-width: 767px) 92vw, 640px">
-    <source media="(max-width: 767px)" type="image/jpeg"
-            srcset="{% static 'fe/assets/img/modelis-su-svarku-1-mob.jpg' %} 640w"
-            sizes="(max-width: 767px) 92vw, 640px">
-    <!-- DESKTOP -->
-    <source media="(min-width: 768px)" type="image/avif"
-            srcset="{% static 'fe/assets/img/du-modeliai-su-svarku.avif' %}">
-    <img
-      src="{% static 'fe/assets/img/du-modeliai-su-svarku.jpg' %}"
-      alt="zegna-vyriskas-vilnos-paltas-languotas-pilkai-juodas"
-      class="w-full h-auto object-cover"
-      width="800" height="508"
-      loading="eager" decoding="async" fetchpriority="high">
-  </picture>
+  <source
+    media="(max-width: 767px)"
+    srcset="{% static 'fe/assets/img/canali-jacket-for-men.jpg' %}">
+
+  <source
+    media="(min-width: 768px)"
+    srcset="{% static 'fe/assets/img/Canali_Blazer_for_men_1.jpg' %}">
+
+  <img
+    src="{% static 'fe/assets/img/Canali_Blazer_for_men_1.jpg' %}"
+    alt="canali-blazer-for-men"
+    width="800"
+    height="508"
+    class="w-full h-auto object-cover"
+    loading="eager"
+    fetchpriority="high"
+    decoding="async">
+</picture>
 
   {# Image 2 #}
   <picture>
-    <!-- MOBILE -->
-    <source media="(max-width: 767px)" type="image/avif"
-            srcset="{% static 'fe/assets/img/modelis-su-svarku-2-mob-320.avif' %} 320w,
-                    {% static 'fe/assets/img/modelis-su-svarku-2-mob.avif' %} 640w"
-            sizes="(max-width: 767px) 92vw, 640px">
-    <source media="(max-width: 767px)" type="image/jpeg"
-            srcset="{% static 'fe/assets/img/modelis-su-svarku-2-mob.jpg' %} 640w"
-            sizes="(max-width: 767px) 92vw, 640px">
+  <!-- MOBILE -->
+    <source media="(max-width: 767px)"
+      srcset="{% static 'fe/assets/img/louis-vuitton-jacket-for-men.jpg' %} 640w"
+      sizes="(max-width: 767px) 92vw, 640px">
+
     <!-- DESKTOP -->
-    <source media="(min-width: 768px)" type="image/avif"
-            srcset="{% static 'fe/assets/img/modelis-su-svarku-4.avif' %}">
+    <source media="(min-width: 768px)" type="image/jpeg"
+            srcset="{% static 'fe/assets/img/Louis_Vuitton_Jacket_for_men_2.jpg' %}">
     <img
-      src="{% static 'fe/assets/img/modelis-su-svarku-4.jpg' %}"
-      alt="etro-vyriskas-paltas-vilna-rudas"
+      src="{% static 'fe/assets/img/Louis_Vuitton_Jacket_for_men_2.jpg' %}"
+      alt="louis-vuitton-jacket-for-men"
       class="w-full h-auto object-cover"
       width="640" height="508"
       loading="lazy" decoding="async">
@@ -90,20 +89,16 @@
 
   {# Image 3 #}
   <picture>
-    <!-- MOBILE -->
-    <source media="(max-width: 767px)" type="image/avif"
-            srcset="{% static 'fe/assets/img/modelis-su-svarku-3-mob-320.avif' %} 320w,
-                    {% static 'fe/assets/img/modelis-su-svarku-3-mob.avif' %} 640w"
-            sizes="(max-width: 767px) 92vw, 640px">
-    <source media="(max-width: 767px)" type="image/jpeg"
-            srcset="{% static 'fe/assets/img/modelis-su-svarku-3-mob.jpg' %} 640w"
-            sizes="(max-width: 767px) 92vw, 640px">
+     <!-- MOBILE -->
+  <source media="(max-width: 767px)"
+      srcset="{% static 'fe/assets/img/prada-sunglasses-for-men.jpg' %} 640w"
+      sizes="(max-width: 767px) 92vw, 640px">
     <!-- DESKTOP -->
-    <source media="(min-width: 768px)" type="image/avif"
-            srcset="{% static 'fe/assets/img/du-modeliai-su-marskineliais.avif' %}">
+    <source media="(min-width: 768px)" type="image/jpeg"
+             srcset="{% static 'fe/assets/img/Prada_sunglasses_3.jpg' %}">
     <img
-      src="{% static 'fe/assets/img/du-modeliai-su-marskineliais.jpg' %}"
-      alt="saint-laurent-vyriska-odine-striuke-juoda-su-kailiu"
+      src="{% static 'fe/assets/img/Prada_sunglasses_3.jpg' %}"
+      alt="prada-sunglasses-for-men"
       class="w-full h-auto object-cover"
       width="640" height="508"
       loading="lazy" decoding="async">
@@ -112,17 +107,19 @@
   {# Image 4 #}
   <picture>
     <!-- MOBILE -->
-    <source media="(max-width: 767px)" type="image/avif"
-            srcset="{% static 'fe/assets/img/modelis-su-svarku-4-mob-320.avif' %} 320w,
-                    {% static 'fe/assets/img/modelis-su-svarku-4-mob.avif' %} 640w"
-            sizes="(max-width: 767px) 92vw, 640px">
+<source media="(max-width: 767px)"
+      srcset="{% static 'fe/assets/img/zegna-for-men.jpg' %} 640w"
+      sizes="(max-width: 767px) 92vw, 640px">
     <source media="(max-width: 767px)" type="image/jpeg"
-            srcset="{% static 'fe/assets/img/modelis-su-svarku-4-mob.jpg' %} 640w"
+            srcset="{% static 'fe/assets/img/zegna-jacket-for-men.jpg' %} 640w"
             sizes="(max-width: 767px) 92vw, 640px">
     <!-- DESKTOP -->
+    <source media="(min-width: 768px)" type="image/jpeg"
+    srcset="{% static 'fe/assets/img/Zegna_jacket_for_men_4.jpg' %}">
+
     <img
-      src="{% static 'fe/assets/img/Neil-Barrett- svarkas-ir-Salvatore-Ferragamo-marskiniai.jpg' %}"
-      alt="neil-barrett-ir-salvatore-ferragamo"
+      src="{% static 'fe/assets/img/Zegna_jacket_for_men_4.jpg' %}"
+      alt="zegna-jacket-for-men"
       class="w-full h-auto object-cover"
       width="640" height="508"
       loading="lazy" decoding="async">

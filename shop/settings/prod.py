@@ -73,6 +73,13 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "UROCK <info@urock.lt>")
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
+# --- ADMIN ORDER NOTIFICATIONS ---
+ORDER_ADMIN_EMAILS = [
+    "info@urock.lt",
+    "sarunasnakvosas@gmail.com",
+]
+
+
 # --- LOGGING (pasirinktinai, bet naudinga prod aplinkoje) ---
 LOGGING = {
     "version": 1,
@@ -98,3 +105,36 @@ LOGGING = {
 
 # --- CUSTOM PROJECT SETTINGS ---
 MAINTENANCE_COVER = os.getenv("MAINTENANCE_COVER", "false").lower() == "true"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    "handlers": {
+        "file": {
+            "level": "WARNING",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "django_errors.log"),
+        },
+
+        "sqllog": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "django_sql.log"),
+        },
+    },
+
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "WARNING",
+            "propagate": True,
+        },
+
+        "django.db.backends": {
+            "handlers": ["sqllog"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
+}

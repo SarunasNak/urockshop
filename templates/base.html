@@ -66,7 +66,7 @@
     {% block head_extra %}{% endblock %}
   </head>
 
-  <body id="top" class="{% block body_class %}font-mont{% endblock %}">
+  <body id="top" class="{% block body_class %}font-mont{% endblock %} {% if is_private %}private-page{% endif %}">
 
     {# HEADER per bloką, kad 404/500 galėtų „užtildyti“ #}
     {% block header %}

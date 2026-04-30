@@ -4,6 +4,12 @@ from django.views.decorators.http import require_POST
 from .models import PopupLead, MarketingPopup
 from newsletter.models import Subscriber
 
+from .models import PrivatePresentationLead
+
+from django.shortcuts import render, redirect
+
+from .models import PrivatePageVisit
+
 
 @require_POST
 def popup_submit(request):
@@ -51,3 +57,36 @@ def popup_submit(request):
 
     # ---- 6. Atsakymas frontendui ----
     return JsonResponse({"success": True})
+
+def private_presentation(request):
+
+    if request.user.is_staff:
+        return render(request, "presentation/landing.html")
+
+    # 👇 tik 1 kartą per session
+    if not request.session.get("private_visited"):
+        PrivatePageVisit.objects.create()
+        request.session["private_visited"] = True
+
+    if request.method == "POST":
+
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+        city = request.POST.get("city")
+
+        PrivatePresentationLead.objects.create(
+            name=name,
+            email=email,
+            phone=phone,
+            city=city
+        )
+
+        return redirect("marketing:presentation_thanks")
+
+    return render(request, "presentation/landing.html")
+
+
+def presentation_thanks(request):
+    return render(request, "presentation/thanks.html")
+

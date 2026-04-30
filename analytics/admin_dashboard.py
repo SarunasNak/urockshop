@@ -3,8 +3,9 @@ from django.urls import path
 from django.utils import timezone
 from django.template.response import TemplateResponse
 from datetime import datetime
-from django.db.models import Avg, Sum
+from django.db.models import Avg, Sum, Count
 from .models import PageView
+
 
 
 def analytics_overview_view(request):
@@ -24,11 +25,6 @@ def analytics_overview_view(request):
     except Exception:
         end_date = None
 
-    now = timezone.now()
-    today = now.date()
-    start_of_week = now - timezone.timedelta(days=now.weekday())
-    start_of_month = now.replace(day=1)
-
     # 🔹 Bazinis queryset
     pageviews = PageView.objects.all()
 
@@ -40,22 +36,36 @@ def analytics_overview_view(request):
 
     # 🔹 Unikalūs lankytojai
     # 🔹 Unikalūs lankytojai (pagal visitor_id, o ne IP)
-    today_count = pageviews.filter(created_at__date=today).values("visitor_id").distinct().count()
-    week_count = pageviews.filter(created_at__gte=start_of_week).values("visitor_id").distinct().count()
-    month_count = pageviews.filter(created_at__gte=start_of_month).values("visitor_id").distinct().count()
+    visitors = pageviews.values("visitor_id").distinct().count()
+    sessions_count = pageviews.values("session_id").distinct().count()
+    pageviews_count = pageviews.count()
+    device_stats = (
+        pageviews
+        .values("device")
+        .annotate(total=Count("id"))
+    )
 
 
     # 🔹 Vidutinė buvimo trukmė
     avg_duration = pageviews.aggregate(avg_duration=Avg("duration"))["avg_duration"] or 0
 
+    # 🔹 Top produktai pagal peržiūras
+    top_products = (
+        pageviews
+        .filter(path__startswith="/shop/preke/")
+        .values("path")
+        .annotate(views=Count("id"))
+        .order_by("-views")[:50]
+    )
+
     # 🔹 Grupavimas pagal sesiją (viso sesijos trukmė)
-    sessions = pageviews.values("session_id").annotate(total=Sum("duration"))
-    total_sessions = sessions.count() or 1
+    session_durations = pageviews.values("session_id").annotate(total=Sum("duration"))
+    total_sessions = session_durations.count() or 1
 
     # 🔹 Įsitraukimo kategorijos (e-commerce tipui)
-    quick_exits = sessions.filter(total__lt=20).count()           # < 20 s
-    short_visits = sessions.filter(total__gte=20, total__lt=90).count()  # 20–90 s
-    engaged_visits = sessions.filter(total__gte=90).count()       # > 90 s
+    quick_exits = session_durations.filter(total__lt=20).count()
+    short_visits = session_durations.filter(total__gte=20, total__lt=90).count()
+    engaged_visits = session_durations.filter(total__gte=90).count()
 
     # 🔹 Procentai
     quick_pct = round((quick_exits / total_sessions) * 100, 1)
@@ -67,13 +77,11 @@ def analytics_overview_view(request):
         **admin.site.each_context(request),
         "title": "📊 Analytics Overview",
 
-        # viršutiniai rodikliai
-        "today_count": today_count,
-        "week_count": week_count,
-        "month_count": month_count,
+        "visitors": visitors,
+        "sessions": sessions_count,
+        "pageviews_count": pageviews_count,
         "avg_duration": round(avg_duration, 1),
 
-        # įsitraukimo blokas
         "quick_exits": quick_exits,
         "short_visits": short_visits,
         "engaged_visits": engaged_visits,
@@ -81,7 +89,10 @@ def analytics_overview_view(request):
         "short_pct": short_pct,
         "engaged_pct": engaged_pct,
 
-        # datų filtrai
+        "top_products": top_products,
+
+        "device_stats": device_stats,
+
         "start_date": start_str or "",
         "end_date": end_str or "",
     }

@@ -64,7 +64,7 @@ def send_order_emails(order, *, customer_email=None):
     """
     # Iš ko siųsti ir kam adminui
     from_email = getattr(settings, "DEFAULT_FROM_EMAIL", "UROCK <info@urock.lt>")
-    admin_to   = [getattr(settings, "ORDER_ADMIN_EMAIL", "info@urock.lt")]
+    admin_to = getattr(settings, "ORDER_ADMIN_EMAILS", ["info@urock.lt"])
 
     # Gavėjo el. paštas (iš argumento ar modelio)
     customer_email = (

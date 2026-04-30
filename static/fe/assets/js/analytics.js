@@ -74,13 +74,16 @@
     // 🔹 Siuntimo funkcija
     window.sendEvent = function (name, data = {}) {
         const payload = {
-            visitor_id: visitorId,
-            session_id: sessionId,
-            path: pagePath,
-            event_name: name,
-            data: data,
-            referrer: document.referrer || null,
-        };
+        visitor_id: visitorId,
+        session_id: sessionId,
+        path: pagePath,
+        event_name: name,
+        data: data,
+        referrer: document.referrer || null,
+        device: /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+            ? "mobile"
+            : "desktop"
+    };
 
         navigator.sendBeacon
             ? navigator.sendBeacon(endpoint, JSON.stringify(payload))

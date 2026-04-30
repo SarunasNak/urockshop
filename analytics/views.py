@@ -7,6 +7,7 @@ from .models import PageView, Event, hash_ip
 from django.db.models import Count
 from django.shortcuts import render
 from collections import Counter
+from .models import PrivateVisit
 
 
 @csrf_exempt
@@ -133,3 +134,45 @@ def events_overview(request):
     }
     from django.contrib.admin.sites import site
     return render(request, "admin/analytics/events_overview.html", context)
+
+@csrf_exempt
+def track_private(request):
+    if request.method != "POST":
+        return JsonResponse({"ok": False})
+
+    try:
+        data = json.loads(request.body)
+    except:
+        return JsonResponse({"ok": False})
+
+    path = data.get("path")
+    session_id = data.get("session_id")
+
+    if not path or "/private/" not in path or not session_id:
+        return JsonResponse({"ok": True})
+
+    duration = float(data.get("duration", 0))
+
+    if duration < 1:
+        return JsonResponse({"ok": True})
+
+    collection = path.split("/private/")[-1].strip("/")
+
+    pv = PrivateVisit.objects.filter(
+        session_id=session_id,
+        collection=collection
+    ).order_by("-created_at").first()
+
+    if pv:
+        if duration > pv.duration:
+            pv.duration = duration
+            pv.save(update_fields=["duration"])
+    else:
+        PrivateVisit.objects.create(
+            session_id=session_id,
+            collection=collection,
+            path=path,
+            duration=duration,
+        )
+
+    return JsonResponse({"ok": True})

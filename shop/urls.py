@@ -26,6 +26,7 @@ sitemaps = {
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", include(("marketing.urls", "marketing"), namespace="marketing")),
 
     # SSR maršrutai (šablonai)
     path("", HomeView.as_view(), name="home"),
@@ -41,6 +42,7 @@ urlpatterns = [
     path("unsubscribe/", unsubscribe_view, name="unsubscribe"),
     path("report-error/", report_error, name="report_error"),
     path("discounts/", include("discounts.urls")),
+
 
     # API
     path("api/v1/", include("catalog.urls_api")),

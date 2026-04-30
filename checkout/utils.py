@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.db import transaction
+from catalog.models import PrivateProduct
 
 def mark_paid_and_decrease_stock(order):
     """
@@ -33,3 +34,21 @@ def mark_paid_and_decrease_stock(order):
         if order.status != "paid":
             order.status = "paid"
             order.save(update_fields=["status"])
+
+        # 5) jei tai private produktas – pažymim kaip SOLD
+        try:
+            products = {
+                item.variant.product
+                for item in order.items.select_related("variant")
+                if item.variant and item.variant.product
+            }
+
+            private_items = PrivateProduct.objects.filter(product__in=products)
+
+            for private_item in private_items:
+                if not private_item.is_sold:
+                    private_item.is_sold = True
+                    private_item.save(update_fields=["is_sold"])
+
+        except Exception:
+            pass

@@ -205,14 +205,6 @@
 <section class="pb-[50px]">
   <div class="container pt-[45px]">
     {# Viršutinė smulki navigacija (mobile) #}
-    <ul class="flex md:hidden space-x-2 lg:space-x-5 text-[10px] justify-center mb-[50px] pt-6 md:pt-8">
-      <li>
-        <a href="{% url 'about' %}" class="text-brand-beige hover:text-black p-[10px]">APIE MUS</a> /
-      </li>
-      <li>
-        <a href="{% url 'blog:list' %}" class="text-brand-beige hover:text-black p-[10px]">BLOGAS</a>
-      </li>
-    </ul>
 
     <div class="container mb-[50px] relative">
       <div class="absolute right-0 hidden lg:block font-serif">
@@ -234,6 +226,7 @@
   hx-target="#catalog-results"
   hx-push-url="false"
   hx-indicator="#catalog-loading"
+  data-filter-form
 >
   {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
 

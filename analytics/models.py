@@ -4,6 +4,7 @@ from django.utils import timezone
 import hashlib
 
 
+
 def hash_ip(ip_address):
     if not ip_address:
         return None
@@ -34,3 +35,19 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.name} @ {self.pageview.path}"
+
+class PrivateVisit(models.Model):
+    session_id = models.CharField(max_length=64, db_index=True)
+    visitor_id = models.CharField(max_length=64, null=True, blank=True)
+
+    collection = models.CharField(max_length=100, db_index=True)
+
+    path = models.CharField(max_length=255)
+    source = models.CharField(max_length=50, default="direct")
+    device = models.CharField(max_length=20, default="unknown")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    duration = models.FloatField(default=0.0)
+
+    def __str__(self):
+        return f"{self.collection} - {self.duration}s"

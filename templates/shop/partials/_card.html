@@ -1,7 +1,13 @@
 {% load static %}
 
 <div>
-  <a href="{{ product.get_absolute_url }}" class="relative block w-full group" aria-label="{{ product.name }}">
+  {% if is_private and product.is_sold %}
+      <div class="relative block w-full group cursor-not-allowed">
+    {% else %}
+      <a href="{% if is_private %}{% url 'catalog:private_product_detail' product.slug %}{% else %}{{ product.get_absolute_url }}{% endif %}"
+         class="relative block w-full group" aria-label="{{ product.name }}">
+    {% endif %}
+
     {% with cover=product.primary_image_url %}
       {% if cover %}
         <img
@@ -28,7 +34,11 @@
         loading="lazy"
       >
     {% endif %}
+  {% if is_private and product.is_sold %}
+  </div>
+{% else %}
   </a>
+{% endif %}
 
   {% with variant=product.variants.first %}
     {% if variant %}
@@ -39,15 +49,23 @@
 
         {# KAINOS BLOKAS: rodo kainą tiek desktop, tiek mobile #}
         <div class="flex flex-col items-end">
-          {% if variant.compare_at_price and variant.compare_at_price > variant.price %}
-            <span class="line-through text-gray-400 text-[13px] md:text-[14px]">
-              {{ variant.compare_at_price }}€
-            </span>
-          {% else %}
-          <span class="text-black font-normal text-[13px] md:text-[14px]">
-            {{ variant.price }}€
-          </span>
-          {% endif %}
+
+     {% if is_private and product.is_sold %}
+     <div class="inline-block bg-brand-maroon text-white px-2 py-[2px] text-[10px] md:text-[14px] font-semibold rounded-sm whitespace-nowrap">
+        PARDUOTA
+      </div>
+
+      {% elif variant.compare_at_price and variant.compare_at_price > variant.price %}
+        <span class="line-through text-gray-400 text-[13px] md:text-[14px]">
+          {{ variant.compare_at_price }}€
+        </span>
+
+      {% else %}
+        <span class="text-black font-normal text-[13px] md:text-[14px]">
+          {{ variant.price }}€
+        </span>
+      {% endif %}
+
         </div>
       </div>  {# ← čia uždarom viršutinį flex su brand ir kaina #}
 
@@ -57,16 +75,21 @@
 
       {# Eilutė: KAIRĖJE dydis, DEŠINĖJE visas badge (-% + kaina) #}
       <div class="flex justify-between items-center space-x-2 mt-1">
-        <div class="text-[10px] h-[20px] md:text-xs">
-          {% if product.size_display %}Dydis {{ product.size_display }}{% endif %}
-        </div>
 
-        {% if variant.compare_at_price and variant.compare_at_price > variant.price %}
-          <div>
-            {% include "shop/partials/_discount_badge.html" with price=variant.price original_price=variant.compare_at_price only %}
-          </div>
-        {% endif %}
-      </div>
+  <div class="text-[10px] h-[20px] md:text-xs">
+    {% if product.size_display %}Dydis {{ product.size_display }}{% endif %}
+  </div>
+
+  {% if is_private and product.is_sold %}
+    {# nieko nerodom apačioje #}
+
+  {% elif variant.compare_at_price and variant.compare_at_price > variant.price %}
+    <div>
+      {% include "shop/partials/_discount_badge.html" with price=variant.price original_price=variant.compare_at_price variant=variant %}
+    </div>
+  {% endif %}
+
+</div>
     {% endif %}
   {% endwith %}
 </div>

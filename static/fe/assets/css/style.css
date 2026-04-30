@@ -101,6 +101,7 @@ a {
   }
 }
 
+/*
 .tw-button-bg-mrm {
   background: url(../img/marmuras_sviesiai_pilkas_minimal.jpg);
   background-size: cover;
@@ -114,6 +115,7 @@ a {
   background-repeat: no-repeat;
   background-position: center;
 }
+*/
 /* Full-screen preloader */
 #preloader {
   position: fixed;
@@ -346,10 +348,10 @@ a {
 
 /* Kad turinys neliptų po header'iu (aukštį pasireguliuok pagal dizainą) */
 @media (min-width: 768px){
-  body { padding-top: 92.5px; }
+  body { padding-top: 120px; }
 }
 @media (max-width: 767.98px){
-  body { padding-top: 68px; }
+  body { padding-top: 120px; }
 }
 
 /* Marquee (viršutinė ruda juosta) */
@@ -792,11 +794,16 @@ a {
 }
 
 
-/* --- MARMURO MYGTUKAI --- */
+/* ==================================================
+   LEGACY: MARMURO MYGTUKAI (LAIKINAI IŠJUNGTA)
+   Išjungta pereinant prie bordo dizaino
+   ================================================== */
+
+/*
 .tw-button-bg-mrm {
   display: inline-block;
   background: url("../img/marmuras_sviesiai_pilkas_minimal.jpg") center/cover no-repeat !important;
-  color: #0A0909 !important; /* tamsus tekstas ant šviesaus marmuro */
+  color: #0A0909 !important;
   border-radius: 4px;
   padding: 12px 20px;
   text-align: center;
@@ -804,12 +811,12 @@ a {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Hover – tamsesnis marmuras, baltas tekstas */
 .tw-button-bg-mrm:hover,
 .tw-button-bg-mrm:focus-visible {
   background: url("../img/marmuras_tamsiai_pilkas_minimal.jpg") center/cover no-repeat !important;
   color: #ffffff !important;
 }
+*/
 
 button,
 [type="button"],
@@ -834,4 +841,44 @@ button.border-b {
    ================================ */
 .no-headroom .header {
   transform: translateY(0) !important;
+}
+
+/* ==========================
+   BUTTON COLOR SYSTEM
+   ========================== */
+
+/* BASE – visiems */
+.tw-button-bg-mrm {
+  border: 1px solid #6D1F36 !important;
+  transition: all .2s ease;
+}
+
+/* PRIMARY – Užsisakyti */
+.tw-button-bg-mrm.primary {
+  background: #6D1F36 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.tw-button-bg-mrm.primary:hover {
+  background: #521628 !important;
+}
+
+/* SECONDARY – Rezervuoti */
+.tw-button-bg-mrm.secondary {
+  background: rgba(109,31,54,0.04) !important;
+  color: #6D1F36 !important;
+  border: 1px solid rgba(109,31,54,0.6) !important;
+  transition: all .25s ease;
+}
+
+.tw-button-bg-mrm.secondary:hover {
+  background: rgba(109,31,54,0.10) !important;
+  border-color: #6D1F36 !important;
+}
+
+@media (max-width: 767.98px){
+  body.private-page {
+    padding-top: 40px !important;
+  }
 }

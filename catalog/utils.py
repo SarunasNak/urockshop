@@ -87,53 +87,55 @@ def auto_related_for(product: Product, limit: int = 4) -> List[Product]:
 # Balansuotas produktų rodymas (ant modelio / ant žemės)
 # ----------------------------------------------------------
 
+# ----------------------------------------------------------
+# Balansuotas produktų rodymas (ant modelio / ant žemės)
+# ----------------------------------------------------------
+
 def get_balanced_products(products, per_page: int = 12) -> list[Product]:
     """
-    Grąžina subalansuotą produktų sąrašą iš pateikto sąrašo (ar queryset),
-    kad puslapyje būtų vizualiai maišyti produktai ant modelio ir ant žemės.
-    Išlaiko naujumo tvarką (created_at).
+    Globaliai subalansuoja visą produktų sąrašą,
+    kad on_model būtų tolygiai paskirstyti per visus puslapius.
     """
-    # paverčiam į list jei dar ne
+
     products = list(products)
 
-    # atskiriam į dvi grupes pagal on_model
+    if not products:
+        return []
+
+    # atskiriam grupes
     model_products = [p for p in products if p.on_model]
     ground_products = [p for p in products if not p.on_model]
 
-    total_model = len(model_products)
-    total_ground = len(ground_products)
-    total = total_model + total_ground
-    if total == 0:
-        return []
+    total = len(products)
 
-    # proporcijos pagal realų santykį
-    model_ratio = total_model / total
-    expected_model_count = round(per_page * model_ratio)
-    expected_ground_count = per_page - expected_model_count
+    if not model_products or not ground_products:
+        # jei viena grupė tuščia – grąžinam kaip yra
+        return products
 
-    selected_model = model_products[:expected_model_count]
-    selected_ground = ground_products[:expected_ground_count]
+    model_count = len(model_products)
+    model_ratio = model_count / total
 
-    mixed = []
-    model_idx, ground_idx = 0, 0
-    model_share = expected_model_count / per_page if per_page else 0
-    model_next = 0.0
+    result = []
 
-    for i in range(per_page):
-        if model_next <= model_share and model_idx < len(selected_model):
-            mixed.append(selected_model[model_idx])
-            model_idx += 1
-            model_next += (1 - model_share)
-        elif ground_idx < len(selected_ground):
-            mixed.append(selected_ground[ground_idx])
-            ground_idx += 1
-            model_next -= model_share
-        else:
-            if model_idx < len(selected_model):
-                mixed.append(selected_model[model_idx])
-                model_idx += 1
-            elif ground_idx < len(selected_ground):
-                mixed.append(selected_ground[ground_idx])
-                ground_idx += 1
+    model_i = 0
+    ground_i = 0
 
-    return mixed
+    model_step = 1 / model_ratio if model_ratio > 0 else float("inf")
+    next_model_at = 0.0
+
+    for i in range(total):
+
+        if i >= next_model_at and model_i < model_count:
+            result.append(model_products[model_i])
+            model_i += 1
+            next_model_at += model_step
+
+        elif ground_i < len(ground_products):
+            result.append(ground_products[ground_i])
+            ground_i += 1
+
+        elif model_i < model_count:
+            result.append(model_products[model_i])
+            model_i += 1
+
+    return result

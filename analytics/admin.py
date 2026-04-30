@@ -6,6 +6,7 @@ from . import admin_dashboard
 from django.urls import path
 from django.shortcuts import redirect
 from . import views
+from .models import PrivateVisit
 
 
 # ==========================
@@ -72,3 +73,57 @@ class EventAdmin(admin.ModelAdmin):
             ),
         ]
         return custom_urls + urls
+
+
+# ==========================
+# 🛍️Private visits
+# ==========================
+@admin.register(PrivateVisit)
+class PrivateVisitAdmin(admin.ModelAdmin):
+    list_display = (
+        "collection",
+        "duration",
+        "engagement",
+        "source",
+        "device",
+        "created_at",
+    )
+
+    list_filter = (
+        "collection",
+        "source",
+        "device",
+        "created_at",
+    )
+
+    search_fields = ("collection", "session_id", "path")
+
+    date_hierarchy = "created_at"
+    ordering = ("-created_at",)
+
+    readonly_fields = (
+        "session_id",
+        "visitor_id",
+        "collection",
+        "path",
+        "source",
+        "device",
+        "duration",
+        "created_at",
+    )
+
+    # 🔹 PRIDEDAM tavo DurationRangeFilter
+    def get_list_filter(self, request):
+        filters = list(super().get_list_filter(request))
+        filters.append(DurationRangeFilter)
+        return filters
+
+    # 🔹 Engagement (paliekam kaip turi)
+    def engagement(self, obj):
+        if obj.duration < 5:
+            return "❌ bounce"
+        elif obj.duration < 30:
+            return "⚠️ weak"
+        else:
+            return "🔥 engaged"
+    engagement.short_description = "Engagement"

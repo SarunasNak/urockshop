@@ -1,5 +1,7 @@
 from django.contrib import admin
 from .models import MarketingPopup, PopupLead
+from .models import PrivatePresentationLead
+from .models import PrivatePageVisit
 
 @admin.register(MarketingPopup)
 class MarketingPopupAdmin(admin.ModelAdmin):
@@ -40,5 +42,17 @@ class PopupLeadAdmin(admin.ModelAdmin):
     )
     readonly_fields = ("created_at",)
     ordering = ("-created_at",)
+
+@admin.register(PrivatePresentationLead)
+class PrivatePresentationLeadAdmin(admin.ModelAdmin):
+    list_display = ("name", "email", "city", "created_at")
+    list_filter = ("city", "created_at")
+    search_fields = ("name", "email")
+
+@admin.register(PrivatePageVisit)
+class PrivatePageVisitAdmin(admin.ModelAdmin):
+    list_display = ("id", "created")
+    ordering = ("-created",)
+
 
 

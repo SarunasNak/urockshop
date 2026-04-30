@@ -13,6 +13,11 @@ from django.http import Http404
 
 from .models import Category, Product, ProductImage, Size
 
+from .models import PrivateCollection
+from catalog.models import PrivateProduct
+
+
+from checkout.models import Order
 
 # ----- Helperiai -------------------------------------------------------------
 
@@ -127,17 +132,21 @@ class ProductListView(View):
         # Rikiuojam pagal prioritetą ir naujumą
         qs = qs.order_by("size_priority", "-created_at")
 
-        # Įprastas puslapiavimas
-        paginator = Paginator(qs, self.paginate_by)
+        # ✅ 1. Paimam VISUS produktus
+        all_products = list(qs)
+
+        # ✅ 2. GLOBALIAI subalansuojam
+        balanced_all = get_balanced_products(all_products)
+
+        # ✅ 3. Tik tada puslapiuojam
+        paginator = Paginator(balanced_all, self.paginate_by)
         page_number = request.GET.get("page") or 1
         page_obj = paginator.get_page(page_number)
 
-        # ✅ Balansuojam produktus šiame puslapyje
-        balanced_products = get_balanced_products(list(page_obj.object_list), per_page=self.paginate_by)
-        page_obj.object_list = balanced_products
-
         page_range = paginator.get_elided_page_range(
-            number=page_obj.number, on_each_side=1, on_ends=1
+            number=page_obj.number,
+            on_each_side=1,
+            on_ends=1
         )
 
         # --- SEO ---
@@ -280,3 +289,72 @@ def category_redirect(request, slug):
 
     # jei ne — nėra nei kategorijos, nei produkto → 404
     raise Http404
+
+
+def private_collection_view(request, slug):
+    collection = get_object_or_404(
+        PrivateCollection,
+        slug=slug,
+        is_active=True
+    )
+
+    items = collection.items.select_related("product").order_by("position")
+    for item in items:
+        item.product.is_sold = item.is_sold
+
+    products = [item.product for item in items]
+
+    # 👇 PADAROM kaip shop
+    paginator = Paginator(products, 12)  # gali keisti kiekį
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "catalog/private_collection.html", {
+        "collection": collection,
+        "page_obj": page_obj,
+        "is_private": True,
+        "hide_cart": True,
+    })
+
+def private_product_detail_view(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+
+    private_item = (
+        PrivateProduct.objects
+        .select_related("collection")
+        .filter(product=product)
+        .first()
+    )
+
+    # 👇 SOLD tik iš PrivateProduct
+    if private_item:
+        product.is_sold = private_item.is_sold
+    else:
+        product.is_sold = False
+
+    related_products = []
+
+    if private_item:
+        items = (
+            private_item.collection.items
+            .select_related("product")
+            .exclude(product=product)
+            .order_by("position")
+        )
+
+        filtered = []
+        for item in items:
+            if not item.is_sold:   # 👈 NAUDOJAM TIK ČIA
+                filtered.append(item.product)
+
+            if len(filtered) == 4:
+                break
+
+        related_products = filtered
+
+    return render(request, "shop/detail.html", {
+        "product": product,
+        "is_private": True,
+        "hide_cart": False,
+        "related_products": related_products,
+    })

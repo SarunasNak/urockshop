@@ -350,12 +350,11 @@ document.body.addEventListener("htmx:afterOnLoad", () => {
 })();
 
 // ==========================================================
-//  Galutinė versija — URL nebeauga, filtrai lieka švarūs
+// ✅ SIMPLE FILTER (RESET PAGE ALWAYS)
 // ==========================================================
 window.submitCatalogFilter = function (form) {
-  const base = new URL(form.getAttribute("hx-get") || form.action, window.location.origin);
-  const basePath = base.pathname;
 
+  const base = new URL(form.getAttribute("hx-get") || form.action, location.origin);
   const params = new URLSearchParams();
 
   const q = form.querySelector('[name=q]')?.value?.trim();
@@ -366,77 +365,21 @@ window.submitCatalogFilter = function (form) {
   if (size) params.set("size", size);
   if (category) params.set("category", category);
 
-  const cleanUrl = params.toString()
-    ? `${basePath}?${params.toString()}`
-    : basePath;
+  // ✅ FILTRAS = VISADA PIRMAS PUSLAPIS
+  params.delete("page");
 
-  // 1️⃣ siunčiam HTMX
-  htmx.trigger(form, "submit");
+  const finalUrl = params.toString()
+    ? `${base.pathname}?${params.toString()}`
+    : base.pathname;
 
-  // 2️⃣ atnaujinam URL
-  history.replaceState({}, "", cleanUrl);
+  // ✅ atnaujinam URL
+  history.replaceState({}, "", finalUrl);
 
-  // 3️⃣ informuojam JS state
-  window.__catalogState.lastQuery = params.toString();
+  // ✅ siunčiam HTMX
+  htmx.ajax("GET", finalUrl, "#catalog-results");
 
-  console.log("✅ Filtras išsiųstas į:", cleanUrl);
+  console.log("✅ FILTER →", finalUrl);
 };
-
-// ==========================================================
-// ✅ VIENINTELIS HTMX configRequest (FILTRAI + PAGINATION)
-// ==========================================================
-
-
-// 1️⃣ init state
-window.__catalogState = window.__catalogState || {
-lastQuery: ""
-};
-
-
-// 2️⃣ init iš URL (fix pirmam pagination clickui)
-(function initCatalogStateFromUrl() {
-const params = new URLSearchParams(window.location.search);
-const filterKeys = ["size", "category", "q"];
-window.__catalogState.lastQuery = filterKeys
-.map(k => params.get(k) || "")
-.join("|");
-})();
-
-
-// 3️⃣ HTMX request korekcija
-document.body.addEventListener("htmx:configRequest", function (e) {
-const [path, query] = e.detail.path.split("?");
-const params = new URLSearchParams(query || "");
-
-
-const filterKeys = ["size", "category", "q"];
-const currentFilters = filterKeys.map(k => params.get(k) || "").join("|");
-
-
-// 🔒 BACK / FORWARD – NIEKO NELIEČIAM
-if (window.__isHistoryRestore) {
-window.__catalogState.lastQuery = currentFilters;
-return;
-}
-
-
-const isPagination = params.has("page");
-const filtersChanged = currentFilters !== window.__catalogState.lastQuery;
-
-
-// 🔄 resetinam page tik kai tikrai pasikeitė filtrai
-if (filtersChanged && isPagination && window.__catalogState.lastQuery !== "") {
-params.delete("page");
-}
-
-
-e.detail.path = path + (params.toString() ? "?" + params.toString() : "");
-window.__catalogState.lastQuery = currentFilters;
-
-
-console.log("🔁 Final path:", e.detail.path);
-});
-
 
 // ==========================================================
 // 500 klaidų gaudymas (HTMX + Fetch)
@@ -514,35 +457,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// ===============================
-// PhotoSwipe init (PRODUCT PAGE)
-// ===============================
-document.addEventListener("DOMContentLoaded", () => {
-if (!window.PhotoSwipeLightbox || !window.PhotoSwipe) return;
 
-
-const gallery = document.querySelector(".product-slider");
-if (!gallery) return;
-
-
-const lightbox = new PhotoSwipeLightbox({
-gallery: ".product-slider",
-children: "a",
-pswpModule: PhotoSwipe,
-
-
-// 🖱️ Mouse wheel zoom
-wheelToZoom: true,
-
-
-// 🧠 Zoom ribos
-maxZoomLevel: 4, // kiek max gali priartinti
-secondaryZoomLevel: 2 // double-click / scroll mid
-});
-
-
-lightbox.init();
-});
 
 
 

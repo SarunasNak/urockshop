@@ -7,6 +7,10 @@ from django.apps import apps
 from django.urls import reverse
 import os
 from django_ckeditor_5.fields import CKEditor5Field
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
+from django.conf import settings
 
 # ---- helper upload kelias: products/<SKU>/filename ----
 def product_upload_to(instance, filename):
@@ -20,6 +24,22 @@ def product_upload_to(instance, filename):
     pk = getattr(product, "pk", None)
     folder = f"products/{pk if pk else 'tmp'}"
     return os.path.join(folder, filename)
+
+def resize_image(image_field, max_width=2000, quality=72):
+    img = Image.open(image_field)
+
+    if img.mode != "RGB":
+        img = img.convert("RGB")
+
+    width, height = img.size
+
+    if width > max_width:
+        img.thumbnail((max_width, max_width*2), Image.LANCZOS)
+
+    buffer = BytesIO()
+    img.save(buffer, format="JPEG", quality=quality, optimize=True)
+
+    return ContentFile(buffer.getvalue())
 
 class Category(models.Model):
     name = models.CharField(max_length=120)
@@ -55,6 +75,7 @@ class Size(models.Model):
 
     def __str__(self):
         return self.label
+
 
 class Product(models.Model):
     sku = models.CharField(
@@ -161,13 +182,46 @@ class Product(models.Model):
         return f"UR{n+1:04d}"
 
     def _ensure_slug(self):
-        if not self.slug:
-            base = f"{self.brand}-{self.name}"
-            if self.sku:
-                base = f"{base}-{self.sku}"
-            self.slug = slugify(base)
+        base = f"{self.brand} {self.name}"
+
+        if self.sku:
+            base = f"{base} {self.sku}"
+
+        self.slug = slugify(base)
 
     def save(self, *args, **kwargs):
+
+         # --- resize listing images only if new ---
+        if self.main_image and not self.pk:
+            resized = resize_image(self.main_image, 800)
+            self.main_image.save(self.main_image.name, resized, save=False)
+
+        if self.hover_image and not self.pk:
+            resized = resize_image(self.hover_image, 800)
+            self.hover_image.save(self.hover_image.name, resized, save=False)
+
+
+        # --- ALT auto generation ---
+
+        name = self.name or ""
+
+        # jei name jau turi brand – nedubliuojam
+        if self.brand and self.brand.lower() in name.lower():
+            base_alt = name
+        else:
+            base_alt = f"{self.brand} {name}".strip()
+
+        generated_main = f"{base_alt} vyrams".strip()
+        generated_hover = f"{base_alt} detalė".strip()
+
+        # visada perrašom ALT
+        # generuojam tik jei ALT tuščias
+        if not self.main_image_alt:
+            self.main_image_alt = generated_main
+
+        if not self.hover_image_alt:
+            self.hover_image_alt = generated_hover
+
         # 1) užtikrinam SKU ir slug
         if not self.sku:
             for _ in range(5):
@@ -220,6 +274,9 @@ class ProductImage(models.Model):
     """Papildomos nuotraukos produkto detalei (kortelei atidarius)."""
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
     image = models.ImageField(upload_to=product_upload_to)
+    zoom_image = models.ImageField(upload_to=product_upload_to, null=True, blank=True)
+    mobile_image = models.ImageField(upload_to=product_upload_to, null=True, blank=True)
+
     alt = models.CharField(max_length=160, blank=True)
     sort = models.PositiveIntegerField(default=0)
 
@@ -231,6 +288,94 @@ class ProductImage(models.Model):
             return format_html('<img src="{}" style="height:80px; border-radius:6px;" />', self.image.url)
         return "—"
     preview.short_description = "Preview"
+
+    def save(self, *args, **kwargs):
+
+        # --- ALT auto generation (tik jei ALT tuščias) ---
+        if not self.alt and self.product:
+            parts = [self.product.brand, self.product.name]
+            base_alt = " ".join([p for p in parts if p]).strip()
+
+            if base_alt:
+                self.alt = base_alt
+
+        old_image = None
+        if self.pk:
+            try:
+                old = ProductImage.objects.get(pk=self.pk)
+                old_image = old.image
+            except ProductImage.DoesNotExist:
+                pass
+
+        super().save(*args, **kwargs)
+
+        if self.image and (old_image != self.image):
+
+            with Image.open(self.image) as img:
+
+                if img.mode != "RGB":
+                    img = img.convert("RGB")
+
+                # ---- SLIDER IMAGE (1200px) ----
+                slider = img.copy()
+
+                if slider.width > 1200:
+                    slider.thumbnail((1200, 2400), Image.LANCZOS)
+
+                slider.save(
+                    self.image.path,
+                    format="JPEG",
+                    quality=72,
+                    optimize=True,
+                    progressive=True,
+                    subsampling=2
+                )
+
+                # ---- ZOOM IMAGE (1600px) ----
+                zoom = img.copy()
+
+                if zoom.width > 1600:
+                    zoom.thumbnail((1600, 3200), Image.LANCZOS)
+
+                base, ext = os.path.splitext(self.image.path)
+                zoom_path = base + "_zoom.jpg"
+
+                if os.path.exists(zoom_path):
+                    os.remove(zoom_path)
+
+                zoom.save(
+                    zoom_path,
+                    format="JPEG",
+                    quality=78,
+                    optimize=True,
+                    progressive=True
+                )
+
+                self.zoom_image = zoom_path.replace(str(settings.MEDIA_ROOT) + "/", "")
+
+                super().save(update_fields=["zoom_image"])
+
+                # ---- MOBILE IMAGE (700px) ----
+                mobile = img.copy()
+
+                if mobile.width > 700:
+                    mobile.thumbnail((700, 1400), Image.LANCZOS)
+
+                mobile_path = base + "_mobile.jpg"
+
+                if os.path.exists(mobile_path):
+                    os.remove(mobile_path)
+
+                mobile.save(
+                    mobile_path,
+                    format="JPEG",
+                    quality=65,
+                    optimize=True,
+                    progressive=True
+                )
+
+                self.mobile_image = mobile_path.replace(str(settings.MEDIA_ROOT) + "/", "")
+                super().save(update_fields=["mobile_image"])
 
 
 class Variant(models.Model):
@@ -261,6 +406,12 @@ class Variant(models.Model):
             sku = f"{candidate}-{i}"
         return sku
 
+    @property
+    def discount_percent(self):
+        if self.compare_at_price and self.compare_at_price > self.price:
+            return int((self.compare_at_price - self.price) / self.compare_at_price * 100)
+        return 0
+
     def save(self, *args, **kwargs):
         if not self.sku:
             self.sku = self._generate_sku()
@@ -271,6 +422,34 @@ class Variant(models.Model):
         opts = " ".join([self.color or "", self.size or ""]).strip()
         return f"{base} {opts}" if opts else base
 
+
+class PrivateCollection(models.Model):
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
+
+class PrivateProduct(models.Model):
+    collection = models.ForeignKey(
+        PrivateCollection,
+        on_delete=models.CASCADE,
+        related_name="items"
+    )
+
+    is_sold = models.BooleanField(default=False)
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE
+    )
+    position = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["position"]
+        unique_together = ("collection", "product")
 
 
 

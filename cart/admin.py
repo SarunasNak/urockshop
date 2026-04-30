@@ -6,7 +6,7 @@ import json
 
 @admin.register(TryOnRequest)
 class TryOnRequestAdmin(admin.ModelAdmin):
-    list_display  = ("created_at", "email", "phone", "height_cm", "weight_kg",
+    list_display  = ("created_at", "email", "phone",
                      "items_count", "marketing_consent")
     list_filter   = ("marketing_consent", "created_at")
     search_fields = ("email", "phone")
@@ -15,19 +15,22 @@ class TryOnRequestAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at", "items_pretty_html", "items_raw_json")
 
     fieldsets = (
-        (None, {
+        ("Kontaktai", {
             "fields": (
-                "email", "phone",
-                ("height_cm", "weight_kg"),
+                "name", "email", "phone", "comment",
+            )
+        }),
+        ("Sutikimai", {
+            "fields": (
                 ("terms_accepted", "marketing_consent"),
             )
         }),
         ("Prekės", {
-            "fields": ("items_pretty_html",),   # gražus blokas
+            "fields": ("items_pretty_html",),
         }),
         ("Raw snapshot (debug)", {
-            "classes": ("collapse",),           # suskleidžiama sekcija
-            "fields": ("items_raw_json",),      # žalias JSON (neprivaloma)
+            "classes": ("collapse",),
+            "fields": ("items_raw_json",),
         }),
         ("Sistema", {
             "fields": ("created_at",),

@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.http import url_has_allowed_host_and_scheme
 
 import stripe
 
@@ -22,6 +23,7 @@ from checkout.utils import mark_paid_and_decrease_stock
 from .services import get_all_dpd_points
 from newsletter.models import Subscriber
 from checkout.emails import send_order_emails
+
 
 logger = logging.getLogger(__name__)
 
@@ -406,13 +408,22 @@ def checkout_success(request, order_id: int):
             else:
                 cache.set(cache_key, 1, 60 * 60 * 24)  # 24 h – anti-dup
 
+    return_url = request.session.pop("return_url", None)
+
+    if return_url and url_has_allowed_host_and_scheme(return_url, allowed_hosts={request.get_host()}):
+        safe_return_url = return_url
+    else:
+        safe_return_url = None
+
     ctx = {
         "order": order,
         "meta_title": "Užsakymas priimtas – Urock",
         "meta_description": f"Užsakymas #{order.id} priimtas. Ačiū!",
         "meta_robots": "noindex,follow",
         "canonical_url": request.build_absolute_uri(request.path),
+        "return_url": safe_return_url,  # 👈 NAUJA
     }
+
     return render(request, "checkout/success.html", ctx)
 
 # views.py

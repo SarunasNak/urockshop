@@ -6,7 +6,28 @@
 {# Jei base.html neturi Swiper ar papildomų stilių – įmesk per head_extra #}
 {% block head_extra %}
   {# Tavo papildomas FE CSS (kompiliuotas Tailwind + custom) #}
-  <link rel="preload" as="image" href="{{ product.main_image.url }}">
+  {% if product.images.first %}
+    <link rel="preload"
+      as="image"
+      imagesrcset="
+        {% if product.images.first.mobile_image %}
+          {{ product.images.first.mobile_image.url }} 700w,
+        {% endif %}
+        {{ product.images.first.image.url }} 1200w"
+      imagesizes="(max-width:768px) 92vw, 1200px"
+      href="{% if product.images.first.mobile_image %}
+              {{ product.images.first.mobile_image.url }}
+            {% else %}
+              {{ product.images.first.image.url }}
+            {% endif %}"
+      fetchpriority="high">
+
+    {% elif product.main_image %}
+    <link rel="preload"
+          as="image"
+          href="{{ product.main_image.url }}"
+          fetchpriority="high">
+    {% endif %}
   <link rel="stylesheet" href="{% static 'fe/assets/css/style.css' %}">
   <link rel="stylesheet" href="{% static 'fe/vendor/photoswipe/photoswipe.css' %}">
 {% endblock %}
@@ -201,14 +222,23 @@
   {# HEADER ir FOOTER ateina iš base.html, todėl čia – tik „main“ dalis #}
 
     {# Mobilūs breadcrumbai virš galerijos #}
-    <ul class="flex md:hidden space-x-2 lg:space-x-5 text-[10px] py-[50px] px-3 justify-center">
-      <li>
-        <a href="{% url 'blog:list' %}" class="transition-text duration-300 text-[12px] text-brand-beige hover:text-black pr-3 uppercase">BLOGAS</a> /
-      </li>
-      <li>
-        <a href="{% url 'catalog:product_list' %}" class="transition-text duration-300 text-[12px] text-brand-beige hover:text-black uppercase">E-PARDUOTUVĖ</a>
-      </li>
-    </ul>
+   {% if is_private %}
+  <div class="flex md:hidden justify-center py-[50px]">
+    <a href="{{ request.META.HTTP_REFERER|default:'/shop/' }}"
+       class="text-[12px] text-brand-beige hover:text-black transition-colors">
+      ← GRĮŽTI Į ASORTIMENTĄ
+    </a>
+  </div>
+{% else %}
+  <ul class="flex md:hidden space-x-2 text-[10px] py-[50px] px-3 justify-center">
+    <li>
+      <a href="{% url 'blog:list' %}" class="text-[12px] text-brand-beige pr-3 uppercase">BLOGAS</a> /
+    </li>
+    <li>
+      <a href="{% url 'catalog:product_list' %}" class="text-[12px] text-brand-beige uppercase">E-PARDUOTUVĖ</a>
+    </li>
+  </ul>
+{% endif %}
 
         <section
             class="grid md:grid-cols-2 items-start relative gap-y-0 gap-x-6"
@@ -221,21 +251,36 @@
               {% for pi in product.images.all %}
               {% if pi.image %}
                 <div class="swiper-slide overflow-hidden">
-                  <a href="{{ pi.image.url }}" data-pswp-width="800" data-pswp-height="1200">
-                    <img
-                      class="block w-full h-auto object-contain"
-                      src="{{ pi.image.url }}"
-                      alt="{% firstof pi.alt product.title product.name product.slug %}">
-                  </a>
+                <a href="{% if pi.zoom_image and pi.zoom_image.url %}{{ pi.zoom_image.url }}{% else %}{{ pi.image.url }}{% endif %}"
+                data-pswp-width="{{ pi.image.width }}"
+                data-pswp-height="{{ pi.image.height }}">
+
+                <img
+                class="block w-full aspect-[2/3] object-contain"
+                src="{% if pi.mobile_image %}{{ pi.mobile_image.url }}{% else %}{{ pi.image.url }}{% endif %}"
+                srcset="
+                {% if pi.mobile_image %}{{ pi.mobile_image.url }} 700w,{% endif %}
+                {{ pi.image.url }} 1200w
+                "
+                sizes="(max-width:768px) 92vw, 1200px"
+                loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                fetchpriority="{% if forloop.first %}high{% else %}auto{% endif %}"
+                decoding="async"
+                alt="{{ pi.alt }}">
+
+                </a>
                 </div>
               {% endif %}
             {% endfor %}
             {% elif product.main_image %}
               <div class="swiper-slide overflow-hidden">
-                <a href="{{ product.main_image.url }}" data-pswp-width="800" data-pswp-height="1200">
+                <a href="{{ product.main_image.url }}" data-pswp-width="1600" data-pswp-height="2400">
                   <img
-                    class="block w-full h-auto object-contain"
+                    class="block w-full aspect-[2/3] object-contain"
                     src="{{ product.main_image.url }}"
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
                     alt="{% firstof product.title product.name product.slug %}">
                 </a>
               </div>
@@ -272,14 +317,27 @@
     <div class="relative mt-0 only-desktop-margin">
 
         {# Desktop breadcrumbai #}
-        <ul class="hidden md:flex space-x-2 lg:space-x-5 text-[10px] mb-[50px]">
-          <li>
-            <a href="{% url 'blog:list' %}" class="text-[13px] text-brand-beige hover:text-black pr-3 uppercase">BLOGAS</a> /
-          </li>
-          <li>
-            <a href="{% url 'catalog:product_list' %}" class="text-[13px] text-brand-beige hover:text-black uppercase">KATALOGAS</a>
-          </li>
-        </ul>
+      {% if is_private %}
+  <div class="hidden md:block mb-[50px]">
+    <a href="{{ request.META.HTTP_REFERER|default:'/shop/' }}"
+       class="text-[13px] text-brand-beige hover:text-black transition-colors">
+      ← GRĮŽTI Į ASORTIMENTĄ
+    </a>
+  </div>
+{% else %}
+  <ul class="hidden md:flex space-x-2 lg:space-x-5 text-[10px] mb-[50px]">
+    <li>
+      <a href="{% url 'blog:list' %}" class="text-[13px] text-brand-beige hover:text-black pr-3 uppercase">
+        BLOGAS
+      </a> /
+    </li>
+    <li>
+      <a href="{% url 'catalog:product_list' %}" class="text-[13px] text-brand-beige hover:text-black uppercase">
+        KATALOGAS
+      </a>
+    </li>
+  </ul>
+{% endif %}
 
         <div>
   <div>
@@ -327,17 +385,11 @@
 {% endif %}
 
           {# Papildomi edukaciniai tekstai (desktop only) #}
-          <p class="mb-5 text-brand-maroon hidden md:block text-xs">
-            {% if product.look_note %}{{ product.look_note }}{% endif %}
-          </p>
           <p class="mb-5 text-brand-maroon text-xs hidden md:block">
-            *Parduotuvėje eksponuojame tik dalį asortimento.
-            <a href="#newsletter"
-   class="js-newsletter-link text-[10px] font-bold underline hover:underline focus:underline underline-offset-2 hover:text-brand-beige transition-colors">
-  Prenumeruoti naujienlaiškį
-</a>
-            ir pirmieji sužinokite apie kas mėnesį atvykstančius drabužius.
-          </p>
+          UROCK klientai savo garderobą kuria palaipsniui.
+          Šį drabužį galite <strong>užsisakyti dabar</strong> arba
+          <strong>gauti pasiūlymą</strong> prieš įsigyjant.
+        </p>
 
           {# Kaina (desktop) su nuolaidos ženkliuku #}
         {% with variant=product.variants.first %}
@@ -372,16 +424,20 @@
       {% if variant %}
         <form method="post" action="{% url 'cart:add' %}" class="mb-2 js-add-to-cart">
   {% csrf_token %}
+  {% if is_private %}
+    <input type="hidden" name="private_flow" value="1">
+  {% endif %}
   <input type="hidden" name="mode" value="buy">
   <input type="hidden" name="variant_id" value="{{ variant.id }}">
   <input type="hidden" name="qty" value="1">
+  <input type="hidden" name="next" value="{{ request.path }}">
 
   <button id="btn-buy"
         type="submit"
-        class="w-full tw-button-bg-mrm inline-block bg-brand-maroon text-white p-3 text-sm opacity-70 hover:opacity-90 transition-colors duration-300"
+        class="w-full tw-button-bg-mrm primary inline-block p-3 text-sm transition-colors"
         data-loading-text="Pridedama…"
         data-success-text="Krepšelyje ✓">
-  Užsisakyti
+  Pirkti
 </button>
 </form>
 
@@ -403,16 +459,24 @@
   <div class="w-full md:w-[230px]"> {# 230px = kaip tavo ankstesnis max plotis #}
     <form method="post" action="{% url 'cart:add' %}" class="w-full my-2 js-add-to-cart">
   {% csrf_token %}
+  {% if is_private %}
+    <input type="hidden" name="private_flow" value="1">
+  {% endif %}
   <input type="hidden" name="mode" value="fit">
   <input type="hidden" name="variant_id" value="{{ variant.id }}">
   <input type="hidden" name="qty" value="1">
 
   <button id="btn-fit"
         type="submit"
-        class="w-full tw-button-bg-mrm inline-block bg-brand-maroon text-white p-3 text-sm opacity-70 hover:opacity-90 transition-colors duration-300 text-center"
-        data-loading-text="Fiksuojama…"
-        data-success-text="Užfiksuota krepšelyje ✓">
-  Rezervuoti
+        class="w-full tw-button-bg-mrm secondary inline-block p-3 text-sm transition-colors"
+        data-loading-text="{% if is_private %}Pridedama…{% else %}Fiksuojama…{% endif %}"
+         data-success-text="{% if is_private %}Pridėta prie pasiūlymo ✓{% else %}Užklausa krepšelyje ✓{% endif %}">
+ {% if is_private %}
+    Pridėti prie pasiūlymo
+  {% else %}
+    Gauti pasiūlymą
+  {% endif %}
+
 </button>
 </form>
 </div>
@@ -425,29 +489,101 @@
   {% endif %}
 </div>
             <div class="text-[8px] md:text-[11px] flex items-center">
-      <svg class="inline-block mr-2" xmlns="http://www.w3.org/2000/svg"
-        width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M22 16.92v3a2 2 0 0 1-2.18 2
-         19.86 19.86 0 0 1-8.63-3.07
-         19.5 19.5 0 0 1-6-6
-         19.86 19.86 0 0 1-3.11-8.67
-         A2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72
-         c.12.9.3 1.77.57 2.6a2 2 0 0 1-.45 2.11L8.09 9.91
-         a16 16 0 0 0 6 6l1.48-1.09a2 2 0 0 1 2.11-.45
-         c.83.27 1.7.45 2.6.57A2 2 0 0 1 22 16.92z"
-         stroke="#D8D9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
 
-      <span>
-        <!-- MOBILE -->
-        <span class="md:hidden">
-          Abejoji ar tiks? Informuok ir mes asmeniškai pristatysime drabužį.
-        </span>
+      <div x-data="{open:false}" class="md:hidden">
+
+    <span>
+      {% if is_private %}
+        Perkant daugiau nei vieną prekę, galime pasiūlyti geresnę kainą.
+      {% else %}
+        Papasakosime, kaip šį drabužį dėvėti ir įtraukti į savo garderobą.
+      {% endif %}
+    </span>
+
+        <button
+          @click="open = !open"
+          class="underline ml-1 text-brand-maroon"
+        >
+          Kaip tai veikia →
+        </button>
+
+        <div
+          x-show="open"
+          x-transition
+          class="mt-3 p-4 border border-gray-200 rounded-lg bg-gray-50 text-[12px] text-gray-600"
+        >
+
+        {% if is_private %}
+
+        <p class="mb-2">
+          1. Susidėkite norimas prekes spausdami „Pridėti prie pasiūlymo“.
+        </p>
+
+        <p class="mb-2">
+          2. Užpildykite informaciją ir pateikite užklausą.
+        </p>
+
+        <p>
+          3. Laukite UROCK atsakymo el. paštu.
+        </p>
+
+      {% else %}
+
+        <p class="mb-2">
+        1. Pateikiate užklausą apie pasirinktą drabužį (-ius).
+        </p>
+
+        <p class="mb-2">
+        2. UROCK įvertina užklausą ir el. laišku atsako, kaip drabužį derinti bei ar jis tiks jūsų dydžiui.
+        </p>
+
+        <p>
+        3. Tik tuomet nusprendžiate, ar įsigyti.
+        </p>
+        {% endif %}
+
+        </div>
+
+        </div>
 
         <!-- DESKTOP -->
-        <span class="hidden md:inline-block">
-          Abejoji ar tiks? Informuok ir mes asmeniškai pristatysime drabužį išbandyti prieš perkant.
-        </span>
+        <div x-data="{open:false}" class="hidden md:inline-block">
+
+      <span>
+        {% if is_private %}
+          Perkant daugiau nei vieną prekę, galime pasiūlyti geresnę kainą.
+        {% else %}
+          Papasakosime, kaip šį drabužį dėvėti ir įtraukti į savo garderobą.
+        {% endif %}
+      </span>
+
+
+      <button
+        @click="open = !open"
+        class="underline ml-1 text-brand-maroon"
+      >
+        Kaip tai veikia →
+      </button>
+
+      <div
+        x-show="open"
+        x-transition
+        class="mt-3 p-4 border border-gray-200 rounded-lg bg-gray-50 text-[12px] text-gray-600 max-w-[420px]"
+      >
+
+        {% if is_private %}
+          <p class="mb-2">1. Susidėkite norimas prekes spausdami „Pridėti prie pasiūlymo“.</p>
+          <p class="mb-2">2. Užpildykite informaciją ir pateikite užklausą.</p>
+          <p>3. Laukite UROCK atsakymo el. paštu.</p>
+        {% else %}
+          <p class="mb-2">1. Pateikiate užklausą apie pasirinktą drabužį (-ius).</p>
+          <p class="mb-2">2. UROCK įvertina užklausą ir el. laišku atsako...</p>
+          <p>3. Tik tuomet nusprendžiate, ar įsigyti.</p>
+        {% endif %}
+
+      </div>
+
+    </div>
 
         <!-- LINK -->
         <!--
@@ -474,7 +610,8 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-x-[5px] gap-y-5">
       {% for p in related_products %}
         <div>
-          <a href="{{ p.get_absolute_url }}" class="relative block w-full group" aria-label="{{ p.name }}">
+          <a href="{% if is_private %}{% url 'catalog:private_product_detail' p.slug %}{% else %}{{ p.get_absolute_url }}{% endif %}"
+   class="relative block w-full group">
             {% if p.main_image %}
               <img
                 class="aspect-[308/460] w-full object-cover transition-opacity duration-300 md:group-hover:opacity-0"
@@ -640,61 +777,108 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </script>
 
-<script src="{% static 'fe/vendor/photoswipe/photoswipe-lightbox.umd.min.js' %}"></script>
-<script src="{% static 'fe/vendor/photoswipe/photoswipe.umd.min.js' %}"></script>
+<script defer src="{% static 'fe/vendor/photoswipe/photoswipe-lightbox.umd.min.js' %}"></script>
+<script defer src="{% static 'fe/vendor/photoswipe/photoswipe.umd.min.js' %}"></script>
 
 <script>
 (function () {
-const el = document.querySelector('.product-slider');
-if (!el || el.dataset.swiperReady) return;
 
+  function initWhenReady() {
+    if (typeof Swiper === "undefined") {
+      return requestAnimationFrame(initWhenReady);
+    }
 
-function init() {
-if (el.dataset.swiperReady) return;
-el.dataset.swiperReady = '1';
+    const el = document.querySelector('.product-slider');
+    if (!el || el.dataset.swiperReady) return;
 
+    function init() {
+      if (el.dataset.swiperReady) return;
+      el.dataset.swiperReady = '1';
 
-const swiper = new Swiper(el, {
-slidesPerView: 1,
-spaceBetween: 0,
-loop: false,
-observer: true,
-observeParents: true,
-resizeObserver: true,
-navigation: {
-nextEl: '.swiper-button-next',
-prevEl: '.swiper-button-prev',
-},
-breakpoints: {
-0: { slidesPerView: 1.5, spaceBetween: 10, navigation: false },
-768: {
-slidesPerView: 1,
-spaceBetween: 0,
-navigation: {
-nextEl: '.swiper-button-next',
-prevEl: '.swiper-button-prev',
-},
-},
-},
-});
+      const swiper = new Swiper(el, {
+        slidesPerView: 1,
+        spaceBetween: 0,
+        loop: false,
+        preloadImages: false,
+        resizeObserver: true,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        breakpoints: {
+          0: { slidesPerView: 1.1, spaceBetween: 10, navigation: false },
+          768: {
+            slidesPerView: 1,
+            spaceBetween: 0,
+            navigation: {
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev',
+            },
+          },
+        },
+      });
 
+      requestAnimationFrame(() => swiper.update());
+    }
 
-// extra safety prod layout shiftams
-requestAnimationFrame(() => swiper.update());
-}
+    function waitForLayout() {
+      if (el.offsetWidth > 50) {
+        init();
+      } else {
+        requestAnimationFrame(waitForLayout);
+      }
+    }
 
+    waitForLayout();
+  }
 
-function waitForLayout() {
-if (el.offsetWidth > 50) {
-init();
-} else {
-requestAnimationFrame(waitForLayout);
-}
-}
+  initWhenReady();
 
-
-waitForLayout();
 })();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const slider = document.querySelector('.product-slider');
+  if (!slider) return;
+
+  function initPhotoSwipe() {
+
+    if (
+      window.matchMedia("(max-width: 1023px)").matches &&
+      window.PhotoSwipeLightbox &&
+      window.PhotoSwipe
+    ) {
+
+      const lightbox = new PhotoSwipeLightbox({
+        gallery: '.product-slider',
+        children: '.swiper-slide a',
+        pswpModule: PhotoSwipe,
+
+        showHideAnimationType: 'zoom',
+        bgOpacity: 0.95,
+
+      });
+
+      lightbox.init();
+
+    } else {
+
+      document.querySelectorAll('.product-slider a').forEach(a => {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          e.stopPropagation();
+        });
+      });
+
+    }
+
+  }
+
+  requestAnimationFrame(initPhotoSwipe);
+
+});
 </script>
 
 {% endblock %}

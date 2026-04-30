@@ -56,39 +56,41 @@
         </div>
       {% endif %}
 
-      {# „Grįžti į katalogą“ žinutė ir 5s redirect — NE laukimo būsenoms #}
-      {% if order.payment_method == "stripe" %}
-        {% if order.status != "pending" %}
-          <p class="text-xs md:text-2xl mb-2">
-            Peradresuosime į katalogą po 5 sek. Jei neperadresuoja, spauskite
-            <a class="text-xs md:text-2xl text-brand-maroon font-bold hover:text-brand-beige"
-               href="{% url 'catalog:product_list' %}">grįžti į katalogą.</a>
-          </p>
-          <script>
-            setTimeout(function(){ window.location.href = "{% url 'catalog:product_list' %}"; }, 5000);
-          </script>
-        {% endif %}
-      {% elif order.payment_method == "paysera" %}
-        {% if order.status != "paysera_pending" %}
-          <p class="text-xs md:text-2xl mb-2">
-            Peradresuosime į katalogą po 5 sek. Jei neperadresuoja, spauskite
-            <a class="text-xs md:text-2xl text-brand-maroon font-bold hover:text-brand-beige"
-               href="{% url 'catalog:product_list' %}">grįžti į katalogą.</a>
-          </p>
-          <script>
-            setTimeout(function(){ window.location.href = "{% url 'catalog:product_list' %}"; }, 5000);
-          </script>
-        {% endif %}
-      {% else %}
-        <p class="text-xs md:text-2xl mb-2">
-          Peradresuosime į katalogą po 5 sek. Jei neperadresuoja, spauskite
-          <a class="text-xs md:text-2xl text-brand-maroon font-bold hover:text-brand-beige"
-             href="{% url 'catalog:product_list' %}">grįžti į katalogą.</a>
-        </p>
-        <script>
-          setTimeout(function(){ window.location.href = "{% url 'catalog:product_list' %}"; }, 5000);
-        </script>
-      {% endif %}
+      {% if order.status == "paid" %}
+
+         {% if return_url %}
+    <p class="text-xs md:text-2xl mb-2">
+      Peradresuosime atgal po 2 sek.
+      Jei neperadresuoja, spauskite
+      <a class="text-brand-maroon font-bold" href="{{ return_url }}">
+        grįžti
+      </a>.
+    </p>
+
+    <script>
+      setTimeout(function(){
+        window.location.href = "{{ return_url }}";
+      }, 2000);
+    </script>
+
+  {% else %}
+    <p class="text-xs md:text-2xl mb-2">
+      Peradresuosime į katalogą po 2 sek.
+      Jei neperadresuoja, spauskite
+      <a class="text-brand-maroon font-bold"
+         href="{% url 'catalog:product_list' %}">
+         grįžti į katalogą
+      </a>.
+    </p>
+
+    <script>
+      setTimeout(function(){
+        window.location.href = "{% url 'catalog:product_list' %}";
+      }, 2000);
+    </script>
+  {% endif %}
+
+{% endif %}
 
     </div>
   </div>

@@ -13,6 +13,9 @@ from django_ckeditor_5.widgets import CKEditor5Widget
 
 from .models import Category, Product, ProductImage, Variant, Size
 
+from .models import PrivateCollection, PrivateProduct
+from adminsortable2.admin import SortableInlineAdminMixin
+
 # ---------- Multi-upload widget + field ----------
 class MultiFileInput(forms.ClearableFileInput):
     """ClearableFileInput, kuris leidžia pasirinkti kelis failus."""
@@ -69,6 +72,43 @@ class ProductImageInline(_BaseImageInline):
         sortable_field_name = "sort"
     verbose_name = "Drabužio kortelės nuotrauka"
     verbose_name_plural = "Drabužio kortelės nuotraukos"
+
+
+class PrivateProductInline(admin.TabularInline):
+    model = PrivateProduct
+    extra = 1
+    autocomplete_fields = ["product"]
+
+    # 👉 PRIDEDAM ką rodyti admin'e
+    fields = (
+        "is_sold",
+        "product",
+        "sku_display",
+        "brand_display",
+        "position",
+    )
+
+    # 👉 šitie tik display (ne editable)
+    readonly_fields = ("sku_display", "brand_display")
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "product":
+            kwargs["queryset"] = Product.objects.filter(is_active=False)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    # --- SKU ---
+    def sku_display(self, obj):
+        if obj.product:
+            return obj.product.sku
+        return "-"
+    sku_display.short_description = "SKU"
+
+    # --- BRAND ---
+    def brand_display(self, obj):
+        if obj.product and obj.product.brand:
+            return obj.product.brand
+        return "-"
+    brand_display.short_description = "Brand"
 
 
 class VariantInline(admin.TabularInline):
@@ -241,9 +281,8 @@ class ProductAdmin(_BaseProductAdmin):
     list_editable = ("is_active", "on_model",)
     list_filter = ("category", "on_model",)
     search_fields = ("sku", "name", "brand", "description")
-    prepopulated_fields = {"slug": ("name",)}
     inlines = [ProductImageInline]
-    readonly_fields = ("related_preview", "main_image_preview", "hover_image_preview")
+    readonly_fields = ("slug", "related_preview", "main_image_preview", "hover_image_preview")
 
     class Media:
         css = {"all": ("ckeditor.css",)}  # kelias nuo STATIC_URL
@@ -523,4 +562,11 @@ class SizeAdmin(SortableAdminMixin, admin.ModelAdmin):
         url = reverse("admin:catalog_product_changelist")
         params = urlencode({"size__id__exact": obj.id})
         return format_html('<a href="{}?{}">{}</a>', url, params, obj.all_products_count)
+
+@admin.register(PrivateCollection)
+class PrivateCollectionAdmin(admin.ModelAdmin):
+    list_display = ("title", "slug", "is_active")
+    list_editable = ("is_active",)
+    prepopulated_fields = {"slug": ("title",)}
+    inlines = [PrivateProductInline]
 

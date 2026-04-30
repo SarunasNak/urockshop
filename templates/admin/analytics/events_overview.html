@@ -48,11 +48,11 @@
         <tr>
           <td>
             {% if row.name == "add_to_cart" %}
-              Pirkti
-            {% elif row.name == "try_on_click" %}
-              Pasimatuoti
-              {% elif row.name == "order_click" %}
               Užsakyti
+            {% elif row.name == "try_on_click" %}
+              Gauti pasiūlymą
+            {% elif row.name == "order_click" %}
+              Apmokėti užsakymą
             {% else %}
               {{ row.name }}
             {% endif %}
